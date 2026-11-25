@@ -235,10 +235,14 @@ td{border-bottom-color:rgba(255,255,255,.04)}
 
 /* ---- sticky navigation */
 .tab-bar{position:sticky;top:0;z-index:30;background:var(--bg)}
-.tab-bar>.tab-btn:first-child,.gbar>a:first-child{margin-left:auto}
-.tab-bar>.tab-btn:nth-last-child(2),.gbar>a:last-child{margin-right:auto}
+.tab-bar>.tab-btn:first-child{margin-left:auto}
+.tab-bar>.tab-btn:nth-last-child(2){margin-right:auto}
 .dtabs,.gbar{position:sticky;top:var(--tbh,45px);z-index:29;background:var(--bg)}
-.dtabs{scroll-behavior:auto}
+.dtabs{scroll-behavior:auto;scroll-snap-type:x mandatory}
+.dtab{scroll-snap-align:center}
+.gbar::before,.gbar::after{content:'';flex:none;width:calc(50% - 60px)}
+.gbar a{scroll-snap-align:center}
+.gbar{scroll-snap-type:x proximity}
 .dtabs::before,.dtabs::after{content:'';flex:none;width:calc(50% - 60px)}
 .day{scroll-margin-top:calc(var(--tbh,45px) + 60px)}
 .gbar{display:flex;align-items:center;gap:2px;overflow-x:auto;scrollbar-width:none;margin:0 -24px 12px;padding:0 24px;border-bottom:1px solid rgba(255,255,255,.07)}
@@ -262,7 +266,23 @@ td{border-bottom-color:rgba(255,255,255,.04)}
 .sb-row small{font-size:11px;color:var(--dim);font-weight:600}
 .sb-row .sc{margin-left:auto;font-family:Oswald,sans-serif;font-size:18px;font-weight:600}
 .sb-row.lo b,.sb-row.lo .sc{color:var(--mute)}
-@media(max-width:640px){.sbs{grid-template-columns:1fr 1fr}.sb{padding:7px 9px 8px}.sb-tv{display:none}.sb-row b{font-size:15px}.gbar{margin:0 -12px 10px;padding:0 12px}.gbar a{font-size:13px;padding:12px 9px 13px}.dtabs::before,.dtabs::after{width:calc(50% - 50px)}.dtabs{margin:0 -12px 6px;padding:0 12px}.dtab{font-size:14px;padding:12px 10px 13px}.gc-mu{font-size:18px}.games{grid-template-columns:1fr}.header h1{font-size:28px}.panel{padding:0 12px 32px}.grid,.slip{gap:8px}.game{padding:8px 10px 10px}.g-team{font-size:13px}.g-pct{font-size:15px}.qn{font-size:15px}.slip{grid-template-columns:1fr}.drv{grid-template-columns:minmax(0,1fr) 3.6em}.drv .dbar{grid-column:1/-1}td,th{padding:6px 6px;font-size:11px}.mh-ab{font-size:28px}.fig{height:230px}}
+
+html,button,a,input,.sg,.nd{touch-action:manipulation}
+button{-webkit-tap-highlight-color:transparent;user-select:none;-webkit-user-select:none}
+.nd{display:grid;place-items:center}
+.hcs{display:grid;grid-template-columns:repeat(auto-fill,minmax(290px,1fr));gap:12px}
+.mh.hc{display:block;margin:0;padding:14px 12px 12px;transition:transform .15s,box-shadow .15s;box-shadow:0 0 0 1px rgba(255,255,255,.05)}
+.mh.hc:hover{transform:translateY(-2px);box-shadow:0 0 0 1px var(--lime),0 8px 24px rgba(0,0,0,.25)}
+.hc .badge.lg{--s:56px;margin-bottom:6px}
+.hc .mh-ab{font-size:22px}
+.hc .mh-wp{font-size:26px;color:var(--ink)}.hc .mh-wp.lo{color:var(--mute)}
+.hc-ft{text-align:center;font-size:12px;color:var(--sub);font-weight:600;margin-top:10px;padding-top:9px;border-top:1px solid rgba(255,255,255,.06)}
+.hc-ft b{color:var(--lime);letter-spacing:.8px;margin-right:6px}
+.cvc{position:sticky;top:calc(var(--tbh,45px) + var(--gbh,46px));z-index:20;padding:10px 14px 10px;box-shadow:0 10px 18px rgba(0,0,0,.35)}
+.cvc .fig{height:150px}
+.cvc .leg{grid-template-columns:repeat(3,1fr);gap:4px 12px;margin-top:6px;font-size:11px}
+.cvc .leg div{flex-direction:column;gap:0}
+@media(max-width:640px){.hcs{grid-template-columns:1fr}.cvc .fig{height:120px}.cvc{padding:8px 10px}.cvc .leg{font-size:10px}.sbs{grid-template-columns:1fr 1fr}.sb{padding:7px 9px 8px}.sb-tv{display:none}.sb-row b{font-size:15px}.gbar{margin:0 -12px 10px;padding:0 12px}.gbar a{font-size:13px;padding:12px 9px 13px}.dtabs::before,.dtabs::after{width:calc(50% - 50px)}.dtabs{margin:0 -12px 6px;padding:0 12px}.dtab{font-size:14px;padding:12px 10px 13px}.gc-mu{font-size:18px}.games{grid-template-columns:1fr}.header h1{font-size:28px}.panel{padding:0 12px 32px}.grid,.slip{gap:8px}.game{padding:8px 10px 10px}.g-team{font-size:13px}.g-pct{font-size:15px}.qn{font-size:15px}.slip{grid-template-columns:1fr}.drv{grid-template-columns:minmax(0,1fr) 3.6em}.drv .dbar{grid-column:1/-1}td,th{padding:6px 6px;font-size:11px}.mh-ab{font-size:28px}.fig{height:230px}}
 </style>
 </head>
 <body>
@@ -357,12 +377,12 @@ const logoSrcs=a=>{const id=ESPN_ID[a]||String(a).toLowerCase();return ['https:/
 window.logoNext=img=>{const L=img.dataset.srcs.split('|'),i=+(img.dataset.f||0)+1;if(i<L.length){img.dataset.f=i;if(i===L.length-1)img.classList.add('loc');img.src=L[i]}else img.remove()};
 const badge=(t,lg)=>`<span class="badge${lg?' lg':''}" style="--bc:${esc(t.color||t.night)};--bn:${esc(t.night||t.color)}" aria-hidden="true">${esc(t.abbr)}<img src="${logoSrcs(t.abbr)[0]}" data-srcs="${logoSrcs(t.abbr).join('|')}" alt="" loading="lazy" onload="this.parentNode.classList.add('lg-on')" onerror="logoNext(this)"></span>`;
 const LEAGUE=g=>g.league||META.league||'NFL';
-function gameCard(g){const L=g.lines||{},r=resOf(g.id),sp=L.spread;
-  const time=(String(g.kickoff||'').split('·').slice(1).join('·').trim()||g.kickoff||'').replace(/\s*ET$/,'');
-  const line=[sp==null?'':sp===0?'PK':(sp<0?esc(g.home.abbr)+' '+sgn(sp):esc(g.away.abbr)+' '+sgn(-sp)),L.total!=null?'O/U '+L.total:''].filter(Boolean).join(' · ');
-  const row=(t,sc,lo)=>`<div class="sb-row${lo?' lo':''}">${badge(t)}<b>${esc(t.abbr)}</b><small>${esc(t.record)}</small>${sc!=null?`<span class="sc">${sc}</span>`:''}</div>`;
-  const top=r?`<span class="fin">FINAL</span><span class="ln">${line}</span>`:`<span class="tm">${esc(time)}<span class="sb-tv">${g.tv?' · '+esc(g.tv):''}</span></span><span class="ln">${line}</span>`;
-  return `<a class="sb" href="#${esc(g.id)}"><div class="sb-top">${top}</div>${row(g.away,r&&r.awayScore,r&&r.awayScore<r.homeScore)}${row(g.home,r&&r.homeScore,r&&r.homeScore<r.awayScore)}</a>`}
+function gameCard(g){const L=g.lines||{},r=resOf(g.id),sp=L.spread,wx=g.inputs&&g.inputs.weather;
+  const line=[sp==null?'':sp===0?"Pick'em":`${esc(sp<0?g.home.name:g.away.name)} ${sgn(-Math.abs(sp))}`,L.total!=null?'O/U '+L.total:''].filter(Boolean).join(' · ');
+  const tm=(t,side,sc,lo)=>`<div class="mh-team">${badge(t,1)}<div class="mh-ab" style="color:${esc(t.night||t.color)}">${esc(t.name)}</div><div class="mh-rec">${esc(t.record)} · ${side}</div>${sc!=null?`<div class="mh-wp${lo?' lo':''}">${sc}</div>`:''}</div>`;
+  return `<a class="mh hc" href="#${esc(g.id)}" style="--away:${esc(g.away.night)};--home:${esc(g.home.night)}"><div class="mh-time">${esc(g.kickoff)} · ${esc(g.venue)} · ${esc(g.tv)}${wx?' · '+esc(wxText(wx)):''}</div>
+  <div class="mh-teams">${tm(g.away,'Away',r&&r.awayScore,r&&r.awayScore<r.homeScore)}<div class="mh-at">@</div>${tm(g.home,'Home',r&&r.homeScore,r&&r.homeScore<r.awayScore)}</div>
+  <div class="hc-ft">${r?'<b>FINAL</b>':''}${line}</div></a>`}
 const MON={Jan:0,Feb:1,Mar:2,Apr:3,May:4,Jun:5,Jul:6,Aug:7,Sep:8,Oct:9,Nov:10,Dec:11};
 const isoD=d=>`${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
 function dayOf(g){if(g.date)return g.date;const m=String(g.kickoff||'').match(/([A-Z][a-z]{2})\w* (\d{1,2})/);if(!m||MON[m[1]]==null)return 'tbd';
@@ -372,6 +392,8 @@ const dLabel=(d,o)=>d==='tbd'?'TBD':dObj(d).toLocaleDateString('en-US',o);
 const days=()=>[...new Set(GAMES.map(dayOf))].sort();
 const curDay=()=>SET.currentDay||isoD(new Date());
 function pickDay(){const D=days(),c=curDay();return D.includes(c)?c:(D.find(d=>d>c)||D[D.length-1])}
+function centerIn(box,el){if(!box||!el)return;const b=box.getBoundingClientRect(),r=el.getBoundingClientRect();box.scrollLeft+=r.left+r.width/2-(b.left+b.width/2)}
+function nearestCenter(box,sel){const b=box.getBoundingClientRect(),mid=b.left+b.width/2;let best=null,bd=1e9;box.querySelectorAll(sel).forEach(a=>{const r=a.getBoundingClientRect(),d=Math.abs(r.left+r.width/2-mid);if(d<bd){bd=d;best=a}});return best}
 function dayName(d,today){if(d===today)return 'Today';if(d==='tbd')return 'Date TBD';const t=dObj(today),x=dObj(d),diff=Math.round((x-t)/864e5);
   if(diff===1)return 'Tomorrow';if(diff===-1)return 'Yesterday';return dLabel(d,{weekday:'long',month:'short',day:'numeric'})}
 function board(){
@@ -379,9 +401,10 @@ function board(){
   const wk=(GAMES.find(g=>dayOf(g)===SELDAY)||{}).week,show=D.filter(d=>GAMES.some(g=>dayOf(g)===d&&g.week===wk));
   const tab=d=>`<a class="dtab ${d===SELDAY?'on':''}" href="#day-${d}" ${d===SELDAY?'aria-current="date"':''}>${d===today?'Today':d==='tbd'?'TBD':dLabel(d,{weekday:'short',month:'short',day:'numeric'}).replace(',','')}</a>`;
   const sec=d=>{const gs=GAMES.filter(g=>dayOf(g)===d).sort((a,b)=>String(a.kickoff).localeCompare(String(b.kickoff)));
-    return `<section class="day" id="sec-${d}"><h3>${esc(dayName(d,today))}${d!==today&&dayName(d,today).match(/^(Tomorrow|Yesterday)$/)?`<small>${esc(dLabel(d,{weekday:'long',month:'short',day:'numeric'}))}</small>`:''}</h3><div class="sbs">${gs.map(gameCard).join('')}</div></section>`};
+    return `<section class="day" id="sec-${d}"><h3>${esc(dayName(d,today))}${d!==today&&dayName(d,today).match(/^(Tomorrow|Yesterday)$/)?`<small>${esc(dLabel(d,{weekday:'long',month:'short',day:'numeric'}))}</small>`:''}</h3><div class="hcs">${gs.map(gameCard).join('')}</div></section>`};
   $('app').innerHTML=`<nav class="dtabs" id="dayStrip">${D.map(tab).join('')}</nav>${show.map(sec).join('')||'<div class="empty">No games yet.</div>'}`;
-  const on=$('dayStrip').querySelector('.on');if(on)$('dayStrip').scrollLeft=on.offsetLeft-$('dayStrip').clientWidth/2+on.offsetWidth/2;
+  const ds=$('dayStrip');centerIn(ds,ds.querySelector('.on'));
+  let st_;ds.addEventListener('scroll',()=>{clearTimeout(st_);st_=setTimeout(()=>{const a=nearestCenter(ds,'.dtab');if(a&&!a.classList.contains('on'))location.replace(a.getAttribute('href'))},160)});
   const tgt=$('sec-'+SELDAY);if(tgt&&show[0]!==SELDAY)requestAnimationFrame(()=>tgt.scrollIntoView({block:'start'}));
 }
 function best(){
@@ -422,11 +445,11 @@ function game(g,tab){
   <div class="bar"><i id="pbA" style="background:var(--away)"></i><i id="pbH" style="background:var(--home)"></i></div></div>
   <div class="qg"><div class="qc"><div class="lb">Who wins</div><div class="qn" id="cW"></div><div class="dt" id="cWs"></div></div><div class="qc c2"><div class="lb">Best value</div><div class="qn" id="cB"></div><div class="dt" id="cBs"></div></div><div class="qc c3"><div class="lb">Spread</div><div class="qn" id="cS"></div><div class="dt" id="cSs"></div></div><div class="qc c4"><div class="lb">Projected score</div><div class="qn" id="cP"></div><div class="dt" id="cPs"></div></div></div>`:''}
   <div id="panel"></div>`;
-  {const gb=$('gbar'),on=gb.querySelector('.on');if(on&&on.offsetLeft+on.offsetWidth>gb.clientWidth)gb.scrollLeft=on.offsetLeft-24}
+  centerIn($('gbar'),$('gbar').querySelector('.on'));document.documentElement.style.setProperty('--gbh',$('gbar').offsetHeight+'px');
   const P=$('panel'),hn=esc(g.home.name),an=esc(g.away.name);
-  if(tab==='pick')P.innerHTML=`${lg0?`<div class="card"><h2 class="hdr3">Logged pick · ${esc(lg0.loggedAt)}</h2><div class="body logged">Locked before kickoff at <b>${esc(g.home.abbr)} ${sgn(lg0.spread)}</b> (${odds(lg0.oddsSH)}/${odds(lg0.oddsSA)}), ML ${odds(lg0.mlH)}/${odds(lg0.mlA)}.<br>Model: <b>${lg0.homeWin>=.5?esc(g.home.name):esc(g.away.name)} ${pct(Math.max(lg0.homeWin,1-lg0.homeWin))}</b>, margin ${esc(g.home.abbr)} ${sgn(-lg0.margin)}. Spread side: <b>${lg0.atsSide==='home'?esc(g.home.name):esc(g.away.name)}</b> (${esc(lg0.atsVerdict)}). Best value: <b>${lg0.bestEV>0?esc(lg0.bestLabel)+' '+money(lg0.bestEV)+' · '+esc(lg0.bestVerdict):'none'}</b>.<div class="note">The live numbers below can differ if lines, injuries or weights change after the pick was locked. The track record grades this logged pick.</div></div></div>`:''}<div class="card"><h2 class="hdr1">Where the final margin lands</h2><div class="body"><div class="fig" id="cbox" role="img" aria-label="Distribution of the final margin"><svg id="curve"></svg></div><div class="leg" id="leg"></div></div></div><div class="card"><h2 class="hdr5">The read</h2><div class="body read" id="plain"></div></div>`;
+  if(tab==='pick')P.innerHTML=`<div class="slip" id="slip"></div><div class="card" style="margin-top:14px"><h2 class="hdr5">The read</h2><div class="body read" id="plain"></div></div>`;
   if(tab==='lines'){const LR=[['spread',`${hn} spread`],['spreadOddsHome',`${hn} spread odds`],['spreadOddsAway',`${an} spread odds`],['mlHome',`${hn} moneyline`],['mlAway',`${an} moneyline`]];
-  P.innerHTML=`<div class="card"><h2 class="hdr2">Your lines</h2><div class="body"><div class="lns">${LR.map(([k,n])=>`<div class="ln"><div class="ln-l">${n}<small id="hint-${k}"></small></div><div class="ln-c"><button type="button" class="sg" data-sg="${k}" aria-label="Flip + or −"></button><input id="in-${k}" type="text" inputmode="decimal" autocomplete="off" aria-label="${n}"><button type="button" class="nd" data-k="${k}" data-d="-1" aria-label="Lower">▾</button><button type="button" class="nd" data-k="${k}" data-d="1" aria-label="Raise">▴</button></div></div>`).join('')}</div><div class="note" style="margin-top:10px">Tap the <b>+/−</b> button to flip the sign, then type the number. Starting lines: ${esc(g.lines.source)}, ${esc(g.lines.asOf)}.</div></div></div><div class="slip" id="slip"></div><p style="margin-top:12px;text-align:center"><button class="reset" id="rl" type="button">Reset to model lines</button></p><p class="note" style="text-align:center">EV = what $100 returns on average if the model is right. Bet at +$${SET.betEV}+, Lean $0–${SET.betEV}, Pass below $0.</p>`}
+  P.innerHTML=`<div class="card cvc"><div class="fig" id="cbox" role="img" aria-label="Where the final margin lands"><svg id="curve"></svg></div><div class="leg" id="leg"></div></div><div class="card"><h2 class="hdr2">Your lines</h2><div class="body"><div class="lns">${LR.map(([k,n])=>`<div class="ln"><div class="ln-l">${n}<small id="hint-${k}"></small></div><div class="ln-c"><button type="button" class="sg" data-sg="${k}" aria-label="Flip + or −"></button><input id="in-${k}" type="text" inputmode="decimal" autocomplete="off" aria-label="${n}"><button type="button" class="nd" data-k="${k}" data-d="-1" aria-label="Lower"><svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path d="M6 9l6 6 6-6" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg></button><button type="button" class="nd" data-k="${k}" data-d="1" aria-label="Raise"><svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path d="M6 15l6-6 6 6" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg></button></div></div>`).join('')}</div><div class="note" style="margin-top:10px">Tap the <b>+/−</b> button to flip the sign, then type the number. Starting lines: ${esc(g.lines.source)}, ${esc(g.lines.asOf)}.</div></div></div><div class="slip" id="slip"></div><p style="margin-top:12px;text-align:center"><button class="reset" id="rl" type="button">Reset to model lines</button></p><p class="note" style="text-align:center">EV = what $100 returns on average if the model is right. Bet at +$${SET.betEV}+, Lean $0–${SET.betEV}, Pass below $0.</p>`}
   if(tab==='drivers')P.innerHTML=`<div class="card"><h2 class="hdr1" id="drvH"></h2><div class="body"><div class="drv" id="drv"></div><div class="drv" style="margin-top:8px"><span></span><div class="axis"><span>← ${an}</span><span>${hn} →</span></div><span></span></div></div></div><div class="card"><h2 class="hdr3">Who's playing</h2><div class="body" style="padding-top:4px;padding-bottom:4px" id="pl"></div></div><p style="text-align:center"><button class="reset" id="rp" type="button">Reset to injury report</button></p>`;
   if(tab==='matchup')P.innerHTML=`<p class="note" style="text-align:center;margin:0 0 10px">1 = best in the league. ${hn} use home splits, ${an} road splits. Small numbers are the raw stat.</p><div class="card"><h2 class="hdr6">When the ${hn} have the ball</h2><div class="scroll"><table id="rk1"></table></div></div><div class="card"><h2 class="hdr6">When the ${an} have the ball</h2><div class="scroll"><table id="rk2"></table></div></div>`;
   if(tab==='context'){const hs=['hdr1','hdr2','hdr3','hdr4','hdr5','hdr6'];P.innerHTML=g.context.map((t,i)=>`<div class="card"><h2 class="${hs[i%6]}">${esc(t.title)}</h2><div class="scroll"><table><thead><tr>${t.cols.map(c=>`<th>${esc(c)}</th>`).join('')}</tr></thead><tbody>${t.rows.map(r=>`<tr>${r.map((c,j)=>`<td class="${j===0?'nm':''}">${esc(c.t)}${c.d?`<small>${esc(c.d)}</small>`:''}</td>`).join('')}</tr>`).join('')}</tbody></table></div>${t.note?`<div class="src">${esc(t.note)}</div>`:''}</div>`).join('')}
@@ -435,9 +458,8 @@ function game(g,tab){
 }
 function bind(g,tab){
   const st=stateFor(g),up=()=>{save(key(g),st);render(g,tab)};
+  if($('slip')){const c=calc(g);$('slip').innerHTML=c.bets.map((b,i)=>`<div class="bet" style="--c:var(--${b.t})"><div class="hd"><span class="nm2" id="nm${i}"></span><span class="pill" id="vd${i}"></span></div><div class="stats"><div><span>Model</span><b id="mp${i}"></b></div><div><span>Break-even</span><b id="nd${i}"></b></div><div><span>EV / $100</span><b id="ed${i}"></b></div></div><div class="meter"><i id="mt${i}"></i></div><div class="note" id="sub${i}"></div></div>`).join('')}
   if(tab==='lines'){
-    const c=calc(g);
-    $('slip').innerHTML=c.bets.map((b,i)=>`<div class="bet" style="--c:var(--${b.t})"><div class="hd"><span class="nm2" id="nm${i}"></span><span class="pill" id="vd${i}"></span></div><div class="stats"><div><span>Model</span><b id="mp${i}"></b></div><div><span>Break-even</span><b id="nd${i}"></b></div><div><span>EV / $100</span><b id="ed${i}"></b></div></div><div class="meter"><i id="mt${i}"></i></div><div class="note" id="sub${i}"></div></div>`).join('');
     const K=['spread','spreadOddsHome','spreadOddsAway','mlHome','mlAway'],isOdds=k=>k!=='spread';
     const show=k=>{const v=st.lines[k],el=$('in-'+k),sg=document.querySelector(`[data-sg="${k}"]`);
       if(document.activeElement!==el)el.value=isOdds(k)?Math.abs(v):Math.abs(v).toFixed(1).replace(/\.0$/,'');
@@ -458,7 +480,7 @@ function bind(g,tab){
     const mark=()=>document.querySelectorAll('[data-p]').forEach(b=>{const on=st.plays[+b.dataset.p]===(b.dataset.v==='1');b.classList.toggle('on',on);b.setAttribute('aria-pressed',String(on))});mark();
     $('pl').addEventListener('click',e=>{const b=e.target.closest('[data-p]');if(!b)return;st.plays[+b.dataset.p]=b.dataset.v==='1';mark();up()});
     $('rp').addEventListener('click',()=>{st.plays=g.players.map(p=>p.plays);save(key(g),st);game(g,tab)})}
-  if(tab==='pick'){const ro=new ResizeObserver(()=>curve(g));ro.observe($('cbox'))}
+  if($('cbox')){const ro=new ResizeObserver(()=>curve(g));ro.observe($('cbox'))}
 }
 function render(g,tab){
   const c=calc(g);CW=g.week;const L=stateFor(g).lines;
@@ -473,9 +495,9 @@ function render(g,tab){
     const spT=c.sb.v==='Bet'?`<b>${esc(c.sb.n)}</b> returns <b>${money(c.sb.ev)}</b> per $100 on average. That's a bet.`:c.sb.v==='Lean'?`<b>${esc(c.sb.n)}</b> returns <b>${money(c.sb.ev)}</b> per $100: positive, but too small to trust.`:`Both sides of the spread lose money on average after the juice (best: ${esc(c.sb.n)}, ${money(c.sb.ev)} per $100). <b>Pass.</b>`;
     const mlT=c.mb.ev>0?`Moneyline: <b>${esc(c.mb.n)} ${odds(c.mb.o)}</b> returns ${money(c.mb.ev)} per $100 (${c.mb.v.toLowerCase()}).`:`Moneyline: no value. Fair prices are ${esc(g.home.name)} ${odds(fair(c.pw))} and ${esc(g.away.name)} ${odds(fair(1-c.pw))}.`;
     const out=g.players.map((p,i)=>stateFor(g).plays[i]?null:p.player).filter(Boolean);
-    $('plain').innerHTML=`<p>The model has the <b>${esc(c.win)}</b> winning <b>${pct(c.wp,0)}</b> of the time, by about ${Math.abs(c.m).toFixed(1)} points. The market says ${esc(g.home.abbr)} ${sgn(L.spread)}; the model makes it ${sgn(-c.m)}.</p><p>${spT}</p><p>${mlT}</p><p class="best">Best value: ${c.best.ev>0?esc(c.best.n)+' · '+money(c.best.ev)+' per $100 · '+c.best.v:'no bet has positive expected value'}</p><p class="note">Assumes out: ${esc(out.join(', ')||'nobody')}.</p><div class="links"><a href="#${esc(g.id)}-lines">Change the lines →</a><a href="#${esc(g.id)}-drivers">Change who plays →</a></div>`;
-    curve(g)}
-  if(tab==='lines')c.bets.forEach((b,i)=>{$('nm'+i).textContent=b.n;const v=$('vd'+i);v.className='pill p-'+b.v;v.textContent=b.v;$('mp'+i).textContent=pct(b.p);$('nd'+i).textContent=pct(b.need);const ed=$('ed'+i);ed.textContent=money(b.ev);ed.style.color=b.ev>0?'var(--green)':'var(--red)';
+    $('plain').innerHTML=`<p>The model has the <b>${esc(c.win)}</b> winning <b>${pct(c.wp,0)}</b> of the time, by about ${Math.abs(c.m).toFixed(1)} points. The market says ${esc(g.home.abbr)} ${sgn(L.spread)}; the model makes it ${sgn(-c.m)}.</p><p>${spT}</p><p>${mlT}</p><p class="best">Best value: ${c.best.ev>0?esc(c.best.n)+' · '+money(c.best.ev)+' per $100 · '+c.best.v:'no bet has positive expected value'}</p><p class="note">Assumes out: ${esc(out.join(', ')||'nobody')}.</p><div class="links"><a href="#${esc(g.id)}-lines">Change the lines →</a><a href="#${esc(g.id)}-drivers">Change who plays →</a></div>`}
+  if($('cbox'))curve(g);
+  if($('slip'))c.bets.forEach((b,i)=>{$('nm'+i).textContent=b.n;const v=$('vd'+i);v.className='pill p-'+b.v;v.textContent=b.v;$('mp'+i).textContent=pct(b.p);$('nd'+i).textContent=pct(b.need);const ed=$('ed'+i);ed.textContent=money(b.ev);ed.style.color=b.ev>0?'var(--green)':'var(--red)';
     $('sub'+i).textContent=`Fair ${odds(b.fairO)} · book no-vig ${pct(b.nv)}${b.push>0.001?` · push ${pct(b.push)}`:''}${b.ev>0?` · ¼ Kelly ${pct(b.kelly)}`:''}`;
     const e=Math.max(-.1,Math.min(.1,b.roi)),wd=Math.abs(e)/.1*50,mt=$('mt'+i);mt.style.left=(e>=0?50:50-wd)+'%';mt.style.width=wd+'%';mt.style.background=b.ev>=SET.betEV?'var(--green)':b.ev>0?'var(--gold)':'var(--dim)'});
   if(tab==='drivers'){$('drvH').textContent=`${c.fav} by ${Math.abs(c.m).toFixed(1)} · what builds it`;
