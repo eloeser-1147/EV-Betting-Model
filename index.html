@@ -219,7 +219,35 @@ td{border-bottom-color:rgba(255,255,255,.04)}
 .gc-tm{font-size:12px;color:var(--sub);font-weight:600;margin-top:2px}
 .gc-f{grid-column:1/-1;text-align:center;font-size:12px;color:var(--mute);font-weight:500;margin-top:8px}
 .gc-f b{color:var(--lime);font-weight:700}
-@media(max-width:640px){.dtabs{margin:0 -12px 6px;padding:0 12px}.dtab{font-size:14px;padding:12px 10px 13px}.gc-mu{font-size:18px}.games{grid-template-columns:1fr}.header h1{font-size:28px}.panel{padding:0 12px 32px}.grid,.slip{gap:8px}.game{padding:8px 10px 10px}.g-team{font-size:13px}.g-pct{font-size:15px}.qn{font-size:15px}.slip{grid-template-columns:1fr}.drv{grid-template-columns:minmax(0,1fr) 3.6em}.drv .dbar{grid-column:1/-1}td,th{padding:6px 6px;font-size:11px}.mh-ab{font-size:28px}.fig{height:230px}}
+
+/* ---- sticky navigation */
+.tab-bar{position:sticky;top:0;z-index:30;background:var(--bg)}
+.dtabs,.gbar{position:sticky;top:var(--tbh,45px);z-index:29;background:var(--bg)}
+.dtabs{scroll-behavior:auto}
+.dtabs::before,.dtabs::after{content:'';flex:none;width:calc(50% - 60px)}
+.day{scroll-margin-top:calc(var(--tbh,45px) + 60px)}
+.gbar{display:flex;align-items:center;gap:2px;overflow-x:auto;scrollbar-width:none;margin:0 -24px 12px;padding:0 24px;border-bottom:1px solid rgba(255,255,255,.07)}
+.gbar::-webkit-scrollbar{display:none}
+.gbar a{flex:none;position:relative;padding:12px 12px 13px;font-size:14px;font-weight:700;color:var(--mute);white-space:nowrap}
+.gbar a:hover{color:var(--ink)}
+.gbar a.on{color:var(--ink)}
+.gbar a.on::after{content:'';position:absolute;left:8px;right:8px;bottom:-1px;height:3px;border-radius:3px 3px 0 0;background:var(--lime)}
+.gbar .gback{color:var(--sub);padding-left:0;margin-right:6px;border-right:1px solid rgba(255,255,255,.08);padding-right:14px}
+/* ---- compact scorebugs */
+.sbs{display:grid;grid-template-columns:repeat(auto-fill,minmax(205px,1fr));gap:8px}
+.sb{display:block;padding:8px 12px 9px;border-radius:12px;background:var(--card);box-shadow:0 0 0 1px rgba(255,255,255,.05);transition:box-shadow .15s,background .15s}
+.sb:hover{background:var(--card2);box-shadow:0 0 0 1px var(--lime)}
+.sb-top{display:flex;justify-content:space-between;gap:6px;font-size:11px;font-weight:600;color:var(--mute);margin-bottom:4px;white-space:nowrap}
+.sb-top .fin{color:var(--lime);font-weight:800;letter-spacing:.6px}
+.sb-top .ln{color:var(--sub);flex:none}
+.sb-top .tm{overflow:hidden;text-overflow:ellipsis}
+.sb-row{display:flex;align-items:center;gap:8px;padding:2px 0}
+.sb-row .badge{--s:26px}
+.sb-row b{font-family:Oswald,sans-serif;font-size:16px;font-weight:600;letter-spacing:.3px}
+.sb-row small{font-size:11px;color:var(--dim);font-weight:600}
+.sb-row .sc{margin-left:auto;font-family:Oswald,sans-serif;font-size:18px;font-weight:600}
+.sb-row.lo b,.sb-row.lo .sc{color:var(--mute)}
+@media(max-width:640px){.sbs{grid-template-columns:1fr 1fr}.sb{padding:7px 9px 8px}.sb-tv{display:none}.sb-row b{font-size:15px}.gbar{margin:0 -12px 10px;padding:0 12px}.gbar a{font-size:13px;padding:12px 9px 13px}.dtabs::before,.dtabs::after{width:calc(50% - 50px)}.dtabs{margin:0 -12px 6px;padding:0 12px}.dtab{font-size:14px;padding:12px 10px 13px}.gc-mu{font-size:18px}.games{grid-template-columns:1fr}.header h1{font-size:28px}.panel{padding:0 12px 32px}.grid,.slip{gap:8px}.game{padding:8px 10px 10px}.g-team{font-size:13px}.g-pct{font-size:15px}.qn{font-size:15px}.slip{grid-template-columns:1fr}.drv{grid-template-columns:minmax(0,1fr) 3.6em}.drv .dbar{grid-column:1/-1}td,th{padding:6px 6px;font-size:11px}.mh-ab{font-size:28px}.fig{height:230px}}
 </style>
 </head>
 <body>
@@ -228,7 +256,6 @@ td{border-bottom-color:rgba(255,255,255,.04)}
   <a class="tab-btn" href="#board" data-tab="board">Home</a>
   <a class="tab-btn" href="#best" data-tab="best">Best Bets</a>
   <a class="tab-btn" href="#record" data-tab="record">Track Record</a>
-  <a class="tab-btn" href="#how" data-tab="how">How It Works</a>
   <div class="tab-slider" id="tabSlider"></div>
 </div>
 <div class="panel" id="app"><div class="empty">Loading the model…</div></div>
@@ -296,7 +323,7 @@ function calc(g){
   return {F,m,sev,hs:(tot+m)/2,as:(tot-m)/2,pw,pc,push,bets,sb,mb,best,w,win:pw>=.5?g.home.name:g.away.name,wp:Math.max(pw,1-pw),fav:m>=0?g.home.name:g.away.name};
 }
 
-const TAB_IDX={board:0,best:1,how:2};let curTop=0;
+const TAB_IDX={board:0,best:1,record:2};let curTop=0;
 function slide(name){const bar=$('tabBar');bar.querySelectorAll('.tab-btn').forEach(b=>b.classList.toggle('active',b.dataset.tab===name));const btn=bar.querySelector(`[data-tab="${name}"]`),sl=$('tabSlider');if(!btn)return;sl.style.left=(btn.offsetLeft)+'px';sl.style.width=btn.offsetWidth+'px'}
 function anim(){const a=$('app');a.classList.remove('anim');void a.offsetWidth;a.classList.add('anim')}
 function teamCol(g){const r=document.documentElement;r.style.setProperty('--home',g.home.night);r.style.setProperty('--away',g.away.night)}
@@ -305,7 +332,6 @@ function route(){
   if(!g)for(const [t] of TABS){g=GAMES.find(x=>h===x.id+'-'+t);if(g){tab=t;break}}
   if(g){slide('board');game(g,tab);return}
   if(h==='best'){slide('best');best();return}
-  if(h==='how'){slide('how');how();return}
   if(h==='record'){slide('record');record();return}
   const dm=h.match(/^day-(\d{4}-\d\d-\d\d|tbd)$/);if(dm)SELDAY=dm[1];
   const wm=h.match(/^week-(\d+)$/);if(wm){const g0=GAMES.filter(g=>g.week===+wm[1]).map(dayOf).sort()[0];if(g0)SELDAY=g0}
@@ -316,12 +342,11 @@ const logoSrc=a=>'https://a.espncdn.com/i/teamlogos/nfl/500/'+(ESPN_ID[a]||Strin
 const badge=(t,lg)=>`<span class="badge${lg?' lg':''}" style="--bc:${esc(t.color||t.night)};--bn:${esc(t.night||t.color)}" aria-hidden="true">${esc(t.abbr)}<img src="${logoSrc(t.abbr)}" alt="" loading="lazy" onload="this.parentNode.classList.add('lg-on')" onerror="if(!this.dataset.f){this.dataset.f=1;this.src='logos/${esc(t.abbr)}.png'}else this.remove()"></span>`;
 const LEAGUE=g=>g.league||META.league||'NFL';
 function gameCard(g){const L=g.lines||{},r=resOf(g.id),sp=L.spread;
-  const time=String(g.kickoff||'').split('·').slice(1).join('·').trim()||g.kickoff||'';
-  const fav=sp==null?'':sp===0?"Pick'em":`${esc(sp<0?g.home.name:g.away.name)} favored by ${Math.abs(sp)}`;
-  const side=t=>`<div class="gc-t">${badge(t)}<span class="r">${esc(t.record)}</span></div>`;
-  const mid=r?`<div class="gc-mu"><b class="${r.awayScore<r.homeScore?'lo':''}">${esc(g.away.abbr)} ${r.awayScore}</b><i>–</i><b class="${r.homeScore<r.awayScore?'lo':''}">${r.homeScore} ${esc(g.home.abbr)}</b></div><div class="gc-tm">Final</div>`
-    :`<div class="gc-mu">${esc(g.away.abbr)}<i>@</i>${esc(g.home.abbr)}</div><div class="gc-tm">${esc(time)}${g.tv?' • '+esc(g.tv):''}</div>`;
-  return `<a class="gc" href="#${esc(g.id)}">${side(g.away)}<div class="gc-m">${mid}</div>${side(g.home)}<div class="gc-f">${fav}${L.total!=null?' • O/U '+L.total:''}</div></a>`}
+  const time=(String(g.kickoff||'').split('·').slice(1).join('·').trim()||g.kickoff||'').replace(/\s*ET$/,'');
+  const line=[sp==null?'':sp===0?'PK':(sp<0?esc(g.home.abbr)+' '+sgn(sp):esc(g.away.abbr)+' '+sgn(-sp)),L.total!=null?'O/U '+L.total:''].filter(Boolean).join(' · ');
+  const row=(t,sc,lo)=>`<div class="sb-row${lo?' lo':''}">${badge(t)}<b>${esc(t.abbr)}</b><small>${esc(t.record)}</small>${sc!=null?`<span class="sc">${sc}</span>`:''}</div>`;
+  const top=r?`<span class="fin">FINAL</span><span class="ln">${line}</span>`:`<span class="tm">${esc(time)}<span class="sb-tv">${g.tv?' · '+esc(g.tv):''}</span></span><span class="ln">${line}</span>`;
+  return `<a class="sb" href="#${esc(g.id)}"><div class="sb-top">${top}</div>${row(g.away,r&&r.awayScore,r&&r.awayScore<r.homeScore)}${row(g.home,r&&r.homeScore,r&&r.homeScore<r.awayScore)}</a>`}
 const MON={Jan:0,Feb:1,Mar:2,Apr:3,May:4,Jun:5,Jul:6,Aug:7,Sep:8,Oct:9,Nov:10,Dec:11};
 const isoD=d=>`${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
 function dayOf(g){if(g.date)return g.date;const m=String(g.kickoff||'').match(/([A-Z][a-z]{2})\w* (\d{1,2})/);if(!m||MON[m[1]]==null)return 'tbd';
@@ -338,7 +363,7 @@ function board(){
   const wk=(GAMES.find(g=>dayOf(g)===SELDAY)||{}).week,show=D.filter(d=>GAMES.some(g=>dayOf(g)===d&&g.week===wk));
   const tab=d=>`<a class="dtab ${d===SELDAY?'on':''}" href="#day-${d}" ${d===SELDAY?'aria-current="date"':''}>${d===today?'Today':d==='tbd'?'TBD':dLabel(d,{weekday:'short',month:'short',day:'numeric'}).replace(',','')}</a>`;
   const sec=d=>{const gs=GAMES.filter(g=>dayOf(g)===d).sort((a,b)=>String(a.kickoff).localeCompare(String(b.kickoff)));
-    return `<section class="day" id="sec-${d}"><h3>${esc(dayName(d,today))}${d!==today&&dayName(d,today).match(/^(Tomorrow|Yesterday)$/)?`<small>${esc(dLabel(d,{weekday:'long',month:'short',day:'numeric'}))}</small>`:''}</h3><div class="games">${gs.map(gameCard).join('')}</div></section>`};
+    return `<section class="day" id="sec-${d}"><h3>${esc(dayName(d,today))}${d!==today&&dayName(d,today).match(/^(Tomorrow|Yesterday)$/)?`<small>${esc(dLabel(d,{weekday:'long',month:'short',day:'numeric'}))}</small>`:''}</h3><div class="sbs">${gs.map(gameCard).join('')}</div></section>`};
   $('app').innerHTML=`<nav class="dtabs" id="dayStrip">${D.map(tab).join('')}</nav>${show.map(sec).join('')||'<div class="empty">No games yet.</div>'}`;
   const on=$('dayStrip').querySelector('.on');if(on)$('dayStrip').scrollLeft=on.offsetLeft-$('dayStrip').clientWidth/2+on.offsetWidth/2;
   const tgt=$('sec-'+SELDAY);if(tgt&&show[0]!==SELDAY)requestAnimationFrame(()=>tgt.scrollIntoView({block:'start'}));
@@ -370,26 +395,18 @@ function record(){
     svg.innerHTML=`<line x1="${pad}" x2="${Wd-pad}" y1="${Y(0)}" y2="${Y(0)}" stroke="var(--dim)" stroke-dasharray="3 4"/><path d="${pts.map((v,i)=>(i?'L':'M')+X(i).toFixed(1)+','+Y(v).toFixed(1)).join('')}" fill="none" stroke="var(--lime)" stroke-width="2.5"/><text x="${Wd-pad}" y="${Y(pts[pts.length-1])-8}" text-anchor="end" style="font-weight:700">${money(pts[pts.length-1])}</text>`};
   const rro=new ResizeObserver(drawR);rro.observe(box);
 }
-function how(){
-  document.title='How It Works';anim();
-  $('app').innerHTML=`<div class="card how"><h2 class="hdr1">How the model picks</h2>
-  <div class="sec"><div class="t2" style="color:var(--blue)">1 · Projected margin</div><p>• Blends each team's stats 50% season, 30% home/road split, 20% last 3 games</p><p>• Base: points scored vs. opponent's points allowed, plus home field (+${SET.hfa})</p><p>• Matchups: rushing, passing, yards per play and red zone, offense vs. defense rank</p><p>• Situation: turnover margin, schedule strength, post-bye record, weather</p><p>• Game notes: coaching history and who's playing</p></div>
-  <div class="sec"><div class="t2" style="color:var(--green)">2 · Win and cover chances</div><p>• Final margins spread around the projection (SD ${SET.sd} pts)</p><p>• Whole-number spreads include the chance of a push, which refunds the bet</p></div>
-  <div class="sec"><div class="t2" style="color:var(--gold)">3 · Value against the book</div><p>• EV per $100 = chance to win × payout − chance to lose × $100</p><p>• <b class="w">Bet</b> at +$${SET.betEV} or more · <b class="t">Lean</b> $0 to $${SET.betEV} · <b style="color:var(--mute)">Pass</b> below $0</p><p>• Each bet also shows the model's fair price and the book's odds with the vig removed</p></div>
-  <div class="sec"><div class="t2" style="color:var(--purple)">4 · Weather</div><p>• Indoor games are ignored; outdoor wind over 10 mph, rain, snow and sub-25°F cold add severity</p><p>• Bad weather shifts the margin toward the run-heavier team and lowers the total</p></div></div>
-  <div class="card"><div class="body note" style="margin:0">Weights are the analyst's judgment until the backtest calibrates them. Analysis only, not betting advice.</div></div>`;
-}
 function game(g,tab){
   teamCol(g);document.title=`${g.away.abbr} @ ${g.home.abbr}`;anim();
   const wx=g.inputs&&g.inputs.weather;
   const lg0=logOf(g),gr0=lg0&&grade(lg0);
-  $('app').innerHTML=`<a class="back" href="#day-${dayOf(g)}">← ${esc(dLabel(dayOf(g),{weekday:'short',month:'short',day:'numeric'}))} games</a>${gr0?`<div class="final">Final · ${esc(g.away.abbr)} ${gr0.r.awayScore} – ${gr0.r.homeScore} ${esc(g.home.abbr)} · Straight up <b class="${RC[gr0.su]}">${gr0.su}</b> · ATS <b class="${RC[gr0.ats]}">${gr0.ats}</b>${gr0.best?` · Best bet <b class="${RC[gr0.best]}">${gr0.best} ${money(gr0.profit)}</b>`:''}${gr0.clv!=null?` · CLV ${sgn(gr0.clv)} pts`:''}</div>`:''}
+  $('app').innerHTML=`<nav class="gbar" id="gbar"><a class="gback" href="#day-${dayOf(g)}">‹ ${esc(dLabel(dayOf(g),{weekday:'short',month:'short',day:'numeric'}).replace(',',''))}</a>${TABS.map(([t,n])=>`<a class="${t===tab?'on':''}" href="#${esc(g.id)}-${t}">${n}</a>`).join('')}</nav>${gr0?`<div class="final">Final · ${esc(g.away.abbr)} ${gr0.r.awayScore} – ${gr0.r.homeScore} ${esc(g.home.abbr)} · Straight up <b class="${RC[gr0.su]}">${gr0.su}</b> · ATS <b class="${RC[gr0.ats]}">${gr0.ats}</b>${gr0.best?` · Best bet <b class="${RC[gr0.best]}">${gr0.best} ${money(gr0.profit)}</b>`:''}${gr0.clv!=null?` · CLV ${sgn(gr0.clv)} pts`:''}</div>`:''}
   <div class="mh"><div class="mh-time">${esc(g.kickoff)} · ${esc(g.venue)} · ${esc(g.tv)}${wx?' · '+esc(wxText(wx)):''}</div>
   <div class="mh-teams"><div class="mh-team">${badge(g.away,1)}<div class="mh-ab" style="color:var(--away)">${esc(g.away.name)}</div><div class="mh-rec">${esc(g.away.record)} · Away</div><div class="mh-wp" id="wpA"></div></div><div class="mh-at">@</div>
   <div class="mh-team">${badge(g.home,1)}<div class="mh-ab" style="color:var(--home)">${esc(g.home.name)}</div><div class="mh-rec">${esc(g.home.record)} · Home</div><div class="mh-wp" id="wpH"></div></div></div>
   <div class="bar"><i id="pbA" style="background:var(--away)"></i><i id="pbH" style="background:var(--home)"></i></div></div>
   <div class="qg"><div class="qc"><div class="lb">Who wins</div><div class="qn" id="cW"></div><div class="dt" id="cWs"></div></div><div class="qc c2"><div class="lb">Best value</div><div class="qn" id="cB"></div><div class="dt" id="cBs"></div></div><div class="qc c3"><div class="lb">Spread</div><div class="qn" id="cS"></div><div class="dt" id="cSs"></div></div><div class="qc c4"><div class="lb">Projected score</div><div class="qn" id="cP"></div><div class="dt" id="cPs"></div></div></div>
-  <nav class="segs">${TABS.map(([t,n])=>`<a class="seg ${t===tab?'active':''}" href="#${esc(g.id)}-${t}">${n}</a>`).join('')}</nav><div id="panel"></div>`;
+  <div id="panel"></div>`;
+  {const gb=$('gbar'),on=gb.querySelector('.on');if(on&&on.offsetLeft+on.offsetWidth>gb.clientWidth)gb.scrollLeft=on.offsetLeft-24}
   const P=$('panel'),hn=esc(g.home.name),an=esc(g.away.name);
   if(tab==='pick')P.innerHTML=`${lg0?`<div class="card"><h2 class="hdr3">Logged pick · ${esc(lg0.loggedAt)}</h2><div class="body logged">Locked before kickoff at <b>${esc(g.home.abbr)} ${sgn(lg0.spread)}</b> (${odds(lg0.oddsSH)}/${odds(lg0.oddsSA)}), ML ${odds(lg0.mlH)}/${odds(lg0.mlA)}.<br>Model: <b>${lg0.homeWin>=.5?esc(g.home.name):esc(g.away.name)} ${pct(Math.max(lg0.homeWin,1-lg0.homeWin))}</b>, margin ${esc(g.home.abbr)} ${sgn(-lg0.margin)}. Spread side: <b>${lg0.atsSide==='home'?esc(g.home.name):esc(g.away.name)}</b> (${esc(lg0.atsVerdict)}). Best value: <b>${lg0.bestEV>0?esc(lg0.bestLabel)+' '+money(lg0.bestEV)+' · '+esc(lg0.bestVerdict):'none'}</b>.<div class="note">The live numbers below can differ if lines, injuries or weights change after the pick was locked. The track record grades this logged pick.</div></div></div>`:''}<div class="card"><h2 class="hdr1">Where the final margin lands</h2><div class="body"><div class="fig" id="cbox" role="img" aria-label="Distribution of the final margin"><svg id="curve"></svg></div><div class="leg" id="leg"></div></div></div><div class="card"><h2 class="hdr5">The read</h2><div class="body read" id="plain"></div></div>`;
   if(tab==='lines')P.innerHTML=`<div class="card"><h2 class="hdr2">Lines & value</h2><div class="body"><div class="spread-row"><div><div class="lb">${hn} spread</div><div class="note" style="margin-top:2px">Starting lines: ${esc(g.lines.source)}, ${esc(g.lines.asOf)}</div></div><div class="step"><button type="button" data-k="spread" data-d="-0.5" aria-label="Lower spread">−</button><input id="in-spread" type="number" step="0.5" inputmode="decimal" aria-label="${hn} spread"><button type="button" data-k="spread" data-d="0.5" aria-label="Raise spread">+</button></div></div></div></div><div class="slip" id="slip"></div><p style="margin-top:12px;text-align:center"><button class="reset" id="rl" type="button">Reset to model lines</button></p><p class="note" style="text-align:center">EV = what $100 returns on average if the model is right. Bet at +$${SET.betEV}+, Lean $0–${SET.betEV}, Pass below $0.</p>`;
@@ -457,7 +474,8 @@ function curve(g){
   $('leg').innerHTML=`<div><span><i style="background:var(--away)"></i>${esc(an)} win and cover</span><b>${pct(pL)}</b></div><div><span><i style="background:var(--gold)"></i>${esc(T>0?hn+' win, '+an+' cover':an+' win, '+hn+' cover')}</span><b>${pct(pM)}</b></div><div><span><i style="background:var(--home)"></i>${esc(hn)} win and cover</span><b>${pct(pR)}</b></div>`;
 }
 
-addEventListener('resize',()=>{const a=document.querySelector('.tab-btn.active');if(a)slide(a.dataset.tab)});
+const setTbh=()=>document.documentElement.style.setProperty('--tbh',$('tabBar').offsetHeight+'px');setTbh();
+addEventListener('resize',()=>{setTbh();const a=document.querySelector('.tab-btn.active');if(a)slide(a.dataset.tab)});
 // ---- Data: read NFL_Pick_Model.xlsx in this folder (the weekly workbook); fall back to data/*.json
 function txt(x){if(typeof x==='number'&&x>30000){const d=new Date(Math.round((x-25569)*864e5));return d.toLocaleDateString('en-US',{month:'short',day:'numeric',timeZone:'UTC'})}return String(x??'')}
 function isoOf(x){if(x==null||x==='')return null;if(typeof x==='number'){const d=new Date(Math.round((x-25569)*864e5));return d.toISOString().slice(0,10)}const s=String(x).trim();let m=s.match(/^(\d{4})-(\d\d)-(\d\d)/);if(m)return m[0];m=s.match(/^(\d{1,2})\/(\d{1,2})\/(\d{2,4})$/);if(m){const y=m[3].length===2?2000+ +m[3]:+m[3];return `${y}-${m[1].padStart(2,'0')}-${m[2].padStart(2,'0')}`}return null}
@@ -499,7 +517,7 @@ const loadJson=()=>Promise.all([fetch('data/league.json').then(r=>r.json()),fetc
 let SRC='workbook';
 (typeof XLSX!=='undefined'?loadXlsx():Promise.reject()).catch(()=>{SRC='data files';return loadJson()}).then(([lg,gm])=>{
   LD=lg.rows;META={season:gm.season,week:gm.week,note:lg.note};SET=gm.settings;GAMES=gm.games;ST={};LOG=gm.pickLog||[];RES=gm.results||[];
-  $('subTitle').textContent=`${GAMES[0]?LEAGUE(GAMES[0]):'NFL'} · ${META.season} season`;
+  $('subTitle').textContent=`${GAMES[0]?LEAGUE(GAMES[0]):'NFL'} · ${META.season} season · times ET`;
   $('status').textContent=`${LOG.length} picks logged · ${RES.filter(r=>r.homeScore!=null&&r.awayScore!=null).length} results · from ${SRC}`;
   addEventListener('hashchange',()=>{route();scrollTo(0,0)});route();
 }).catch(()=>{$('app').innerHTML='<div class="empty">The model data didn\'t load. Check that NFL_Pick_Model.xlsx is in the same folder as this page, then reload.</div>'});
