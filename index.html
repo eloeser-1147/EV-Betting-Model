@@ -290,7 +290,44 @@ html{scrollbar-gutter:stable both-edges}
 .wq .wb .bar{order:-1;flex:0 0 100%;margin:0;height:10px}
 .wq .wb span.fav{color:var(--ink);font-weight:700}
 .wq .wb b{font-weight:800}
-@media(max-width:640px){.hcs{grid-template-columns:1fr}.cvc .fig{height:120px}.cvc{padding:8px 10px}.cvc .leg{font-size:10px}.sbs{grid-template-columns:1fr 1fr}.sb{padding:7px 9px 8px}.sb-tv{display:none}.sb-row b{font-size:15px}.gbar{margin:0 -12px 10px;padding:0 12px}.gbar a{font-size:13px;padding:12px 9px 13px}.dtabs::before,.dtabs::after{width:calc(50% - 50px)}.dtabs{margin:0 -12px 6px;padding:0 12px}.dtab{font-size:14px;padding:12px 10px 13px}.gc-mu{font-size:18px}.games{grid-template-columns:1fr}.header h1{font-size:28px}.panel{padding:0 12px 32px}.grid,.slip{gap:8px}.game{padding:8px 10px 10px}.g-team{font-size:13px}.g-pct{font-size:15px}.qn{font-size:15px}.slip{grid-template-columns:1fr}.drv{grid-template-columns:minmax(0,1fr) 3.6em}.drv .dbar{grid-column:1/-1}td,th{padding:6px 6px;font-size:11px}.mh-ab{font-size:28px}.fig{height:230px}}
+
+.pks{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:14px}
+.pk{border-radius:16px;padding:14px 16px 12px;background:linear-gradient(180deg,rgba(255,255,255,.045),rgba(255,255,255,.01)),var(--card);box-shadow:0 0 0 1px rgba(255,255,255,.05);display:flex;flex-direction:column;gap:8px;min-width:0}
+.pk .lb span{color:var(--sub);letter-spacing:.4px}
+.pk .badge{--s:34px}
+.pk-ml{display:flex;justify-content:space-between;align-items:center}
+.pk-ml .sd{display:grid;grid-template-columns:auto auto;align-items:center;column-gap:8px}
+.pk-ml .sd.r{text-align:right}
+.pk-ml .sd small{grid-column:1/-1;font-size:11px;color:var(--dim);font-weight:600}
+.pk-ml .sd.r small{text-align:right}
+.pk-ml b{font-family:Oswald,sans-serif;font-size:24px;font-weight:600;color:var(--mute)}
+.pk-ml b.fav{color:var(--ink)}
+.pk .bar{margin:0;height:8px}
+.pk-ft{font-size:12px;color:var(--sub);font-weight:600;display:flex;flex-wrap:wrap;align-items:center;gap:4px 8px;margin-top:auto}
+.pk-main{display:flex;align-items:center;gap:10px;min-height:40px}
+.pk-main b{font-family:Oswald,sans-serif;font-size:22px;font-weight:600;letter-spacing:.3px;line-height:1.1}
+.pk-sc{display:grid;gap:6px}
+.pk-sc>div{display:flex;align-items:center;gap:10px}
+.pk-sc .badge{--s:28px}
+.pk-sc span{font-family:Oswald,sans-serif;font-size:16px;font-weight:500;color:var(--sub)}
+.pk-sc b{margin-left:auto;font-family:Oswald,sans-serif;font-size:24px;font-weight:600}.pk-sc b.lo{color:var(--mute)}
+.lt{padding:4px 16px 8px}
+.lt-h{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:12px 0 8px;border-bottom:1px solid rgba(255,255,255,.06)}
+.lt-h:not(:first-child){margin-top:6px}
+.lt-t{font-family:Oswald,sans-serif;font-size:14px;text-transform:uppercase;letter-spacing:1.4px;color:var(--mute)}
+.lt-h small{font-size:11px;color:var(--sub);font-weight:600}
+.br{display:grid;grid-template-columns:minmax(0,1.1fr) auto minmax(0,1.5fr);align-items:center;gap:8px 14px;padding:9px 0 9px 10px;border-bottom:1px solid rgba(255,255,255,.05);border-left:3px solid var(--c);margin-left:-4px}
+.br-n{display:flex;align-items:center;gap:8px;font-weight:800;font-size:15px;min-width:0}
+.br-n .badge{--s:28px}
+.br-s{display:grid;grid-template-columns:repeat(3,1fr) auto;align-items:center;gap:6px;text-align:center}
+.br-s span{font-size:9px;text-transform:uppercase;letter-spacing:.6px;color:var(--mute);font-weight:700}
+.br-s span b{display:block;font-family:Oswald,sans-serif;font-size:16px;letter-spacing:0;color:var(--ink);font-weight:600;text-transform:none}
+.br-s span b.w{color:var(--green)}.br-s span b.l{color:var(--red)}
+.lt-f{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:10px 0 4px;font-size:11px;color:var(--dim)}
+.lt-f .reset{min-height:30px;padding:4px 12px}
+.ln-c .sg,.ln-c .nd,.ln-c input{height:36px}
+.ln-c .sg{width:36px}
+@media(max-width:640px){.pk-ml .sd{display:flex;flex-direction:column;align-items:center;gap:2px}.pk-ml .sd.r .badge{order:-1}.pk-ml .sd small{font-size:10px}.pks{gap:8px}.pk{padding:12px 12px 10px;gap:6px}.pk .badge{--s:28px}.pk-ml b{font-size:20px}.pk-main b{font-size:17px}.pk-main{gap:8px}.pk-sc b{font-size:20px}.pk-ft{font-size:11px}.br{grid-template-columns:minmax(0,1fr) auto;padding:8px 0 8px 8px}.br-s{grid-column:1/-1}.br-n{font-size:14px}.lt{padding:2px 12px 6px}.hcs{grid-template-columns:1fr}.cvc .fig{height:120px}.cvc{padding:8px 10px}.cvc .leg{font-size:10px}.sbs{grid-template-columns:1fr 1fr}.sb{padding:7px 9px 8px}.sb-tv{display:none}.sb-row b{font-size:15px}.gbar{margin:0 -12px 10px;padding:0 12px}.gbar a{font-size:13px;padding:12px 9px 13px}.dtabs::before,.dtabs::after{width:calc(50% - 50px)}.dtabs{margin:0 -12px 6px;padding:0 12px}.dtab{font-size:14px;padding:12px 10px 13px}.gc-mu{font-size:18px}.games{grid-template-columns:1fr}.header h1{font-size:28px}.panel{padding:0 12px 32px}.grid,.slip{gap:8px}.game{padding:8px 10px 10px}.g-team{font-size:13px}.g-pct{font-size:15px}.qn{font-size:15px}.slip{grid-template-columns:1fr}.drv{grid-template-columns:minmax(0,1fr) 3.6em}.drv .dbar{grid-column:1/-1}td,th{padding:6px 6px;font-size:11px}.mh-ab{font-size:28px}.fig{height:230px}}
 </style>
 </head>
 <body>
@@ -325,6 +362,8 @@ const fairOdds=fair;
 const profit=o=>o>0?o:10000/-o;
 const wxSev=wx=>!wx||wx.roof==='Dome'?0:Math.min(1.5,Math.max(0,((wx.windMph||0)-10)/15)+(wx.precip==='Rain'?.3:wx.precip==='Snow'?.5:0)+(wx.tempF!=null&&wx.tempF<25?.2:0));
 const wxText=wx=>!wx?'':wx.roof==='Dome'?'Indoors':`${wx.tempF??'–'}°F · wind ${wx.windMph??0} mph${wx.precip&&wx.precip!=='None'?' · '+wx.precip:''}`;
+const CHD='<svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path d="M6 9l6 6 6-6" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg>',CHU='<svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path d="M6 15l6-6 6 6" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+const evp=ev=>(ev>=0?'+':'−')+Math.abs(ev).toFixed(1)+'%';
 const money=v=>(v<0?'−$':'+$')+Math.abs(v).toFixed(2);
 const rowsOf=k=>LD.filter(r=>r[0]===k&&(CW==null||r[6]===CW));
 const val=(k,t,c)=>{const r=rowsOf(k).find(r=>r[1]===t);return r?r[COL[c]]:NaN};
@@ -419,9 +458,9 @@ function best(){
   document.title='Best Bets';anim();
   const W=weeks(),wk=W[W.length-1];const all=[];GAMES.filter(g=>g.week===wk).forEach(g=>{const c=calc(g);c.bets.forEach(b=>all.push({g,b}))});
   const pos=all.filter(x=>x.b.ev>0).sort((a,b)=>b.b.ev-a.b.ev);
-  $('app').innerHTML=`<div class="card"><h2 class="hdr5">Positive expected value · Week ${esc(wk)}</h2>${pos.length?pos.map(({g,b})=>`<a class="best-row" href="#${esc(g.id)}-lines"><div><div style="font-size:15px;font-weight:800">${esc(b.n)} <span style="color:var(--mute);font-weight:600">${odds(b.o)}</span></div><div class="dt">${esc(g.away.abbr)} @ ${esc(g.home.abbr)} · ${esc(b.kind)} · model ${pct(b.p)} vs break-even ${pct(b.need)}</div></div><div style="text-align:right"><div class="r ${b.v==='Lean'?'lean':''}">${money(b.ev)}</div><span class="pill p-${b.v}">${b.v}</span></div></a>`).join(''):'<div class="empty">No bet returns money on average at the current lines.</div>'}</div>
-  <div class="card"><h2 class="hdr4">All bets</h2><div class="scroll"><table><thead><tr><th>Bet</th><th>Odds</th><th>Model</th><th>Need</th><th>EV / $100</th><th></th></tr></thead><tbody>${all.sort((a,b)=>b.b.ev-a.b.ev).map(({g,b})=>`<tr><td class="nm">${esc(b.n)}<small>${esc(g.away.abbr)} @ ${esc(g.home.abbr)}</small></td><td>${odds(b.o)}</td><td>${pct(b.p)}</td><td>${pct(b.need)}</td><td class="${b.ev>0?'w':'l'}">${money(b.ev)}</td><td><span class="pill p-${b.v}">${b.v}</span></td></tr>`).join('')}</tbody></table></div></div>
-  <p class="note" style="text-align:center">EV per $100 = what a $100 bet returns on average if the model's probabilities are right. Bet at +$${SET.betEV} or more.</p>`;
+  $('app').innerHTML=`<div class="card"><h2 class="hdr5">Positive expected value · Week ${esc(wk)}</h2>${pos.length?pos.map(({g,b})=>`<a class="best-row" href="#${esc(g.id)}-lines"><div><div style="font-size:15px;font-weight:800">${esc(b.n)} <span style="color:var(--mute);font-weight:600">${odds(b.o)}</span></div><div class="dt">${esc(g.away.abbr)} @ ${esc(g.home.abbr)} · ${esc(b.kind)} · model ${pct(b.p)} vs break-even ${pct(b.need)}</div></div><div style="text-align:right"><div class="r ${b.v==='Lean'?'lean':''}">${evp(b.ev)}</div><span class="pill p-${b.v}">${b.v}</span></div></a>`).join(''):'<div class="empty">No bet returns money on average at the current lines.</div>'}</div>
+  <div class="card"><h2 class="hdr4">All bets</h2><div class="scroll"><table><thead><tr><th>Bet</th><th>Odds</th><th>Model</th><th>Need</th><th>EV</th><th></th></tr></thead><tbody>${all.sort((a,b)=>b.b.ev-a.b.ev).map(({g,b})=>`<tr><td class="nm">${esc(b.n)}<small>${esc(g.away.abbr)} @ ${esc(g.home.abbr)}</small></td><td>${odds(b.o)}</td><td>${pct(b.p)}</td><td>${pct(b.need)}</td><td class="${b.ev>0?'w':'l'}">${evp(b.ev)}</td><td><span class="pill p-${b.v}">${b.v}</span></td></tr>`).join('')}</tbody></table></div></div>
+  <p class="note" style="text-align:center">EV = average return per bet if the model's probabilities are right. Bet at +${SET.betEV}% or more.</p>`;
 }
 function record(){
   document.title='Track Record';anim();
@@ -447,13 +486,21 @@ function game(g,tab){
   const wx=g.inputs&&g.inputs.weather;
   const lg0=logOf(g),gr0=lg0&&grade(lg0);
   $('app').innerHTML=`<nav class="gbar" id="gbar"><a class="gback" href="#day-${dayOf(g)}">‹ ${esc(dLabel(dayOf(g),{weekday:'short',month:'short',day:'numeric'}).replace(',',''))}</a>${TABS.map(([t,n])=>`<a class="${t===tab?'on':''}" href="#${esc(g.id)}-${t}">${n}</a>`).join('')}</nav>${tab==='pick'&&gr0?`<div class="final">Final · ${esc(g.away.abbr)} ${gr0.r.awayScore} – ${gr0.r.homeScore} ${esc(g.home.abbr)} · Straight up <b class="${RC[gr0.su]}">${gr0.su}</b> · ATS <b class="${RC[gr0.ats]}">${gr0.ats}</b>${gr0.best?` · Best bet <b class="${RC[gr0.best]}">${gr0.best} ${money(gr0.profit)}</b>`:''}${gr0.clv!=null?` · CLV ${sgn(gr0.clv)} pts`:''}</div>`:''}
-  ${tab==='pick'?`<div class="qg"><div class="qc wq"><div class="lb">Who wins</div><div class="qn" id="cW"></div><div class="wb"><span id="wbA"></span><div class="bar"><i id="pbA" style="background:var(--away)"></i><i id="pbH" style="background:var(--home)"></i></div><span id="wbH"></span></div><div class="dt" id="cWs"></div></div><div class="qc c2"><div class="lb">Best value</div><div class="qn" id="cB"></div><div class="dt" id="cBs"></div></div><div class="qc c3"><div class="lb">Spread</div><div class="qn" id="cS"></div><div class="dt" id="cSs"></div></div><div class="qc c4"><div class="lb">Projected score</div><div class="qn" id="cP"></div><div class="dt" id="cPs"></div></div></div>`:''}
+  ${tab==='pick'?`<div class="pks">
+  <div class="pk"><div class="lb">Moneyline</div><div class="pk-ml"><div class="sd">${badge(g.away)}<b id="mlA"></b><small id="mlAf"></small></div><div class="sd r"><b id="mlH"></b>${badge(g.home)}<small id="mlHf"></small></div></div><div class="bar"><i id="pbA" style="background:var(--away)"></i><i id="pbH" style="background:var(--home)"></i></div><div class="pk-ft" id="mlF"></div></div>
+  <div class="pk"><div class="lb">Spread <span id="spL"></span></div><div class="pk-main"><span id="spB"></span><b id="spN"></b></div><div class="pk-ft" id="spF"></div></div>
+  <div class="pk"><div class="lb">Best value</div><div class="pk-main"><span id="bvB"></span><b id="bvN"></b></div><div class="pk-ft" id="bvF"></div></div>
+  <div class="pk"><div class="lb">Projected score</div><div class="pk-sc"><div id="psA"></div><div id="psH"></div></div><div class="pk-ft" id="psF"></div></div>
+</div>`:''}
   <div id="panel"></div>`;
   centerIn($('gbar'),$('gbar').querySelector('.on'));document.documentElement.style.setProperty('--gbh',$('gbar').offsetHeight+'px');
   const P=$('panel'),hn=esc(g.home.name),an=esc(g.away.name);
   if(tab==='pick')P.innerHTML=`<div class="card" style="margin-top:4px"><h2 class="hdr5">The read</h2><div class="body read" id="plain"></div></div>`;
-  if(tab==='lines'){const LR=[['spread',`${hn} spread`],['spreadOddsHome',`${hn} spread odds`],['spreadOddsAway',`${an} spread odds`],['mlHome',`${hn} moneyline`],['mlAway',`${an} moneyline`]];
-  P.innerHTML=`<div class="card"><h2 class="hdr2">Your lines</h2><div class="body"><div class="lns">${LR.map(([k,n])=>`<div class="ln"><div class="ln-l">${n}<small id="hint-${k}"></small></div><div class="ln-c"><button type="button" class="sg" data-sg="${k}" aria-label="Flip + or −"></button><input id="in-${k}" type="text" inputmode="decimal" autocomplete="off" aria-label="${n}"><button type="button" class="nd" data-k="${k}" data-d="-1" aria-label="Lower"><svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path d="M6 9l6 6 6-6" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg></button><button type="button" class="nd" data-k="${k}" data-d="1" aria-label="Raise"><svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path d="M6 15l6-6 6 6" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg></button></div></div>`).join('')}</div><div class="note" style="margin-top:10px">Tap the <b>+/−</b> button to flip the sign, then type the number. Starting lines: ${esc(g.lines.source)}, ${esc(g.lines.asOf)}.</div></div></div><div class="slip" id="slip"></div><p style="margin-top:12px;text-align:center"><button class="reset" id="rl" type="button">Reset to model lines</button></p><p class="note" style="text-align:center">EV = what $100 returns on average if the model is right. Bet at +$${SET.betEV}+, Lean $0–${SET.betEV}, Pass below $0.</p>`}
+  if(tab==='lines'){const ctl=(k,n)=>`<div class="ln-c"><button type="button" class="sg" data-sg="${k}" aria-label="Flip + or −"></button><input id="in-${k}" type="text" inputmode="decimal" autocomplete="off" aria-label="${n}"><button type="button" class="nd" data-k="${k}" data-d="-1" aria-label="Lower">${CHD}</button><button type="button" class="nd" data-k="${k}" data-d="1" aria-label="Raise">${CHU}</button></div>`;
+  const row=(i,k,t)=>`<div class="br" style="--c:var(--${t==='home'?'home':'away'})"><div class="br-n">${badge(t==='home'?g.home:g.away)}<span id="nm${i}"></span></div>${ctl(k,'odds')}<div class="br-s"><span>Model<b id="mp${i}"></b></span><span>Need<b id="nd${i}"></b></span><span>EV<b id="ed${i}"></b></span><span class="pill" id="vd${i}"></span></div></div>`;
+  P.innerHTML=`<div class="card lt"><div class="lt-h"><div><div class="lt-t">Spread</div><small id="hint-spread"></small></div>${ctl('spread',hn+' spread')}</div>${row(2,'spreadOddsHome','home')}${row(3,'spreadOddsAway','away')}<div class="lt-h"><div class="lt-t">Moneyline</div></div>${row(0,'mlHome','home')}${row(1,'mlAway','away')}
+  <div class="lt-f"><span>Lines: ${esc(g.lines.source)}, ${esc(g.lines.asOf)} · tap <b>+/−</b> to flip a sign</span><button class="reset" id="rl" type="button">Reset</button></div></div>
+  <p class="note" style="text-align:center">Model = chance the bet wins · Need = break-even at that price · EV = average return per bet. Bet at +${SET.betEV}% or better, Lean above 0%, Pass below.</p>`}
   if(tab==='drivers')P.innerHTML=`<div class="card"><h2 class="hdr1" id="drvH"></h2><div class="body"><div class="drv" id="drv"></div><div class="drv" style="margin-top:8px"><span></span><div class="axis"><span>← ${an}</span><span>${hn} →</span></div><span></span></div></div></div><div class="card"><h2 class="hdr3">Who's playing</h2><div class="body" style="padding-top:4px;padding-bottom:4px" id="pl"></div></div><p style="text-align:center"><button class="reset" id="rp" type="button">Reset to injury report</button></p>`;
   if(tab==='matchup')P.innerHTML=`<p class="note" style="text-align:center;margin:0 0 10px">1 = best in the league. ${hn} use home splits, ${an} road splits. Small numbers are the raw stat.</p><div class="card"><h2 class="hdr6">When the ${hn} have the ball</h2><div class="scroll"><table id="rk1"></table></div></div><div class="card"><h2 class="hdr6">When the ${an} have the ball</h2><div class="scroll"><table id="rk2"></table></div></div>`;
   if(tab==='context'){const hs=['hdr1','hdr2','hdr3','hdr4','hdr5','hdr6'];P.innerHTML=g.context.map((t,i)=>`<div class="card"><h2 class="${hs[i%6]}">${esc(t.title)}</h2><div class="scroll"><table><thead><tr>${t.cols.map(c=>`<th>${esc(c)}</th>`).join('')}</tr></thead><tbody>${t.rows.map(r=>`<tr>${r.map((c,j)=>`<td class="${j===0?'nm':''}">${esc(c.t)}${c.d?`<small>${esc(c.d)}</small>`:''}</td>`).join('')}</tr>`).join('')}</tbody></table></div>${t.note?`<div class="src">${esc(t.note)}</div>`:''}</div>`).join('')}
@@ -462,13 +509,12 @@ function game(g,tab){
 }
 function bind(g,tab){
   const st=stateFor(g),up=()=>{save(key(g),st);render(g,tab)};
-  if($('slip')){const c=calc(g);$('slip').innerHTML=c.bets.map((b,i)=>`<div class="bet" style="--c:var(--${b.t})"><div class="hd"><span class="nm2" id="nm${i}"></span><span class="pill" id="vd${i}"></span></div><div class="stats"><div><span>Model</span><b id="mp${i}"></b></div><div><span>Break-even</span><b id="nd${i}"></b></div><div><span>EV / $100</span><b id="ed${i}"></b></div></div><div class="meter"><i id="mt${i}"></i></div><div class="note" id="sub${i}"></div></div>`).join('')}
   if(tab==='lines'){
     const K=['spread','spreadOddsHome','spreadOddsAway','mlHome','mlAway'],isOdds=k=>k!=='spread';
     const show=k=>{const v=st.lines[k],el=$('in-'+k),sg=document.querySelector(`[data-sg="${k}"]`);
       if(document.activeElement!==el)el.value=isOdds(k)?Math.abs(v):Math.abs(v).toFixed(1).replace(/\.0$/,'');
       sg.textContent=v<0?'−':'+';sg.classList.toggle('neg',v<0);
-      $('hint-'+k).textContent=k==='spread'?(v===0?'Pick’em':`${v<0?g.home.name:g.away.name} favored by ${Math.abs(v)}`):(v<0?`Favorite: bet ${Math.abs(v)} to win 100`:`Underdog: bet 100 to win ${v}`)};
+      if(k==='spread')$('hint-'+k).textContent=k==='spread'?(v===0?'Pick’em':`${v<0?g.home.name:g.away.name} favored by ${Math.abs(v)}`):(v<0?`Favorite: bet ${Math.abs(v)} to win 100`:`Underdog: bet 100 to win ${v}`)};
     const setV=(k,v)=>{if(isOdds(k)){if(Math.abs(v)<100)v=v<0?-100:100}st.lines[k]=v;show(k);up()};
     K.forEach(k=>{show(k);const el=$('in-'+k);
       el.addEventListener('input',()=>{const raw=el.value.trim();const n=parseFloat(raw.replace(/[^\d.]/g,''));if(isNaN(n))return;
@@ -488,22 +534,26 @@ function bind(g,tab){
 }
 function render(g,tab){
   const c=calc(g);CW=g.week;const L=stateFor(g).lines;
-  if(tab==='pick'){$('pbA').style.width=(1-c.pw)*100+'%';$('pbH').style.width=c.pw*100+'%';
-  $('wbA').innerHTML=`<b>${esc(g.away.abbr)}</b> ${pct(1-c.pw,0)}`;$('wbH').innerHTML=`${pct(c.pw,0)} <b>${esc(g.home.abbr)}</b>`;
-  $('wbA').classList.toggle('fav',c.pw<.5);$('wbH').classList.toggle('fav',c.pw>=.5);
-  $('cW').textContent=c.win;$('cWs').textContent=`${pct(c.wp,0)} · fair ML ${odds(fair(c.wp))}`;
-  $('cB').textContent=c.best.ev>0?c.best.n:'None';$('cBs').innerHTML=c.best.ev>0?`<span class="pill p-${c.best.v}">${c.best.v}</span> at ${odds(c.best.o)}`:'No bet has an edge';
-  $('cS').textContent=c.sb.v==='Pass'?'Pass':c.sb.n;$('cSs').textContent=c.sb.v==='Pass'?`No edge at ${g.home.abbr} ${sgn(L.spread)}`:`${c.sb.v} at ${odds(c.sb.o)}`;
-  $('cP').textContent=`${g.home.abbr} ${Math.round(c.hs)}–${Math.round(c.as)}`;$('cPs').textContent=`Model ${g.home.abbr} ${sgn(-c.m)} · market ${sgn(L.spread)}`;}
+  if(tab==='pick'){const T=x=>x==='home'?g.home:g.away,pill=v=>`<span class="pill p-${v}">${v}</span>`;
+  $('pbA').style.width=(1-c.pw)*100+'%';$('pbH').style.width=c.pw*100+'%';
+  $('mlA').textContent=pct(1-c.pw,0);$('mlH').textContent=pct(c.pw,0);$('mlA').classList.toggle('fav',c.pw<.5);$('mlH').classList.toggle('fav',c.pw>=.5);
+  $('mlAf').textContent='fair '+odds(fair(1-c.pw));$('mlHf').textContent='fair '+odds(fair(c.pw));
+  $('mlF').innerHTML=`${esc(c.win)} to win · ${esc(c.mb.n)} ${odds(c.mb.o)} ${pill(c.mb.v)} <b class="${c.mb.ev>0?'w':'l'}">EV ${evp(c.mb.ev)}</b>`;
+  $('spL').textContent=`· ${g.home.abbr} ${sgn(L.spread)}`;$('spB').innerHTML=badge(T(c.sb.t));$('spN').textContent=c.sb.n;
+  $('spF').innerHTML=`Covers ${pct(c.sb.p)} ${pill(c.sb.v)} <b class="${c.sb.ev>0?'w':'l'}">EV ${evp(c.sb.ev)}</b>`;
+  if(c.best.ev>0){$('bvB').innerHTML=badge(T(c.best.t));$('bvN').textContent=`${c.best.n} ${odds(c.best.o)}`;$('bvF').innerHTML=`${pill(c.best.v)} <b class="w">EV ${evp(c.best.ev)}</b> · wins ${pct(c.best.p)}`}
+  else{$('bvB').innerHTML='';$('bvN').textContent='No edge';$('bvF').innerHTML=`Best is ${esc(c.best.n)} at <b class="l">EV ${evp(c.best.ev)}</b>`}
+  const as=Math.round(c.as),hs=Math.round(c.hs),row=(t,v,w)=>`${badge(t)}<span>${esc(t.abbr)}</span><b class="${w?'':'lo'}">${v}</b>`;
+  $('psA').innerHTML=row(g.away,as,as>hs);$('psH').innerHTML=row(g.home,hs,hs>=as);
+  $('psF').textContent=`Model ${g.home.abbr} ${sgn(-c.m)} · market ${sgn(L.spread)} · total ${(c.hs+c.as).toFixed(1)}`;}
   if(tab==='pick'){
     const spT=c.sb.v==='Bet'?`Spread: <b>${esc(c.sb.n)}</b> has a real edge at this price. That's a bet.`:c.sb.v==='Lean'?`Spread: <b>${esc(c.sb.n)}</b> has a small edge, too thin to trust. Lean.`:`Spread: neither side has an edge once the juice is paid. <b>Pass.</b>`;
     const mlT=c.mb.ev>0?`Moneyline: <b>${esc(c.mb.n)} ${odds(c.mb.o)}</b> has ${c.mb.v==='Bet'?'a real':'a small'} edge (${c.mb.v.toLowerCase()}).`:`Moneyline: no value. Fair prices are ${esc(g.home.name)} ${odds(fair(c.pw))} and ${esc(g.away.name)} ${odds(fair(1-c.pw))}.`;
     const out=g.players.map((p,i)=>stateFor(g).plays[i]?null:p.player).filter(Boolean);
     $('plain').innerHTML=`<p>The model has the <b>${esc(c.win)}</b> winning <b>${pct(c.wp,0)}</b> of the time, by about ${Math.abs(c.m).toFixed(1)} points. The market says ${esc(g.home.abbr)} ${sgn(L.spread)}; the model makes it ${sgn(-c.m)}.</p><p>${spT}</p><p>${mlT}</p><p class="best">Best value: ${c.best.ev>0?esc(c.best.n)+' '+odds(c.best.o)+' · '+c.best.v:'no bet has an edge at these prices'}</p><p class="note">Assumes out: ${esc(out.join(', ')||'nobody')}.</p><div class="links"><a href="#${esc(g.id)}-lines">See the value on each bet →</a><a href="#${esc(g.id)}-drivers">Change who plays →</a></div>`}
   if($('cbox'))curve(g);
-  if($('slip'))c.bets.forEach((b,i)=>{$('nm'+i).textContent=b.n;const v=$('vd'+i);v.className='pill p-'+b.v;v.textContent=b.v;$('mp'+i).textContent=pct(b.p);$('nd'+i).textContent=pct(b.need);const ed=$('ed'+i);ed.textContent=money(b.ev);ed.style.color=b.ev>0?'var(--green)':'var(--red)';
-    $('sub'+i).textContent=`Fair ${odds(b.fairO)} · book no-vig ${pct(b.nv)}${b.push>0.001?` · push ${pct(b.push)}`:''}${b.ev>0?` · ¼ Kelly ${pct(b.kelly)}`:''}`;
-    const e=Math.max(-.1,Math.min(.1,b.roi)),wd=Math.abs(e)/.1*50,mt=$('mt'+i);mt.style.left=(e>=0?50:50-wd)+'%';mt.style.width=wd+'%';mt.style.background=b.ev>=SET.betEV?'var(--green)':b.ev>0?'var(--gold)':'var(--dim)'});
+  if(tab==='lines')c.bets.forEach((b,i)=>{$('nm'+i).textContent=b.n;const v=$('vd'+i);v.className='pill p-'+b.v;v.textContent=b.v;$('mp'+i).textContent=pct(b.p);$('nd'+i).textContent=pct(b.need);const ed=$('ed'+i);ed.textContent=evp(b.ev);ed.className=b.ev>0?'w':'l';
+    v.closest('.br').title=`Fair ${odds(b.fairO)} · book no-vig ${pct(b.nv)}${b.push>0.001?` · push ${pct(b.push)}`:''}${b.ev>0?` · ¼ Kelly ${pct(b.kelly)}`:''}`});
   if(tab==='drivers'){$('drvH').textContent=`${c.fav} by ${Math.abs(c.m).toFixed(1)} · what builds it`;
     const mx=Math.max(...c.F.map(f=>Math.abs(f[2])),1);let lg='';
     $('drv').innerHTML=c.F.map(([gr,n,v])=>{const wd=Math.abs(v)/mx*50,hd=gr!==lg?`<div class="grp">${esc(gr)}</div>`:'';lg=gr;return `${hd}<span>${esc(n)}</span><div class="dbar"><i style="left:${v>=0?50:50-wd}%;width:${wd}%;background:var(${v>=0?'--home':'--away'})"></i></div><span class="v">${sgn(v,2)}</span>`}).join('')}
