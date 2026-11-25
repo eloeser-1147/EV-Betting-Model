@@ -695,6 +695,15 @@ body.home .vt{display:inline-flex}
 .h2-d{grid-column:1/-1;margin:0;font-size:12px;color:var(--sub);text-align:center}
 @media(max-width:640px){.bkt{top:10px;right:12px}.bkl.lg{width:32px;height:32px}.h2-s{padding:6px 8px;gap:7px}.h2-s .badge{--s:24px}.h2-s b{font-size:12.5px}.h2-s small{font-size:10px}.h2-s em{font-size:22px}.tm b{font-size:12px}.tm .badge{--s:20px}.cx-tb.vs th .tm b{font-size:11px}.ogw.info .og-t span{display:none}.ogw.info .og{grid-template-columns:auto repeat(3,minmax(0,1fr))}}
 @media(max-width:640px){.tab-bar{gap:0!important;justify-content:space-between}.tab-btn{font-size:12.5px!important;letter-spacing:.4px!important;padding-left:8px!important;padding-right:8px!important;white-space:nowrap}.h2-s .badge{display:none}.h2-s{padding:6px 9px}.h2-s b{white-space:normal;line-height:1.15}.h2-r{gap:6px}}
+
+.wxb{display:grid;grid-template-columns:auto minmax(0,1fr) auto;align-items:center;gap:6px 12px;margin-top:12px;padding:12px 14px;border-radius:14px;background:rgba(143,211,255,.07);box-shadow:inset 3px 0 0 #8fd3ff}
+.wxb.in{grid-template-columns:auto 1fr;background:rgba(255,255,255,.03);box-shadow:none}
+.wx-i{display:grid;place-items:center;width:36px;height:36px;border-radius:10px;background:rgba(255,255,255,.06);font-size:19px}
+.wxb b{display:block;font-size:14px;font-weight:800}.wxb small{display:block;font-size:12px;color:var(--mute);margin-top:1px}
+.wx-n{display:flex;gap:16px;text-align:right}.wx-n span{display:flex;flex-direction:column}.wx-n i{font-style:normal;font-size:10px;font-weight:700;letter-spacing:.8px;text-transform:uppercase;color:var(--mute)}.wx-n b{font:600 16px Oswald,sans-serif}
+.wx-s{grid-column:1/-1;margin:0;font-size:11px;color:var(--dim)}
+.wx-Moderate{background:rgba(246,196,83,.08);box-shadow:inset 3px 0 0 var(--gold)}.wx-Severe{background:rgba(255,107,129,.09);box-shadow:inset 3px 0 0 var(--red)}
+@media(max-width:640px){.wxb{grid-template-columns:auto minmax(0,1fr)}.wx-n{grid-column:1/-1;justify-content:flex-start;text-align:left;gap:24px}}
 </style>
 </head>
 <body>
@@ -908,7 +917,7 @@ function game(g,tab){
   centerIn($('gbar'),$('gbar').querySelector('.on'));document.documentElement.style.setProperty('--gbh',$('gbar').offsetHeight+'px');
   const P=$('panel'),hn=esc(g.home.name),an=esc(g.away.name);
   if(tab==='pick')P.innerHTML=`<div class="pp"><div class="ogw info" id="ppG"></div><div class="pp-sc" id="ppS"></div><div class="pps"><div class="pt" id="ptW"></div><div class="pt" id="ptS"></div><div class="pt" id="ptM"></div><div class="pt" id="ptB"></div></div><div class="pp-n" id="ppN"></div></div>`;
-  if(tab==='breakdown')P.innerHTML=`<div class="card"><h2 class="hdr1">What drives the pick</h2><div class="body"><div class="bd-h" id="bdH"></div><div id="bdF"></div></div></div>
+  if(tab==='breakdown')P.innerHTML=`<div class="card"><h2 class="hdr1">What drives the pick</h2><div class="body"><div class="bd-h" id="bdH"></div><div id="bdF"></div><div id="bdW"></div></div></div>
   <div class="card"><h2 class="hdr6">Matchup edges</h2><div class="body" id="mu"></div></div>
   ${(()=>{const rel=t=>!/injur/i.test(t.title)&&(!/bye/i.test(t.title)||(g.inputs&&g.inputs.postBye));const C=g.context.filter(rel);if(!C.length)return '';
     const H2=C.find(t=>t.cols.length===6&&t.cols[1]==='Team'),TM=a=>a===g.home.abbr?g.home:a===g.away.abbr?g.away:null,CO={};
@@ -995,6 +1004,11 @@ function render(g,tab){
     $('bdH').innerHTML=`${badge(T(c.m))}<div><b>${esc(c.fav)} by ${Math.abs(c.m).toFixed(1)}</b><small>The biggest pieces of the projected margin</small></div>`;
     const F=c.F.filter(f=>Math.abs(f[2])>=.05).sort((a,b)=>Math.abs(b[2])-Math.abs(a[2])),top=F.slice(0,6),rest=F.slice(6).reduce((a,f)=>a+f[2],0),mx=Math.max(...top.map(f=>Math.abs(f[2])),1);
     $('bdF').innerHTML=top.map(([gr,n,v])=>`<div class="fx"><span class="fx-n">${esc(n)}</span><span class="fx-t" ${tc(T(v))}>${badge(T(v))}${esc(T(v).abbr)}</span><b>+${Math.abs(v).toFixed(1)}</b><div class="fx-b"><i style="width:${Math.abs(v)/mx*100}%;background:var(${v>=0?'--home':'--away'})"></i></div></div>`).join('')+(Math.abs(rest)>=.05?`<div class="fx fx-o"><span class="fx-n">Everything else</span><span class="fx-t">${esc(T(rest).abbr)}</span><b>+${Math.abs(rest).toFixed(1)}</b></div>`:'');
+    {const wx=g.inputs&&g.inputs.weather,el=$('bdW');if(el){if(!wx)el.innerHTML='';else if(wx.roof==='Dome')el.innerHTML=`<div class="wxb in"><span class="wx-i">⌂</span><div><b>Indoors</b><small>${esc(g.venue||'Dome')} · weather isn't a factor</small></div></div>`;else{
+      const f=c.F.find(x=>x[1]==='Weather'),mv=f?f[2]:0,tl=c.sev*SET.wxTotal,lvl=c.sev<.05?'None':c.sev<.5?'Mild':c.sev<1?'Moderate':'Severe';
+      el.innerHTML=`<div class="wxb wx-${lvl}"><span class="wx-i">${c.sev<.05?'☀':/Snow/.test(wx.precip)?'❄':/Rain/.test(wx.precip)?'☂':'≋'}</span><div><b>Weather · ${lvl} impact</b><small>${esc(wxText(wx))}${wx.roof&&wx.roof!=='Open'?' · '+esc(wx.roof)+' roof':''}</small></div>
+      <div class="wx-n"><span><i>Margin</i><b>${Math.abs(mv)<.05?'No change':`+${Math.abs(mv).toFixed(1)} ${esc((mv>=0?g.home:g.away).abbr)}`}</b></span><span><i>Total</i><b>${tl<.05?'No change':'−'+tl.toFixed(1)+' pts'}</b></span></div>
+      ${wx.note?`<p class="wx-s">${esc(wx.note)}</p>`:''}</div>`}}}
     const H=g.home.team,A=g.away.team,br=(k,t,v)=>c.w[0]*rank(k,t,'season')+c.w[1]*rank(k,t,v)+c.w[2]*rank(k,t,'l3');
     const M=[['RushYPG','Run game'],['RushYPC','Yards per carry'],['PassYPG','Pass game'],['PassYPA','Yards per throw'],['RZTD','Red zone TDs'],['PPG','Scoring']];
     const side=(ot,ov,o,dt,dv,d)=>`<div class="mu-h">${tchip(o,o.abbr+' offense')}<span>vs</span>${tchip(d,d.abbr+' defense',1)}</div>`+M.map(([k,n])=>{const a=br(k+'_O',ot,ov),b=br(k+'_D',dt,dv),e=b-a;return `<div class="mu-r"><b class="${e>=3?'ed':''}">${ord(a)}</b><span>${n}</span><b class="${e<=-3?'ed':''}">${ord(b)}</b></div>`}).join('');
