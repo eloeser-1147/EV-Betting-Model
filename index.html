@@ -704,6 +704,18 @@ body.home .vt{display:inline-flex}
 .wx-s{grid-column:1/-1;margin:0;font-size:11px;color:var(--dim)}
 .wx-Moderate{background:rgba(246,196,83,.08);box-shadow:inset 3px 0 0 var(--gold)}.wx-Severe{background:rgba(255,107,129,.09);box-shadow:inset 3px 0 0 var(--red)}
 @media(max-width:640px){.wxb{grid-template-columns:auto minmax(0,1fr)}.wx-n{grid-column:1/-1;justify-content:flex-start;text-align:left;gap:24px}}
+
+.ia .body{padding:4px 0!important}
+.ia-s{gap:8px!important}
+.ia-s .ia-c{border-radius:12px;margin:0 10px}
+.ia-s .ia-t{padding:7px 12px!important}.ia-s .ia-t .badge{--s:24px}.ia-s .ia-t b{font-size:14px!important}.ia-s .ia-t small{display:inline!important;margin-left:auto;font-size:11px;color:var(--mute)}
+.ia-s .ia-c .ia-r{grid-template-columns:minmax(0,1fr) auto!important;gap:10px!important;padding:7px 12px!important;margin:0!important;align-items:center}
+.ia-s .ia-c .ia-r .tg{justify-self:end!important}
+.ia-s .ia-p{gap:0 6px}.ia-s .ia-p b{font-size:14px!important}.ia-s .ia-p small{margin-top:1px;font-size:11.5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;display:flex}
+.ia-s .st{font-size:9.5px;padding:1px 6px}
+.ia .tg button{min-width:52px!important;min-height:28px;padding:0 8px!important;font-size:11px!important}
+.ia-bar{padding:8px 12px!important;margin-top:6px}.ia-bar .reset,.ia-bar .save{min-height:32px;padding:4px 12px}
+.ogw.info{max-width:560px;margin-left:auto;margin-right:auto}
 </style>
 </head>
 <body>
@@ -723,7 +735,7 @@ body.home .vt{display:inline-flex}
 const $=id=>document.getElementById(id);
 const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const STATS=[['RushYPG','Rushing yards/game'],['RushYPC','Yards per rush'],['PassYPG','Passing yards/game'],['PassYPA','Yards per pass attempt'],['RZTD','Red zone TD %'],['PPG','Points/game']];
-const TABS=[['pick','The pick'],['lines','Game lines'],['inactives','Inactives'],['breakdown','Breakdown'],['writeup','Write-up']];
+const TABS=[['pick','The pick'],['lines','Game lines'],['inactives','Injury report'],['breakdown','Breakdown'],['writeup','Write-up']];
 const COL={season:2,home:3,away:4,l3:5};
 let LD=[],GAMES=[],META={},SET={},ST={},LOG=[],RES=[],CW=null,SELWK=null,SELDAY=null;
 const load=(k,d)=>{try{const v=JSON.parse(localStorage.getItem(k)||'null');return v??d}catch(e){return d}};
@@ -906,7 +918,7 @@ function game(g,tab){
   const wx=g.inputs&&g.inputs.weather;
   const lg0=logOf(g),gr0=lg0&&grade(lg0);
   $('app').innerHTML=`<nav class="gbar" id="gbar">${TABS.map(([t,n])=>`<a class="${t===tab?'on':''}" href="#${esc(g.id)}-${t}">${n}</a>`).join('')}</nav><a class="fab" href="#day-${dayOf(g)}" aria-label="Back to all games"><svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true"><path d="M15 18l-6-6 6-6" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg>All games</a>${tab==='pick'&&gr0?`<div class="final">Final · ${esc(g.away.abbr)} ${gr0.r.awayScore} – ${gr0.r.homeScore} ${esc(g.home.abbr)} · Straight up <b class="${RC[gr0.su]}">${gr0.su}</b> · ATS <b class="${RC[gr0.ats]}">${gr0.ats}</b>${gr0.best?` · Best bet <b class="${RC[gr0.best]}">${gr0.best} ${money(gr0.profit)}</b>`:''}${gr0.clv!=null?` · CLV ${sgn(gr0.clv)} pts`:''}</div>`:''}
-  ${tab==='lines'?`<div id="pkWrap"><div class="ogw" id="lgG"></div>
+  ${tab==='lines'?`<div id="pkWrap"><div class="ogw info" id="lgG"></div>
   <div style="text-align:center;margin:4px 0 12px"><button type="button" class="adj" id="adjB">Change lines / alternates</button></div>
   <div id="adjBox" hidden><div class="lr"><div class="lr-g"><span class="lr-l">Spread</span><div class="ln-c"><button type="button" class="sg" data-sg="spread" aria-label="Flip + or −"></button><input id="in-spread" type="text" inputmode="decimal" autocomplete="off" aria-label="${esc(g.home.name)} spread"><button type="button" class="nd" data-k="spread" data-d="-1" aria-label="Lower">${CHD}</button><button type="button" class="nd" data-k="spread" data-d="1" aria-label="Raise">${CHU}</button></div><small id="hint-spread"></small></div>
   <div class="lr-g lr-o"><div class="lr-oh"><span class="lr-l">Odds <em>tap to edit</em></span><button type="button" class="lr-rs" id="rl">Reset lines</button></div><div class="ocs">${[['spreadOddsAway',g.away,'sp'],['spreadOddsHome',g.home,'sp'],['mlAway',g.away,'ml'],['mlHome',g.home,'ml']].map(([k,t,kind])=>`<button type="button" class="oc" data-ok="${k}">${badge(t)}<span id="ocl-${k}"></span><b id="oc-${k}"></b></button>`).join('')}</div></div></div>
@@ -916,7 +928,7 @@ function game(g,tab){
   <div id="panel"></div>`;
   centerIn($('gbar'),$('gbar').querySelector('.on'));document.documentElement.style.setProperty('--gbh',$('gbar').offsetHeight+'px');
   const P=$('panel'),hn=esc(g.home.name),an=esc(g.away.name);
-  if(tab==='pick')P.innerHTML=`<div class="pp"><div class="ogw info" id="ppG"></div><div class="pp-sc" id="ppS"></div><div class="pps"><div class="pt" id="ptW"></div><div class="pt" id="ptS"></div><div class="pt" id="ptM"></div><div class="pt" id="ptB"></div></div><div class="pp-n" id="ppN"></div></div>`;
+  if(tab==='pick')P.innerHTML=`<div class="pp"><div class="pp-sc" id="ppS"></div><div class="pps"><div class="pt" id="ptW"></div><div class="pt" id="ptS"></div><div class="pt" id="ptM"></div><div class="pt" id="ptB"></div></div><div class="pp-n" id="ppN"></div></div>`;
   if(tab==='breakdown')P.innerHTML=`<div class="card"><h2 class="hdr1">What drives the pick</h2><div class="body"><div class="bd-h" id="bdH"></div><div id="bdF"></div><div id="bdW"></div></div></div>
   <div class="card"><h2 class="hdr6">Matchup edges</h2><div class="body" id="mu"></div></div>
   ${(()=>{const rel=t=>!/injur/i.test(t.title)&&(!/bye/i.test(t.title)||(g.inputs&&g.inputs.postBye));const C=g.context.filter(rel);if(!C.length)return '';
@@ -931,7 +943,7 @@ function game(g,tab){
       <div class="h2-b"><i style="width:${a/n*100}%;background:${esc(A.night||A.color)}"></i><i style="width:${b/n*100}%;background:${esc(B.night||B.color)}"></i></div>${r[0].d?`<p class="h2-d">${esc(r[0].d)}</p>`:''}</div>`}).join('')}</div>`;
     const body=t=>t===H2?h2h(t):t.rows.length===2&&t.cols.length>=3?vs(t):list(t);
     return `<h3 class="cx-hd">Matchup notes</h3><div class="cx-g">${C.map(t=>`<div class="card cx-c${t===H2?' cx-w':''}"><h2>${esc(t.title)}</h2>${body(t)}${t.note?`<div class="cx-n">${esc(t.note)}</div>`:''}</div>`).join('')}</div>`})()}`;
-  if(tab==='inactives')P.innerHTML=`<div class="card ia"><div class="body" id="ia"></div><div class="ia-bar" id="iaBar"><span id="iaMsg"></span><button class="reset" id="iaRs" type="button">Reset to report</button><button class="save" id="iaSv" type="button">Save</button></div></div><p class="note" style="text-align:center">Set to the injury report's projection. Flip a late change, then Save. Saved changes stay in this browser.</p>`;
+  if(tab==='inactives')P.innerHTML=`<div class="card ia"><div class="body" id="ia"></div><div class="ia-bar" id="iaBar"><span id="iaMsg"></span><button class="reset" id="iaRs" type="button">Reset to report</button><button class="save" id="iaSv" type="button">Save</button></div></div>`;
   if(tab==='writeup')P.innerHTML=`<div class="wu">${g.writeup.map(([b,t])=>`<p>${b?`<b>${esc(b)}</b> `:''}${esc(t)}</p>`).join('')}<div class="wu-s">Written ${esc(g.writeupAsOf)}. Other tabs update live. Sources: ${g.sources.map(([n,u])=>`<a href="${esc(u)}">${esc(n)}</a>`).join(' · ')}. Analysis only, not betting advice.</div></div>`;
   bind(g,tab);render(g,tab);
 }
@@ -967,12 +979,12 @@ function bind(g,tab){
     const SC=x=>{x=String(x||'').toLowerCase();return /out|ir|reserve|susp/.test(x)?'out':/doubt/.test(x)?'dbt':/quest/.test(x)?'q':/prob|active|full/.test(x)?'ok':'q'};
     const why=n=>String(n||'').split(/[;,(]/)[0].trim();
     const L=g.players.map((p,i)=>[p,i]).sort((a,b)=>(a[0].team===g.away.abbr?0:1)-(b[0].team===g.away.abbr?0:1));
-    const col=t=>{const M=L.filter(([p])=>p.team===t.abbr);return `<div class="ia-c" style="--tc:${esc(t.night)}"><div class="ia-t">${badge(t)}<b>${esc(t.name)}</b><small>${M.length?M.length+' listed':'None listed'}</small></div>${M.map(([p,i])=>{const t=p.team===g.home.abbr?g.home:g.away,stt=p.status||(p.plays?'Questionable':'Out');return `<div class="ia-r" id="iar${i}">${badge(t)}<div class="ia-p"><b>${esc(p.player)}</b><span class="pos">${esc(p.pos)}</span><small><span class="st st-${SC(stt)}">${esc(stt)}</span>${esc(why(p.note))}</small></div><div class="tg" role="group" aria-label="${esc(p.player)}"><button type="button" class="y" data-p="${i}" data-v="1">Active</button><button type="button" class="n" data-p="${i}" data-v="0">Inactive</button></div></div>`}).join('')}</div>`};
+    const col=t=>{const M=L.filter(([p])=>p.team===t.abbr);return `<div class="ia-c" style="--tc:${esc(t.night)}"><div class="ia-t">${badge(t)}<b>${esc(t.name)}</b><small>${M.length?M.length+' listed':'None listed'}</small></div>${M.map(([p,i])=>{const t=p.team===g.home.abbr?g.home:g.away,stt=p.status||(p.plays?'Questionable':'Out');return `<div class="ia-r" id="iar${i}">${badge(t)}<div class="ia-p"><b>${esc(p.player)}</b><span class="pos">${esc(p.pos)}</span><small><span class="st st-${SC(stt)}">${esc(stt)}</span>${esc(why(p.note))}</small></div><div class="tg" role="group" aria-label="${esc(p.player)}"><button type="button" class="y" data-p="${i}" data-v="1">Active</button><button type="button" class="n" data-p="${i}" data-v="0">Out</button></div></div>`}).join('')}</div>`};
     $('ia').innerHTML=L.length?`<div class="ia-s">${col(g.away)}${col(g.home)}</div>`:'<div class="empty">No one is on the injury report for this game.</div>';
     const paint=()=>{document.querySelectorAll('#ia [data-p]').forEach(b=>{const i=+b.dataset.p,on=pend[i]===(b.dataset.v==='1');b.classList.toggle('on',on);b.setAttribute('aria-pressed',String(on))});
       g.players.forEach((p,i)=>{const r=$('iar'+i);if(r){r.classList.toggle('dirty',pend[i]!==st.plays[i]);r.classList.toggle('ovr',pend[i]!==rep[i])}});
       const n=pend.filter((v,i)=>v!==st.plays[i]).length;$('iaSv').disabled=!n;$('iaSv').textContent=n?`Save ${n} change${n>1?'s':''}`:'Saved';$('iaBar').classList.toggle('pending',!!n);
-      if(n)$('iaMsg').textContent='Unsaved: numbers still use the last saved list.';};
+      $('iaMsg').textContent=n?'Unsaved: numbers still use the last saved list.':'Flip a late change, then Save.';};
     paint();
     $('ia').addEventListener('click',e=>{const b=e.target.closest('[data-p]');if(!b)return;pend[+b.dataset.p]=b.dataset.v==='1';paint()});
     $('iaRs').addEventListener('click',()=>{pend=[...rep];paint()});
@@ -983,7 +995,7 @@ function bind(g,tab){
 }
 function render(g,tab){
   const c=calc(g);CW=g.week;const L=stateFor(g).lines;
-  if(tab==='lines'){$('lgG').innerHTML=oddsGrid(g,L,c);
+  if(tab==='lines'){$('lgG').innerHTML=oddsGrid(g,L,c,1);
     [['spreadOddsAway',g.away,`${g.away.abbr} ${sgn(-L.spread)}`],['spreadOddsHome',g.home,`${g.home.abbr} ${sgn(L.spread)}`],['mlAway',g.away,`${g.away.abbr} ML`],['mlHome',g.home,`${g.home.abbr} ML`]].forEach(([k,t,lb])=>{$('ocl-'+k).textContent=lb;$('oc-'+k).textContent=odds(L[k])});}
   if($('cbox'))curve(g);
   if(tab==='pick'){const T=x=>x==='home'?g.home:g.away,B=c.bets;
@@ -997,9 +1009,9 @@ function render(g,tab){
     else tile('ptB','Best bet',null,'No bet',`Closest: ${esc(c.best.n)} · ${ev(c.best)}`,'Pass');
     const as=Math.round(c.as),hs=Math.round(c.hs);
     $('ppS').innerHTML=`<span class="pp-tag">Projected score</span><div class="ps">${badge(g.away)}<span class="pt2 ${as>hs?'':'lo'}"><b>${as}</b><small>${esc(g.away.name)}</small></span><i>–</i><span class="pt2 ${hs>=as?'':'lo'}"><b>${hs}</b><small>${esc(g.home.name)}</small></span>${badge(g.home)}</div>`;
-    $('ppG').innerHTML=oddsGrid(g,L,c,1);
+    
     const ch=g.players.some((p,i)=>stateFor(g).plays[i]!==p.plays),moved=JSON.stringify(L)!==JSON.stringify(bookLines(g));
-    $('ppN').innerHTML=moved||ch?`Using ${[moved?`<a href="#${esc(g.id)}-lines">your lines</a>`:'',ch?`<a href="#${esc(g.id)}-inactives">your inactives</a>`:''].filter(Boolean).join(' and ')}.`:`Lines: <b>${esc(bookName(g))}</b>${bookOf(g)?`, ${esc(g.booksAsOf||g.lines.asOf)}`:`, ${esc(g.lines.asOf)}`}. Change book at the top, or edit on <a href="#${esc(g.id)}-lines">Game lines</a>.`;}
+    $('ppN').innerHTML=moved||ch?`Using ${[moved?`<a href="#${esc(g.id)}-lines">your lines</a>`:'',ch?`<a href="#${esc(g.id)}-inactives">your inactives</a>`:''].filter(Boolean).join(' and ')}.`:`Lines: <b>${esc(bookName(g))}</b>${bookOf(g)?`, ${esc(g.booksAsOf||g.lines.asOf)}`:`, ${esc(g.lines.asOf)}`}. See or change lines on <a href="#${esc(g.id)}-lines">Game lines</a>.`;}
   if(tab==='breakdown'){const T=v=>v>=0?g.home:g.away;
     $('bdH').innerHTML=`${badge(T(c.m))}<div><b>${esc(c.fav)} by ${Math.abs(c.m).toFixed(1)}</b><small>The biggest pieces of the projected margin</small></div>`;
     const F=c.F.filter(f=>Math.abs(f[2])>=.05).sort((a,b)=>Math.abs(b[2])-Math.abs(a[2])),top=F.slice(0,6),rest=F.slice(6).reduce((a,f)=>a+f[2],0),mx=Math.max(...top.map(f=>Math.abs(f[2])),1);
