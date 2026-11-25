@@ -637,6 +637,21 @@ body.home .vt{display:inline-flex}
 .ev-f select{appearance:none;-webkit-appearance:none;border:0;border-radius:999px;padding:6px 14px;background:var(--card2);color:var(--ink);font:700 13px 'Source Sans 3',sans-serif;cursor:pointer}
 .ev-r{grid-template-columns:1.6em minmax(0,1.3fr) minmax(0,.9fr) minmax(0,1fr) 4.4em 4.2em}
 .ev-bk{display:flex;align-items:center;gap:8px;font-size:12px;font-weight:700;color:var(--sub);min-width:0}.ev-bk span{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.ogw{margin-bottom:12px;padding:12px 14px 10px;border-radius:16px;background:var(--card)}
+.og-cap{display:flex;align-items:center;gap:8px;font-size:12px;font-weight:700;color:var(--sub);margin-bottom:8px}.og-cap em{font-style:normal;color:var(--gold)}
+.og{display:grid;grid-template-columns:minmax(0,1.2fr) repeat(3,minmax(0,1fr));gap:4px 6px;align-items:stretch}
+.og-h{text-align:center;font:600 12px Oswald,sans-serif;letter-spacing:1.6px;text-transform:uppercase;color:var(--mute);padding-bottom:4px}
+.og-t{display:flex;align-items:center;gap:10px;font-size:16px;font-weight:600;min-width:0}.og-t .badge{--s:34px}.og-t span{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.og-c{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1px;min-height:58px;border-radius:12px;background:var(--card2);box-shadow:inset 0 0 0 1px rgba(255,255,255,.04)}
+.og-c span{font:500 16px Oswald,sans-serif;color:var(--sub)}
+.og-c b{font:600 18px Oswald,sans-serif;color:var(--lime)}.og-c sup{color:var(--gold);font-size:11px}
+.og-c.og-Bet{box-shadow:inset 0 0 0 2px var(--bet);background:color-mix(in srgb,var(--bet) 10%,var(--card2))}.og-c.og-Bet b{color:var(--bet)}
+.og-c.og-Lean{box-shadow:inset 0 0 0 2px var(--gold);background:color-mix(in srgb,var(--gold) 8%,var(--card2))}.og-c.og-Lean b{color:var(--gold)}
+.og-tot b:empty{display:none}
+.og-n{text-align:center;font-size:11px;color:var(--dim);margin-top:6px}
+.pt-g{margin-top:auto;padding-top:8px;border-top:1px solid rgba(255,255,255,.07);font-size:12px;font-weight:800;letter-spacing:.2px}
+.pt-Bet .pt-g{color:var(--bet)}.pt-Lean .pt-g{color:var(--gold)}.pt-Pass .pt-g{color:var(--mute)}
+.adj{border:0;border-radius:999px;padding:10px 18px;background:var(--lime);color:#0b0f1e;font:800 13px 'Source Sans 3',sans-serif;cursor:pointer;box-shadow:0 6px 18px rgba(0,0,0,.3)}
 /* ---- final overrides (kept last so they win) */
 .header h1::after{display:none!important}
 @media(max-width:640px){
@@ -650,6 +665,7 @@ body.home .vt{display:inline-flex}
 .pl{gap:6px 14px;padding:10px}.pl-c{font-size:12px}
 .ev-r{grid-template-columns:1.2em minmax(0,1fr) 3.8em!important;gap:4px 8px}.ev-bk{grid-column:2/-1;grid-row:2}.ev-b{grid-column:2/-1;grid-row:3}.ev-r .vc{display:none}
 .mu-r{grid-template-columns:3em 1fr 3em}}
+@media(max-width:640px){.og-t{font-size:14px;gap:8px}.og-t .badge{--s:28px}.og-c{min-height:52px}.og-c b{font-size:16px}.og-c span{font-size:14px}.og-h{font-size:10px;letter-spacing:1px}.ogw{padding:10px}}
 </style>
 </head>
 <body>
@@ -700,7 +716,7 @@ const allBooks=()=>{const B=[...new Set(GAMES.flatMap(g=>Object.keys(g.books||{}
 const BKDOM={'Hard Rock Bet':'hardrock.bet','DraftKings':'draftkings.com','FanDuel':'fanduel.com','BetMGM':'betmgm.com','Caesars':'caesars.com','Fanatics':'fanatics.com','ESPN BET':'espnbet.com','bet365':'bet365.com','BetRivers':'betrivers.com'};
 const bkLogo=(b,sz)=>`<span class="bkl${sz?' '+sz:''}" title="${esc(b)}"><i>${esc(b.replace(/[^A-Z0-9]/g,'').slice(0,2)||b.slice(0,2))}</i>${BKDOM[b]?`<img src="https://www.google.com/s2/favicons?domain=${BKDOM[b]}&sz=64" alt="" onerror="this.remove()">`:''}</span>`;
 const key=g=>'pm3-'+g.id+'-'+g.lines.asOf+'-'+BOOK;
-const saveSt=(g,st)=>{saveSt(g,st);save('pmP-'+g.id,st.plays)};
+const saveSt=(g,st)=>{save(key(g),st);save('pmP-'+g.id,st.plays)};
 const payout=o=>o>0?o:10000/-o;
 const logOf=g=>LOG.find(l=>l.gameId===g.id),resOf=id=>RES.find(r=>r.gameId===id&&r.homeScore!=null&&r.awayScore!=null);
 function grade(l){const r=resOf(l.gameId);if(!r)return null;const m=r.homeScore-r.awayScore,x=m+l.spread;
@@ -756,6 +772,11 @@ function route(){document.body.classList.remove('home');
 const ESPN_ID={WAS:'wsh'};
 const logoSrcs=a=>{const id=ESPN_ID[a]||String(a).toLowerCase();return ['https://a.espncdn.com/i/teamlogos/nfl/500-dark/'+id+'.png','https://a.espncdn.com/i/teamlogos/nfl/500/'+id+'.png','logos/'+a+'.png']};
 const LOGO={};
+function oddsGrid(g,L,c){const B=c.bets,ev=b=>b.ev>0?` og-${b.v}`:'',gp=bookGap(g),o=(k,v)=>`${odds(v)}${gp.includes(k)?'<sup>*</sup>':''}`;
+  const row=(t,side)=>{const sp=side==='home'?B[2]:B[3],ml=side==='home'?B[0]:B[1],line=side==='home'?L.spread:-L.spread;
+    return `<div class="og-t">${badge(t)}<span>${esc(t.name)}</span></div><div class="og-c${ev(sp)}" title="EV ${evp(sp.ev)}"><span>${sgn(line)}</span><b>${o(side==='home'?'spreadOddsHome':'spreadOddsAway',side==='home'?L.spreadOddsHome:L.spreadOddsAway)}</b></div><div class="og-c og-tot"><span>${side==='home'?'U':'O'} ${L.total??'–'}</span><b>${L.totalOdds?odds(L.totalOdds):''}</b></div><div class="og-c${ev(ml)}" title="EV ${evp(ml.ev)}"><b>${o(side==='home'?'mlHome':'mlAway',side==='home'?L.mlHome:L.mlAway)}</b></div>`};
+  const moved=JSON.stringify(L)!==JSON.stringify(bookLines(g));
+  return `<div class="og-cap">${bkLogo(BOOK)}<span>${esc(BOOK)}${moved?' · <em>your lines</em>':''}</span></div><div class="og"><div></div><div class="og-h">Spread</div><div class="og-h">Total</div><div class="og-h">Winner</div>${row(g.away,'away')}${row(g.home,'home')}</div>${gp.length?`<div class="og-n">* not posted by ${esc(BOOK)}; market price used</div>`:''}<div class="og-n">Green or gold outline = the model finds an edge on that line.</div>`}
 if(typeof window!=='undefined'){window.logoNext=img=>{const L=img.dataset.srcs.split('|'),i=+(img.dataset.f||0)+1;if(i<L.length){img.dataset.f=i;if(i===L.length-1)img.classList.add('loc');img.src=L[i]}else{LOGO[img.dataset.ab]=false;img.remove()}};
   window.logoOk=img=>{img.parentNode.classList.add('lg-on');LOGO[img.dataset.ab]={src:img.getAttribute('src'),loc:img.classList.contains('loc')}}}
 const badge=(t,lg)=>{const st=`style="--bc:${esc(t.color||t.night)};--bn:${esc(t.night||t.color)}"`,k=LOGO[t.abbr];
@@ -839,16 +860,17 @@ function game(g,tab){
   const wx=g.inputs&&g.inputs.weather;
   const lg0=logOf(g),gr0=lg0&&grade(lg0);
   $('app').innerHTML=`<nav class="gbar" id="gbar">${TABS.map(([t,n])=>`<a class="${t===tab?'on':''}" href="#${esc(g.id)}-${t}">${n}</a>`).join('')}</nav><a class="fab" href="#day-${dayOf(g)}" aria-label="Back to all games"><svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true"><path d="M15 18l-6-6 6-6" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg>All games</a>${tab==='pick'&&gr0?`<div class="final">Final · ${esc(g.away.abbr)} ${gr0.r.awayScore} – ${gr0.r.homeScore} ${esc(g.home.abbr)} · Straight up <b class="${RC[gr0.su]}">${gr0.su}</b> · ATS <b class="${RC[gr0.ats]}">${gr0.ats}</b>${gr0.best?` · Best bet <b class="${RC[gr0.best]}">${gr0.best} ${money(gr0.profit)}</b>`:''}${gr0.clv!=null?` · CLV ${sgn(gr0.clv)} pts`:''}</div>`:''}
-  ${tab==='lines'?`<div id="pkWrap">
-  <div class="lr"><div class="lr-g"><span class="lr-l">Spread</span><div class="ln-c"><button type="button" class="sg" data-sg="spread" aria-label="Flip + or −"></button><input id="in-spread" type="text" inputmode="decimal" autocomplete="off" aria-label="${esc(g.home.name)} spread"><button type="button" class="nd" data-k="spread" data-d="-1" aria-label="Lower">${CHD}</button><button type="button" class="nd" data-k="spread" data-d="1" aria-label="Raise">${CHU}</button></div><small id="hint-spread"></small></div>
+  ${tab==='lines'?`<div id="pkWrap"><div class="ogw" id="lgG"></div>
+  <div style="text-align:center;margin:4px 0 12px"><button type="button" class="adj" id="adjB">Change lines / alternates</button></div>
+  <div id="adjBox" hidden><div class="lr"><div class="lr-g"><span class="lr-l">Spread</span><div class="ln-c"><button type="button" class="sg" data-sg="spread" aria-label="Flip + or −"></button><input id="in-spread" type="text" inputmode="decimal" autocomplete="off" aria-label="${esc(g.home.name)} spread"><button type="button" class="nd" data-k="spread" data-d="-1" aria-label="Lower">${CHD}</button><button type="button" class="nd" data-k="spread" data-d="1" aria-label="Raise">${CHU}</button></div><small id="hint-spread"></small></div>
   <div class="lr-g lr-o"><div class="lr-oh"><span class="lr-l">Odds <em>tap to edit</em></span><button type="button" class="lr-rs" id="rl">Reset lines</button></div><div class="ocs">${[['spreadOddsAway',g.away,'sp'],['spreadOddsHome',g.home,'sp'],['mlAway',g.away,'ml'],['mlHome',g.home,'ml']].map(([k,t,kind])=>`<button type="button" class="oc" data-ok="${k}">${badge(t)}<span id="ocl-${k}"></span><b id="oc-${k}"></b></button>`).join('')}</div></div></div>
-  <div class="ox" id="ox" hidden><span id="oxL"></span><div class="ln-c"><button type="button" class="sg" data-sg="ed" aria-label="Flip + or −"></button><input id="in-ed" type="text" inputmode="decimal" autocomplete="off" aria-label="Odds"><button type="button" class="nd" data-k="ed" data-d="-1" aria-label="Lower">${CHD}</button><button type="button" class="nd" data-k="ed" data-d="1" aria-label="Raise">${CHU}</button></div><small id="oxH"></small><button type="button" class="save" id="oxD">Done</button></div>
-  <p class="note" style="text-align:center;margin-top:10px">Book: <b>${esc(bookName(g))}</b>${bookGap(g).length?` · this book's ${bookGap(g).some(k=>k.startsWith('spread'))?'spread prices':'prices'} weren't available, so those use the consensus price`:''}. Changes here update The pick right away. Reset lines puts back the book's numbers.</p>
+  <div class="ox" id="ox" hidden><span id="oxL"></span><div class="ln-c"><button type="button" class="sg" data-sg="ed" aria-label="Flip + or −"></button><input id="in-ed" type="text" inputmode="decimal" autocomplete="off" aria-label="Odds"><button type="button" class="nd" data-k="ed" data-d="-1" aria-label="Lower">${CHD}</button><button type="button" class="nd" data-k="ed" data-d="1" aria-label="Raise">${CHU}</button></div><small id="oxH"></small><button type="button" class="save" id="oxD">Done</button></div></div>
+  <p class="note" style="text-align:center;margin-top:10px">Book: <b>${esc(bookName(g))}</b>${bookGap(g).length?` · this book's ${bookGap(g).some(k=>k.startsWith('spread'))?'spread prices':'prices'} weren't available, so those use the consensus price`:''}. Alternate lines you set here flow straight to The pick, which shows whether each one has an edge. Reset lines puts back the book's numbers.</p>
   </div>`:''}
   <div id="panel"></div>`;
   centerIn($('gbar'),$('gbar').querySelector('.on'));document.documentElement.style.setProperty('--gbh',$('gbar').offsetHeight+'px');
   const P=$('panel'),hn=esc(g.home.name),an=esc(g.away.name);
-  if(tab==='pick')P.innerHTML=`<div class="pp"><div class="pp-sc" id="ppS"></div><div class="pl" id="ppL"></div><div class="pps"><div class="pt" id="ptW"></div><div class="pt" id="ptS"></div><div class="pt" id="ptM"></div><div class="pt" id="ptB"></div></div><div class="pp-n" id="ppN"></div></div>`;
+  if(tab==='pick')P.innerHTML=`<div class="pp"><div class="ogw" id="ppG"></div><div class="pp-sc" id="ppS"></div><div class="pps"><div class="pt" id="ptW"></div><div class="pt" id="ptS"></div><div class="pt" id="ptM"></div><div class="pt" id="ptB"></div></div><div class="pp-n" id="ppN"></div></div>`;
   if(tab==='breakdown')P.innerHTML=`<div class="card"><h2 class="hdr1">What drives the pick</h2><div class="body"><div class="bd-h" id="bdH"></div><div id="bdF"></div></div></div>
   <div class="card"><h2 class="hdr6">Matchup edges</h2><div class="body" id="mu"></div></div>
   ${(()=>{const rel=t=>!/injur/i.test(t.title)&&(!/bye/i.test(t.title)||(g.inputs&&g.inputs.postBye));const C=g.context.filter(rel);if(!C.length)return '';
@@ -877,6 +899,8 @@ function bind(g,tab){
     $('in-spread').addEventListener('input',e=>typed('spread',e.target));$('in-spread').addEventListener('blur',()=>show('spread'));
     $('in-ed').addEventListener('input',e=>EK&&typed(EK,e.target));$('in-ed').addEventListener('blur',()=>show(EK));
     const pick=k=>{EK=k;document.querySelectorAll('.oc').forEach(b=>b.classList.toggle('on',b.dataset.ok===k));$('ox').hidden=!k;show(k)};
+    {const mv=JSON.stringify(st.lines)!==JSON.stringify(bookLines(g));$('adjBox').hidden=!mv;$('adjB').textContent=mv?'Hide line editor':'Change lines / alternates'}
+    $('adjB').onclick=()=>{const h=!$('adjBox').hidden;$('adjBox').hidden=h;$('adjB').textContent=h?'Change lines / alternates':'Hide line editor'};
     $('pkWrap').addEventListener('click',e=>{const oc=e.target.closest('[data-ok]');if(oc){pick(EK===oc.dataset.ok?null:oc.dataset.ok);return}
       if(e.target.closest('#oxD')){pick(null);return}
       if(e.target.closest('#rl')){st.lines=bookLines(g);saveSt(g,st);game(g,tab);return}
@@ -905,12 +929,12 @@ function bind(g,tab){
 }
 function render(g,tab){
   const c=calc(g);CW=g.week;const L=stateFor(g).lines;
-  if(tab==='lines'){
+  if(tab==='lines'){$('lgG').innerHTML=oddsGrid(g,L,c);
     [['spreadOddsAway',g.away,`${g.away.abbr} ${sgn(-L.spread)}`],['spreadOddsHome',g.home,`${g.home.abbr} ${sgn(L.spread)}`],['mlAway',g.away,`${g.away.abbr} ML`],['mlHome',g.home,`${g.home.abbr} ML`]].forEach(([k,t,lb])=>{$('ocl-'+k).textContent=lb;$('oc-'+k).textContent=odds(L[k])});}
   if($('cbox'))curve(g);
   if(tab==='pick'){const T=x=>x==='home'?g.home:g.away,B=c.bets;
     const tile=(id,lab,t,main,sub,v,tc)=>{const el=$(id);el.className='pt'+(v?' pt-'+v:' pt-team');el.style.setProperty('--tc',tc||'transparent');
-      el.innerHTML=`<div class="pt-h"><span>${lab}</span>${v?`<em>${v}</em>`:''}</div><div class="pt-m">${t?badge(t):''}<b>${main}</b></div><div class="pt-s">${sub}</div>`};
+      el.innerHTML=`<div class="pt-h"><span>${lab}</span>${v?`<em>${v}</em>`:''}</div><div class="pt-m">${t?badge(t):''}<b>${main}</b></div><div class="pt-s">${sub}</div>${v?`<div class="pt-g">${v==='Bet'?'Good enough to bet':v==='Lean'?'Small edge: lean only':'No edge: pass'}</div>`:''}`};
     const nm=(b,name)=>`${esc(name)} <small class="od" title="Odds this is graded at">${odds(b.o)}</small>`,ev=b=>`EV <b class="${b.ev>0?'up':'dn'}">${evp(b.ev)}</b>`;
     tile('ptW','Winner',T(c.pw>=.5?'home':'away'),esc(c.win),`${pct(c.wp,0)} to win · fair ${odds(fair(c.wp))}`,null,T(c.pw>=.5?'home':'away').night);
     const sp=B[2].p>=B[3].p?B[2]:B[3];tile('ptS','Spread',T(sp.t),nm(sp,sp.n),`Covers ${pct(sp.p,0)} · ${ev(sp)}`,sp.v);
@@ -919,11 +943,7 @@ function render(g,tab){
     else tile('ptB','Best bet',null,'No bet',`Closest: ${esc(c.best.n)} · ${ev(c.best)}`,'Pass');
     const as=Math.round(c.as),hs=Math.round(c.hs);
     $('ppS').innerHTML=`<span class="pp-tag">Projected score</span><div class="ps">${badge(g.away)}<span class="pt2 ${as>hs?'':'lo'}"><b>${as}</b><small>${esc(g.away.name)}</small></span><i>–</i><span class="pt2 ${hs>=as?'':'lo'}"><b>${hs}</b><small>${esc(g.home.name)}</small></span>${badge(g.home)}</div>`;
-    {const BL=bookLines(g),gap=bookGap(g),o=(k,v)=>`${odds(v)}${gap.includes(k)?'<sup>*</sup>':''}`;
-      $('ppL').innerHTML=`<button type="button" class="pl-b" onclick="openBooks()">${bkLogo(BOOK)}<span>${esc(BOOK)}</span><small>Change</small></button>
-      <div class="pl-c"><i>Spread</i><span>${esc(g.away.abbr)} ${sgn(-BL.spread)} <b>${o('spreadOddsAway',BL.spreadOddsAway)}</b></span><span>${esc(g.home.abbr)} ${sgn(BL.spread)} <b>${o('spreadOddsHome',BL.spreadOddsHome)}</b></span></div>
-      <div class="pl-c"><i>Moneyline</i><span>${esc(g.away.abbr)} <b>${o('mlAway',BL.mlAway)}</b></span><span>${esc(g.home.abbr)} <b>${o('mlHome',BL.mlHome)}</b></span></div>
-      <div class="pl-c"><i>Total</i><span>O/U <b>${BL.total??'–'}</b></span></div>${gap.length?`<div class="pl-n">* not posted by ${esc(BOOK)}; market price used</div>`:''}`}
+    $('ppG').innerHTML=oddsGrid(g,L,c);
     const ch=g.players.some((p,i)=>stateFor(g).plays[i]!==p.plays),moved=JSON.stringify(L)!==JSON.stringify(bookLines(g));
     $('ppN').innerHTML=moved||ch?`Using ${[moved?`<a href="#${esc(g.id)}-lines">your lines</a>`:'',ch?`<a href="#${esc(g.id)}-inactives">your inactives</a>`:''].filter(Boolean).join(' and ')}.`:`Lines: <b>${esc(bookName(g))}</b>${bookOf(g)?`, ${esc(g.booksAsOf||g.lines.asOf)}`:`, ${esc(g.lines.asOf)}`}. Change book at the top, or edit on <a href="#${esc(g.id)}-lines">Game lines</a>.`;}
   if(tab==='breakdown'){const T=v=>v>=0?g.home:g.away;
