@@ -2,6 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
+<meta name="theme-color" content="#0b0f1e">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>EV Betting Model</title>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Oswald:wght@500;600;700&family=Source+Sans+3:wght@400;500;600;700;800;900&display=swap">
@@ -744,6 +745,15 @@ body.home .vt{display:inline-flex}
 }
 .pp-sc>.wpb{display:block!important}.wpb-l span{white-space:nowrap}
 @media(max-width:640px){.wpb-l b{text-align:center}}
+
+.lgw{position:relative;max-width:560px;margin:0 auto}
+.edb{position:absolute;top:7px;right:10px;z-index:2;display:inline-flex;align-items:center;gap:6px;padding:5px 11px;border:0;border-radius:999px;background:color-mix(in srgb,var(--lime) 14%,transparent);box-shadow:inset 0 0 0 1px color-mix(in srgb,var(--lime) 40%,transparent);color:var(--lime);font:700 12px 'Source Sans 3',sans-serif;cursor:pointer;transition:background .15s}
+.edb:hover,.edb.on{background:var(--lime);color:#0b0f1e}
+#adjBox{max-width:560px;margin:0 auto 10px}
+.ln-bar{border-radius:12px;margin-top:8px}.ln-bar .reset[hidden]{display:none}
+.wu{text-align:center;max-width:640px}.wu p{margin:0 auto 18px}.wu-s{text-align:center}
+body,.tab-bar,.dtabs,.gbar{transition:background-color .25s}
+.lgw .og-cap{min-height:30px;padding-right:96px;margin-bottom:6px!important}
 </style>
 </head>
 <body>
@@ -843,7 +853,16 @@ function slide(name){const bar=$('tabBar');bar.querySelectorAll('.tab-btn').forE
 function anim(){const a=$('app');a.classList.remove('anim');void a.offsetWidth;a.classList.add('anim')}
 function teamCol(g){const r=document.documentElement;r.style.setProperty('--home',g.home.night);r.style.setProperty('--away',g.away.night)}
 const ACC={board:'#7c8cff',best:'#5ad1ff',books:'#38d6c4',record:'#c792ea',pick:'#7c8cff',lines:'#38d6c4',inactives:'#ff8a65',breakdown:'#f6c453',writeup:'#c792ea'};
-const setAcc=k=>document.documentElement.style.setProperty('--lime',ACC[k]||ACC.board);
+const THEME={
+ 'Hard Rock Bet':{bg:'#0b0812',card:'#17111f',card2:'#21182d',line:'#33264a',acc:'#a678ff'},
+ 'DraftKings':{bg:'#0a0c0a',card:'#151915',card2:'#1d231d',line:'#2c352b',acc:'#61d836'},
+ 'FanDuel':{bg:'#07111f',card:'#0f1d31',card2:'#16273f',line:'#223a5c',acc:'#2a9bff'},
+ 'BetMGM':{bg:'#0d0c0a',card:'#1a1814',card2:'#24211b',line:'#3a3428',acc:'#d4b26f'},
+ 'Caesars':{bg:'#08111d',card:'#0f1b2c',card2:'#162538',line:'#24374f',acc:'#c9a55c'},
+ 'Fanatics':{bg:'#0c0a0b',card:'#1a1416',card2:'#241b1e',line:'#3a2a2e',acc:'#ff4d5e'}};
+const DEFTH={bg:'#0b0f1e',card:'#141a30',card2:'#1b2240',line:'#2a3358',acc:'#7c8cff'};
+const setAcc=k=>{const t=THEME[BOOK]||DEFTH,r=document.documentElement.style;r.setProperty('--bg',t.bg);r.setProperty('--card',t.card);r.setProperty('--card2',t.card2);r.setProperty('--line',t.line);r.setProperty('--line2',t.line);r.setProperty('--lime',t.acc);
+  const m=document.querySelector('meta[name=theme-color]');if(m)m.content=t.bg};
 function route(){document.body.classList.remove('home');
   const h=location.hash.slice(1);let g=GAMES.find(x=>x.id===h),tab='pick';
   if(!g)for(const [t] of TABS){g=GAMES.find(x=>h===x.id+'-'+t);if(g){tab=t;break}}
@@ -927,7 +946,7 @@ function soon(){document.title='Track Record';anim();
   $('app').innerHTML=`<div class="soon"><b>Coming soon</b><p>The track record will grade every locked pick once results start coming in.</p></div>`}
 function books(){document.title='Books';anim();const B=allBooks();
   $('app').innerHTML=`<div class="bkp"><h2>Your sportsbook</h2><p>Every page switches to this book's lines. Saved on this device.</p>${B.map(b=>`<button type="button" class="bko${b===BOOK?' on':''}" data-bk="${esc(b)}">${bkLogo(b,'md')}<span>${esc(b)}</span>${b===BOOK?'<em>Selected</em>':''}</button>`).join('')}${GAMES.some(g=>g.booksAsOf)?`<p class="bkp-a">Lines as of ${esc((GAMES.find(g=>g.booksAsOf)||{}).booksAsOf)}</p>`:''}</div>`;
-  $('app').querySelectorAll('[data-bk]').forEach(o=>o.onclick=()=>{BOOK=o.dataset.bk;save('pm-book',BOOK);ST={};BBF.book=null;fillBooks();books()})}
+  $('app').querySelectorAll('[data-bk]').forEach(o=>o.onclick=()=>{BOOK=o.dataset.bk;save('pm-book',BOOK);ST={};BBF.book=null;fillBooks();setAcc('books');books()})}
 function record(){
   document.title='Track Record';anim();
   const G=LOG.map(l=>({l,g:GAMES.find(x=>x.id===l.gameId),gr:grade(l)})).filter(x=>x.g).sort((a,b)=>a.l.week-b.l.week);
@@ -952,12 +971,11 @@ function game(g,tab){
   const wx=g.inputs&&g.inputs.weather;
   const lg0=logOf(g),gr0=lg0&&grade(lg0);
   $('app').innerHTML=`<nav class="gbar" id="gbar">${TABS.map(([t,n])=>`<a class="${t===tab?'on':''}" href="#${esc(g.id)}-${t}">${n}</a>`).join('')}</nav><a class="fab" href="#day-${dayOf(g)}" aria-label="Back to all games"><svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true"><path d="M15 18l-6-6 6-6" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg>All games</a>${tab==='pick'&&gr0?`<div class="final">Final · ${esc(g.away.abbr)} ${gr0.r.awayScore} – ${gr0.r.homeScore} ${esc(g.home.abbr)} · Straight up <b class="${RC[gr0.su]}">${gr0.su}</b> · ATS <b class="${RC[gr0.ats]}">${gr0.ats}</b>${gr0.best?` · Best bet <b class="${RC[gr0.best]}">${gr0.best} ${money(gr0.profit)}</b>`:''}${gr0.clv!=null?` · CLV ${sgn(gr0.clv)} pts`:''}</div>`:''}
-  ${tab==='lines'?`<div id="pkWrap"><div class="ogw info" id="lgG"></div>
-  <div style="text-align:center;margin:4px 0 12px"><button type="button" class="adj" id="adjB">Change lines / alternates</button></div>
+  ${tab==='lines'?`<div id="pkWrap"><div class="lgw"><button type="button" class="edb" id="adjB" aria-expanded="false"><svg viewBox="0 0 24 24" width="13" height="13" aria-hidden="true"><path d="M4 20h4L19 9l-4-4L4 16v4z" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linejoin="round"/></svg><span>Edit lines</span></button><div class="ogw info" id="lgG"></div></div>
   <div id="adjBox" hidden><div class="lr"><div class="lr-g"><span class="lr-l">Spread</span><div class="ln-c"><button type="button" class="sg" data-sg="spread" aria-label="Flip + or −"></button><input id="in-spread" type="text" inputmode="decimal" autocomplete="off" aria-label="${esc(g.home.name)} spread"><button type="button" class="nd" data-k="spread" data-d="-1" aria-label="Lower">${CHD}</button><button type="button" class="nd" data-k="spread" data-d="1" aria-label="Raise">${CHU}</button></div><small id="hint-spread"></small></div>
   <div class="lr-g lr-o"><div class="lr-oh"><span class="lr-l">Odds <em>tap to edit</em></span><button type="button" class="lr-rs" id="rl">Reset lines</button></div><div class="ocs">${[['spreadOddsAway',g.away,'sp'],['spreadOddsHome',g.home,'sp'],['mlAway',g.away,'ml'],['mlHome',g.home,'ml']].map(([k,t,kind])=>`<button type="button" class="oc" data-ok="${k}">${badge(t)}<span id="ocl-${k}"></span><b id="oc-${k}"></b></button>`).join('')}</div></div></div>
-  <div class="ox" id="ox" hidden><span id="oxL"></span><div class="ln-c"><button type="button" class="sg" data-sg="ed" aria-label="Flip + or −"></button><input id="in-ed" type="text" inputmode="decimal" autocomplete="off" aria-label="Odds"><button type="button" class="nd" data-k="ed" data-d="-1" aria-label="Lower">${CHD}</button><button type="button" class="nd" data-k="ed" data-d="1" aria-label="Raise">${CHU}</button></div><small id="oxH"></small><button type="button" class="save" id="oxD">Done</button></div></div>
-  <p class="note" style="text-align:center;margin-top:10px">Book: <b>${esc(bookName(g))}</b>${bookGap(g).length?` · this book's ${bookGap(g).some(k=>k.startsWith('spread'))?'spread prices':'prices'} weren't available, so those use the consensus price`:''}. Alternate lines you set here flow straight to The pick, which shows whether each one has an edge. Reset lines puts back the book's numbers.</p>
+  <div class="ox" id="ox" hidden><span id="oxL"></span><div class="ln-c"><button type="button" class="sg" data-sg="ed" aria-label="Flip + or −"></button><input id="in-ed" type="text" inputmode="decimal" autocomplete="off" aria-label="Odds"><button type="button" class="nd" data-k="ed" data-d="-1" aria-label="Lower">${CHD}</button><button type="button" class="nd" data-k="ed" data-d="1" aria-label="Raise">${CHU}</button></div><small id="oxH"></small><button type="button" class="save" id="oxD">Done</button></div><div class="ia-bar ln-bar" id="lnBar"><span id="lnMsg"></span><button class="reset" id="lnX" type="button">Discard</button><button class="save" id="lnSv" type="button">Saved</button></div></div>
+  <p class="note" style="text-align:center;margin-top:10px">Book: <b>${esc(bookName(g))}</b>${bookGap(g).length?` · this book's ${bookGap(g).some(k=>k.startsWith('spread'))?'spread prices':'prices'} weren't available, so those use the consensus price`:''}. Use Edit lines for alternates or another price, then Save to update The pick and every other page. Reset lines puts back the book's numbers.</p>
   </div>`:''}
   <div id="panel"></div>`;
   centerIn($('gbar'),$('gbar').querySelector('.on'));document.documentElement.style.setProperty('--gbh',$('gbar').offsetHeight+'px');
@@ -984,28 +1002,35 @@ function game(g,tab){
 function bind(g,tab){
   const st=stateFor(g),up=()=>{saveSt(g,st);render(g,tab)};
   if(tab==='lines'){
-    let EK=null;const isOdds=k=>k!=='spread',inp=k=>$(k==='spread'?'in-spread':'in-ed'),sgb=k=>document.querySelector(`[data-sg="${k==='spread'?'spread':'ed'}"]`);
-    const NM={spreadOddsAway:()=>`${g.away.name} ${sgn(-st.lines.spread)}`,spreadOddsHome:()=>`${g.home.name} ${sgn(st.lines.spread)}`,mlAway:()=>`${g.away.name} moneyline`,mlHome:()=>`${g.home.name} moneyline`};
-    const show=k=>{if(!k)return;const v=st.lines[k],el=inp(k),sg=sgb(k);
+    let EK=null,D={...st.lines};const isOdds=k=>k!=='spread',inp=k=>$(k==='spread'?'in-spread':'in-ed'),sgb=k=>document.querySelector(`[data-sg="${k==='spread'?'spread':'ed'}"]`);
+    const NM={spreadOddsAway:()=>`${g.away.name} ${sgn(-D.spread)}`,spreadOddsHome:()=>`${g.home.name} ${sgn(D.spread)}`,mlAway:()=>`${g.away.name} moneyline`,mlHome:()=>`${g.home.name} moneyline`};
+    const show=k=>{if(!k)return;const v=D[k],el=inp(k),sg=sgb(k);
       if(document.activeElement!==el)el.value=isOdds(k)?Math.abs(v):Math.abs(v).toFixed(1).replace(/\.0$/,'');
       sg.textContent=v<0?'−':'+';sg.classList.toggle('neg',v<0);
       if(k==='spread')$('hint-spread').textContent=v===0?'Pick’em':`${v<0?g.home.abbr:g.away.abbr} favored`;
       else{$('oxL').textContent=NM[k]();$('oxH').textContent=v<0?`Bet ${Math.abs(v)} to win 100`:`Bet 100 to win ${v}`}};
-    const up2=()=>{saveSt(g,st);render(g,tab);if(EK)show(EK)};
-    const setV=(k,v)=>{if(isOdds(k)&&Math.abs(v)<100)v=v<0?-100:100;st.lines[k]=v;show(k);up2()};
+    const chips=()=>[['spreadOddsAway',`${g.away.abbr} ${sgn(-D.spread)}`],['spreadOddsHome',`${g.home.abbr} ${sgn(D.spread)}`],['mlAway',`${g.away.abbr} ML`],['mlHome',`${g.home.abbr} ML`]].forEach(([k,lb])=>{$('ocl-'+k).textContent=lb;$('oc-'+k).textContent=odds(D[k])});
+    const bar=msg=>{const n=['spread','spreadOddsHome','spreadOddsAway','mlHome','mlAway'].filter(k=>D[k]!==st.lines[k]).length;
+      $('lnSv').disabled=!n;$('lnSv').textContent=n?`Save ${n} change${n>1?'s':''}`:'Saved';$('lnX').hidden=!n;$('lnBar').classList.toggle('pending',!!n);
+      if(msg)$('lnMsg').innerHTML=msg;else $('lnMsg').textContent=n?'Unsaved: the site still uses the last saved lines.':'Change a line, then Save.'};
+    const up2=()=>{chips();bar();if(EK)show(EK)};
+    const setV=(k,v)=>{if(isOdds(k)&&Math.abs(v)<100)v=v<0?-100:100;D[k]=v;show(k);up2()};
     const typed=(k,el)=>{const raw=el.value.trim(),n=parseFloat(raw.replace(/[^\d.]/g,''));if(isNaN(n))return;
-      let sign=/[-−]/.test(raw)?-1:raw.includes('+')?1:(st.lines[k]<0?-1:1);if(k==='spread'&&n===0)sign=1;if(isOdds(k)&&n<100)return;st.lines[k]=sign*n;show(k);up2()};
-    show('spread');
+      let sign=/[-−]/.test(raw)?-1:raw.includes('+')?1:(D[k]<0?-1:1);if(k==='spread'&&n===0)sign=1;if(isOdds(k)&&n<100)return;D[k]=sign*n;show(k);up2()};
+    show('spread');chips();bar();
     $('in-spread').addEventListener('input',e=>typed('spread',e.target));$('in-spread').addEventListener('blur',()=>show('spread'));
     $('in-ed').addEventListener('input',e=>EK&&typed(EK,e.target));$('in-ed').addEventListener('blur',()=>show(EK));
     const pick=k=>{EK=k;document.querySelectorAll('.oc').forEach(b=>b.classList.toggle('on',b.dataset.ok===k));$('ox').hidden=!k;show(k)};
-    {const mv=JSON.stringify(st.lines)!==JSON.stringify(bookLines(g));$('adjBox').hidden=!mv;$('adjB').textContent=mv?'Hide line editor':'Change lines / alternates'}
-    $('adjB').onclick=()=>{const h=!$('adjBox').hidden;$('adjBox').hidden=h;$('adjB').textContent=h?'Change lines / alternates':'Hide line editor'};
+    const openEd=o=>{$('adjBox').hidden=!o;$('adjB').classList.toggle('on',o);$('adjB').setAttribute('aria-expanded',String(o));$('adjB').querySelector('span').textContent=o?'Close':'Edit lines'};
+    openEd(false);$('adjB').onclick=()=>openEd($('adjBox').hidden);
+    $('lnSv').onclick=()=>{st.lines={...D};saveSt(g,st);render(g,tab);const c1=calc(g);
+      const sp=c1.bets[2].p>=c1.bets[3].p?c1.bets[2]:c1.bets[3];bar(`Saved. Spread: <b>${esc(sp.n)}</b> ${evp(sp.ev)} (${sp.v}) · Best value: <b>${c1.best.ev>0?esc(c1.best.n)+'</b> '+evp(c1.best.ev):'none</b>'}`)};
+    $('lnX').onclick=()=>{D={...st.lines};show('spread');if(EK)show(EK);up2()};
     $('pkWrap').addEventListener('click',e=>{const oc=e.target.closest('[data-ok]');if(oc){pick(EK===oc.dataset.ok?null:oc.dataset.ok);return}
       if(e.target.closest('#oxD')){pick(null);return}
-      if(e.target.closest('#rl')){st.lines=bookLines(g);saveSt(g,st);game(g,tab);return}
-      const sg=e.target.closest('[data-sg]');if(sg){const k=sg.dataset.sg==='ed'?EK:'spread';if(k)setV(k,-st.lines[k]||0);return}
-      const b=e.target.closest('[data-k]');if(!b)return;const k=b.dataset.k==='ed'?EK:'spread';if(!k)return;const v=st.lines[k],stp=isOdds(k)?5:.5,sg_=v<0?-1:1;
+      if(e.target.closest('#rl')){D={...D,...bookLines(g)};show('spread');if(EK)show(EK);up2();return}
+      const sg=e.target.closest('[data-sg]');if(sg){const k=sg.dataset.sg==='ed'?EK:'spread';if(k)setV(k,-D[k]||0);return}
+      const b=e.target.closest('[data-k]');if(!b)return;const k=b.dataset.k==='ed'?EK:'spread';if(!k)return;const v=D[k],stp=isOdds(k)?5:.5,sg_=v<0?-1:1;
       let m=Math.abs(v)+(+b.dataset.d)*stp;m=isOdds(k)?Math.max(100,m):Math.max(0,m);setV(k,sg_*m)});
   }
   if(tab==='inactives'){
@@ -1030,7 +1055,7 @@ function bind(g,tab){
 function render(g,tab){
   const c=calc(g);CW=g.week;const L=stateFor(g).lines;
   if(tab==='lines'){$('lgG').innerHTML=oddsGrid(g,L,c,1);
-    [['spreadOddsAway',g.away,`${g.away.abbr} ${sgn(-L.spread)}`],['spreadOddsHome',g.home,`${g.home.abbr} ${sgn(L.spread)}`],['mlAway',g.away,`${g.away.abbr} ML`],['mlHome',g.home,`${g.home.abbr} ML`]].forEach(([k,t,lb])=>{$('ocl-'+k).textContent=lb;$('oc-'+k).textContent=odds(L[k])});}
+}
   if($('cbox'))curve(g);
   if(tab==='pick'){const T=x=>x==='home'?g.home:g.away,B=c.bets;
     const pk3=[B[2].p>=B[3].p?B[2]:B[3],c.mb.ev>0?c.mb:(c.pw>=.5?B[0]:B[1])].concat(c.tb.length?[c.tb[0].p>=c.tb[1].p?c.tb[0]:c.tb[1]]:[]),top=pk3.reduce((a,b)=>b.ev>a.ev?b:a);
