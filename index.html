@@ -599,7 +599,7 @@ body.home .vt{display:inline-flex}
 </style>
 </head>
 <body>
-<div class="header"><div class="vt" id="vt" role="group" aria-label="Game card size"><button type="button" data-view="compact">Compact</button><button type="button" data-view="expanded">Expanded</button></div><h1>EV Betting <b>Model</b></h1><div class="sub" id="subTitle">Loading…</div></div>
+<div class="header"><h1>EV Betting <b>Model</b></h1><div class="sub" id="subTitle">Loading…</div></div>
 <div class="tab-bar" id="tabBar">
   <a class="tab-btn" href="#board" data-tab="board">Home</a>
   <a class="tab-btn" href="#best" data-tab="best">Best Bets</a>
@@ -700,7 +700,7 @@ const badge=(t,lg)=>{const st=`style="--bc:${esc(t.color||t.night)};--bn:${esc(t
   if(k===false)return `<span class="badge${lg?' lg':''}" ${st} aria-hidden="true">${esc(t.abbr)}</span>`;
   return `<span class="badge${lg?' lg':''}" ${st} aria-hidden="true">${esc(t.abbr)}<img src="${logoSrcs(t.abbr)[0]}" data-ab="${esc(t.abbr)}" data-srcs="${logoSrcs(t.abbr).join('|')}" alt="" onload="logoOk(this)" onerror="logoNext(this)"></span>`};
 const LEAGUE=g=>g.league||META.league||'NFL';
-let VIEW=load('pm-view','expanded');
+const VIEW='expanded';
 function sbCard(g){const L=g.lines||{},r=resOf(g.id),sp=L.spread,time=(String(g.kickoff||'').split('·').slice(1).join('·').trim()||g.kickoff||'').replace(/\s*ET$/,'');
   const line=[sp==null?'':sp===0?'PK':(sp<0?esc(g.home.abbr)+' '+sgn(sp):esc(g.away.abbr)+' '+sgn(-sp)),L.total!=null?'O/U '+L.total:''].filter(Boolean).join(' · ');
   const row=(t,sc,lo)=>`<div class="sb-row${lo?' lo':''}">${badge(t)}<b>${esc(t.abbr)}</b><small>${esc(t.record)}</small>${sc!=null?`<span class="sc">${sc}</span>`:''}</div>`;
@@ -848,7 +848,7 @@ function render(g,tab){
     if(c.best.ev>0)tile('ptB','Best bet',T(c.best.t),nm(c.best,c.best.n),`Wins ${pct(c.best.p,0)} · ${ev(c.best)}`,c.best.v);
     else tile('ptB','Best bet',null,'No bet',`Closest: ${esc(c.best.n)} · ${ev(c.best)}`,'Pass');
     const as=Math.round(c.as),hs=Math.round(c.hs);
-    $('ppS').innerHTML=`<span class="pp-tag">Projected score</span><div class="ps">${badge(g.away)}<span class="pt2 ${as>hs?'':'lo'}"><b>${as}</b><small>${esc(g.away.name)} proj.</small></span><i>–</i><span class="pt2 ${hs>=as?'':'lo'}"><b>${hs}</b><small>${esc(g.home.name)} proj.</small></span>${badge(g.home)}</div><small>Model projection, not a final · total ${(c.hs+c.as).toFixed(1)} · ${esc(c.fav)} by ${Math.abs(c.m).toFixed(1)} · market ${g.home.abbr} ${sgn(L.spread)}</small>`;
+    $('ppS').innerHTML=`<span class="pp-tag">Projected score</span><div class="ps">${badge(g.away)}<span class="pt2 ${as>hs?'':'lo'}"><b>${as}</b><small>${esc(g.away.name)}</small></span><i>–</i><span class="pt2 ${hs>=as?'':'lo'}"><b>${hs}</b><small>${esc(g.home.name)}</small></span>${badge(g.home)}</div>`;
     const ch=g.players.some((p,i)=>stateFor(g).plays[i]!==p.plays),moved=JSON.stringify(L)!==JSON.stringify(g.lines);
     $('ppN').innerHTML=moved||ch?`Using ${[moved?`<a href="#${esc(g.id)}-lines">your lines</a>`:'',ch?`<a href="#${esc(g.id)}-inactives">your inactives</a>`:''].filter(Boolean).join(' and ')}.`:`Lines: ${esc(g.lines.source)}, ${esc(g.lines.asOf)}. Change them on <a href="#${esc(g.id)}-lines">Game lines</a>.`;}
   if(tab==='breakdown'){const T=v=>v>=0?g.home:g.away;
