@@ -53,8 +53,9 @@ button{font-family:inherit}
 .badge.lg{--s:72px;margin:0 auto 8px}
 .badge{position:relative;overflow:hidden}
 .badge img{position:absolute;inset:0;width:100%;height:100%;object-fit:contain;opacity:0}
-.badge.lg-on{background:radial-gradient(circle,#ffffff 0%,#eef3ef 70%);border-radius:50%;box-shadow:0 2px 8px rgba(0,0,0,.35);color:transparent;text-shadow:none}
-.badge.lg-on img{inset:14%;width:72%;height:72%}
+.badge.lg-on{background:none;box-shadow:none;color:transparent;text-shadow:none;border-radius:0;overflow:visible}
+.badge.lg-on img{inset:0;width:100%;height:100%;filter:drop-shadow(0 2px 4px rgba(0,0,0,.45))}
+.badge.lg-on img.loc{filter:drop-shadow(0 0 1px rgba(255,255,255,.35)) drop-shadow(0 2px 4px rgba(0,0,0,.4))}
 .badge.lg-on img{opacity:1}
 .g-lg{font-size:10px;font-weight:800;letter-spacing:1px;color:var(--lime);border:1px solid var(--line);border-radius:4px;padding:1px 6px}
 .g-nm{display:flex;flex-direction:column;line-height:1.15}
@@ -124,6 +125,18 @@ svg text{paint-order:stroke;stroke:var(--card);stroke-width:4px;font:13px 'Sourc
 .read b{color:var(--ink)}
 .read .best{padding:10px 12px;background:rgba(182,240,90,.07);border:1px solid rgba(182,240,90,.2);border-left:3px solid var(--lime);border-radius:8px;color:var(--ink);font-weight:700}
 .links{display:flex;gap:16px;flex-wrap:wrap;font-size:13px;font-weight:700;color:var(--lime)}
+.lns{display:grid;gap:2px}
+.ln{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid rgba(255,255,255,.05)}
+.ln:last-child{border-bottom:0}
+.ln-l{font-size:14px;font-weight:700}.ln-l small{display:block;font-size:11px;color:var(--mute);font-weight:500;margin-top:1px}
+.ln-c{display:flex;align-items:center;gap:6px;flex:none}
+.ln-c input{width:4.2em;height:40px;border:1px solid var(--line);border-radius:10px;text-align:center;font:600 18px Oswald,sans-serif;background:var(--bg);color:var(--ink)}
+.ln-c input:focus{outline:2px solid var(--lime);outline-offset:1px}
+.sg{width:40px;height:40px;border-radius:10px;border:0;background:rgba(111,227,160,.16);color:var(--green);font:700 22px Oswald,sans-serif;cursor:pointer}
+.sg.neg{background:rgba(255,123,107,.16);color:var(--red)}
+.nd{width:36px;height:40px;border-radius:10px;border:0;background:var(--card2);color:var(--ink);font-size:20px;line-height:1;cursor:pointer}
+@media(max-width:640px){.nd{width:32px}.ln-c{gap:4px}.ln-c input{width:3.6em}}
+.nd:hover,.sg:hover{filter:brightness(1.2)}
 .spread-row{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap}
 .step{display:inline-flex;align-items:center;border:1px solid var(--line);border-radius:8px;overflow:hidden;background:var(--bg)}
 .step button{width:40px;height:40px;border:0;background:var(--card2);color:var(--ink);font-size:18px;font-weight:800;cursor:pointer}
@@ -222,6 +235,8 @@ td{border-bottom-color:rgba(255,255,255,.04)}
 
 /* ---- sticky navigation */
 .tab-bar{position:sticky;top:0;z-index:30;background:var(--bg)}
+.tab-bar>.tab-btn:first-child,.gbar>a:first-child{margin-left:auto}
+.tab-bar>.tab-btn:nth-last-child(2),.gbar>a:last-child{margin-right:auto}
 .dtabs,.gbar{position:sticky;top:var(--tbh,45px);z-index:29;background:var(--bg)}
 .dtabs{scroll-behavior:auto}
 .dtabs::before,.dtabs::after{content:'';flex:none;width:calc(50% - 60px)}
@@ -338,8 +353,9 @@ function route(){
   slide('board');board();
 }
 const ESPN_ID={WAS:'wsh'};
-const logoSrc=a=>'https://a.espncdn.com/i/teamlogos/nfl/500/'+(ESPN_ID[a]||String(a).toLowerCase())+'.png';
-const badge=(t,lg)=>`<span class="badge${lg?' lg':''}" style="--bc:${esc(t.color||t.night)};--bn:${esc(t.night||t.color)}" aria-hidden="true">${esc(t.abbr)}<img src="${logoSrc(t.abbr)}" alt="" loading="lazy" onload="this.parentNode.classList.add('lg-on')" onerror="if(!this.dataset.f){this.dataset.f=1;this.src='logos/${esc(t.abbr)}.png'}else this.remove()"></span>`;
+const logoSrcs=a=>{const id=ESPN_ID[a]||String(a).toLowerCase();return ['https://a.espncdn.com/i/teamlogos/nfl/500-dark/'+id+'.png','https://a.espncdn.com/i/teamlogos/nfl/500/'+id+'.png','logos/'+a+'.png']};
+window.logoNext=img=>{const L=img.dataset.srcs.split('|'),i=+(img.dataset.f||0)+1;if(i<L.length){img.dataset.f=i;if(i===L.length-1)img.classList.add('loc');img.src=L[i]}else img.remove()};
+const badge=(t,lg)=>`<span class="badge${lg?' lg':''}" style="--bc:${esc(t.color||t.night)};--bn:${esc(t.night||t.color)}" aria-hidden="true">${esc(t.abbr)}<img src="${logoSrcs(t.abbr)[0]}" data-srcs="${logoSrcs(t.abbr).join('|')}" alt="" loading="lazy" onload="this.parentNode.classList.add('lg-on')" onerror="logoNext(this)"></span>`;
 const LEAGUE=g=>g.league||META.league||'NFL';
 function gameCard(g){const L=g.lines||{},r=resOf(g.id),sp=L.spread;
   const time=(String(g.kickoff||'').split('·').slice(1).join('·').trim()||g.kickoff||'').replace(/\s*ET$/,'');
@@ -399,17 +415,18 @@ function game(g,tab){
   teamCol(g);document.title=`${g.away.abbr} @ ${g.home.abbr}`;anim();
   const wx=g.inputs&&g.inputs.weather;
   const lg0=logOf(g),gr0=lg0&&grade(lg0);
-  $('app').innerHTML=`<nav class="gbar" id="gbar"><a class="gback" href="#day-${dayOf(g)}">‹ ${esc(dLabel(dayOf(g),{weekday:'short',month:'short',day:'numeric'}).replace(',',''))}</a>${TABS.map(([t,n])=>`<a class="${t===tab?'on':''}" href="#${esc(g.id)}-${t}">${n}</a>`).join('')}</nav>${gr0?`<div class="final">Final · ${esc(g.away.abbr)} ${gr0.r.awayScore} – ${gr0.r.homeScore} ${esc(g.home.abbr)} · Straight up <b class="${RC[gr0.su]}">${gr0.su}</b> · ATS <b class="${RC[gr0.ats]}">${gr0.ats}</b>${gr0.best?` · Best bet <b class="${RC[gr0.best]}">${gr0.best} ${money(gr0.profit)}</b>`:''}${gr0.clv!=null?` · CLV ${sgn(gr0.clv)} pts`:''}</div>`:''}
-  <div class="mh"><div class="mh-time">${esc(g.kickoff)} · ${esc(g.venue)} · ${esc(g.tv)}${wx?' · '+esc(wxText(wx)):''}</div>
+  $('app').innerHTML=`<nav class="gbar" id="gbar"><a class="gback" href="#day-${dayOf(g)}">‹ ${esc(dLabel(dayOf(g),{weekday:'short',month:'short',day:'numeric'}).replace(',',''))}</a>${TABS.map(([t,n])=>`<a class="${t===tab?'on':''}" href="#${esc(g.id)}-${t}">${n}</a>`).join('')}</nav>${tab==='pick'&&gr0?`<div class="final">Final · ${esc(g.away.abbr)} ${gr0.r.awayScore} – ${gr0.r.homeScore} ${esc(g.home.abbr)} · Straight up <b class="${RC[gr0.su]}">${gr0.su}</b> · ATS <b class="${RC[gr0.ats]}">${gr0.ats}</b>${gr0.best?` · Best bet <b class="${RC[gr0.best]}">${gr0.best} ${money(gr0.profit)}</b>`:''}${gr0.clv!=null?` · CLV ${sgn(gr0.clv)} pts`:''}</div>`:''}
+  ${tab==='pick'?`<div class="mh"><div class="mh-time">${esc(g.kickoff)} · ${esc(g.venue)} · ${esc(g.tv)}${wx?' · '+esc(wxText(wx)):''}</div>
   <div class="mh-teams"><div class="mh-team">${badge(g.away,1)}<div class="mh-ab" style="color:var(--away)">${esc(g.away.name)}</div><div class="mh-rec">${esc(g.away.record)} · Away</div><div class="mh-wp" id="wpA"></div></div><div class="mh-at">@</div>
   <div class="mh-team">${badge(g.home,1)}<div class="mh-ab" style="color:var(--home)">${esc(g.home.name)}</div><div class="mh-rec">${esc(g.home.record)} · Home</div><div class="mh-wp" id="wpH"></div></div></div>
   <div class="bar"><i id="pbA" style="background:var(--away)"></i><i id="pbH" style="background:var(--home)"></i></div></div>
-  <div class="qg"><div class="qc"><div class="lb">Who wins</div><div class="qn" id="cW"></div><div class="dt" id="cWs"></div></div><div class="qc c2"><div class="lb">Best value</div><div class="qn" id="cB"></div><div class="dt" id="cBs"></div></div><div class="qc c3"><div class="lb">Spread</div><div class="qn" id="cS"></div><div class="dt" id="cSs"></div></div><div class="qc c4"><div class="lb">Projected score</div><div class="qn" id="cP"></div><div class="dt" id="cPs"></div></div></div>
+  <div class="qg"><div class="qc"><div class="lb">Who wins</div><div class="qn" id="cW"></div><div class="dt" id="cWs"></div></div><div class="qc c2"><div class="lb">Best value</div><div class="qn" id="cB"></div><div class="dt" id="cBs"></div></div><div class="qc c3"><div class="lb">Spread</div><div class="qn" id="cS"></div><div class="dt" id="cSs"></div></div><div class="qc c4"><div class="lb">Projected score</div><div class="qn" id="cP"></div><div class="dt" id="cPs"></div></div></div>`:''}
   <div id="panel"></div>`;
   {const gb=$('gbar'),on=gb.querySelector('.on');if(on&&on.offsetLeft+on.offsetWidth>gb.clientWidth)gb.scrollLeft=on.offsetLeft-24}
   const P=$('panel'),hn=esc(g.home.name),an=esc(g.away.name);
   if(tab==='pick')P.innerHTML=`${lg0?`<div class="card"><h2 class="hdr3">Logged pick · ${esc(lg0.loggedAt)}</h2><div class="body logged">Locked before kickoff at <b>${esc(g.home.abbr)} ${sgn(lg0.spread)}</b> (${odds(lg0.oddsSH)}/${odds(lg0.oddsSA)}), ML ${odds(lg0.mlH)}/${odds(lg0.mlA)}.<br>Model: <b>${lg0.homeWin>=.5?esc(g.home.name):esc(g.away.name)} ${pct(Math.max(lg0.homeWin,1-lg0.homeWin))}</b>, margin ${esc(g.home.abbr)} ${sgn(-lg0.margin)}. Spread side: <b>${lg0.atsSide==='home'?esc(g.home.name):esc(g.away.name)}</b> (${esc(lg0.atsVerdict)}). Best value: <b>${lg0.bestEV>0?esc(lg0.bestLabel)+' '+money(lg0.bestEV)+' · '+esc(lg0.bestVerdict):'none'}</b>.<div class="note">The live numbers below can differ if lines, injuries or weights change after the pick was locked. The track record grades this logged pick.</div></div></div>`:''}<div class="card"><h2 class="hdr1">Where the final margin lands</h2><div class="body"><div class="fig" id="cbox" role="img" aria-label="Distribution of the final margin"><svg id="curve"></svg></div><div class="leg" id="leg"></div></div></div><div class="card"><h2 class="hdr5">The read</h2><div class="body read" id="plain"></div></div>`;
-  if(tab==='lines')P.innerHTML=`<div class="card"><h2 class="hdr2">Lines & value</h2><div class="body"><div class="spread-row"><div><div class="lb">${hn} spread</div><div class="note" style="margin-top:2px">Starting lines: ${esc(g.lines.source)}, ${esc(g.lines.asOf)}</div></div><div class="step"><button type="button" data-k="spread" data-d="-0.5" aria-label="Lower spread">−</button><input id="in-spread" type="number" step="0.5" inputmode="decimal" aria-label="${hn} spread"><button type="button" data-k="spread" data-d="0.5" aria-label="Raise spread">+</button></div></div></div></div><div class="slip" id="slip"></div><p style="margin-top:12px;text-align:center"><button class="reset" id="rl" type="button">Reset to model lines</button></p><p class="note" style="text-align:center">EV = what $100 returns on average if the model is right. Bet at +$${SET.betEV}+, Lean $0–${SET.betEV}, Pass below $0.</p>`;
+  if(tab==='lines'){const LR=[['spread',`${hn} spread`],['spreadOddsHome',`${hn} spread odds`],['spreadOddsAway',`${an} spread odds`],['mlHome',`${hn} moneyline`],['mlAway',`${an} moneyline`]];
+  P.innerHTML=`<div class="card"><h2 class="hdr2">Your lines</h2><div class="body"><div class="lns">${LR.map(([k,n])=>`<div class="ln"><div class="ln-l">${n}<small id="hint-${k}"></small></div><div class="ln-c"><button type="button" class="sg" data-sg="${k}" aria-label="Flip + or −"></button><input id="in-${k}" type="text" inputmode="decimal" autocomplete="off" aria-label="${n}"><button type="button" class="nd" data-k="${k}" data-d="-1" aria-label="Lower">▾</button><button type="button" class="nd" data-k="${k}" data-d="1" aria-label="Raise">▴</button></div></div>`).join('')}</div><div class="note" style="margin-top:10px">Tap the <b>+/−</b> button to flip the sign, then type the number. Starting lines: ${esc(g.lines.source)}, ${esc(g.lines.asOf)}.</div></div></div><div class="slip" id="slip"></div><p style="margin-top:12px;text-align:center"><button class="reset" id="rl" type="button">Reset to model lines</button></p><p class="note" style="text-align:center">EV = what $100 returns on average if the model is right. Bet at +$${SET.betEV}+, Lean $0–${SET.betEV}, Pass below $0.</p>`}
   if(tab==='drivers')P.innerHTML=`<div class="card"><h2 class="hdr1" id="drvH"></h2><div class="body"><div class="drv" id="drv"></div><div class="drv" style="margin-top:8px"><span></span><div class="axis"><span>← ${an}</span><span>${hn} →</span></div><span></span></div></div></div><div class="card"><h2 class="hdr3">Who's playing</h2><div class="body" style="padding-top:4px;padding-bottom:4px" id="pl"></div></div><p style="text-align:center"><button class="reset" id="rp" type="button">Reset to injury report</button></p>`;
   if(tab==='matchup')P.innerHTML=`<p class="note" style="text-align:center;margin:0 0 10px">1 = best in the league. ${hn} use home splits, ${an} road splits. Small numbers are the raw stat.</p><div class="card"><h2 class="hdr6">When the ${hn} have the ball</h2><div class="scroll"><table id="rk1"></table></div></div><div class="card"><h2 class="hdr6">When the ${an} have the ball</h2><div class="scroll"><table id="rk2"></table></div></div>`;
   if(tab==='context'){const hs=['hdr1','hdr2','hdr3','hdr4','hdr5','hdr6'];P.innerHTML=g.context.map((t,i)=>`<div class="card"><h2 class="${hs[i%6]}">${esc(t.title)}</h2><div class="scroll"><table><thead><tr>${t.cols.map(c=>`<th>${esc(c)}</th>`).join('')}</tr></thead><tbody>${t.rows.map(r=>`<tr>${r.map((c,j)=>`<td class="${j===0?'nm':''}">${esc(c.t)}${c.d?`<small>${esc(c.d)}</small>`:''}</td>`).join('')}</tr>`).join('')}</tbody></table></div>${t.note?`<div class="src">${esc(t.note)}</div>`:''}</div>`).join('')}
@@ -420,9 +437,21 @@ function bind(g,tab){
   const st=stateFor(g),up=()=>{save(key(g),st);render(g,tab)};
   if(tab==='lines'){
     const c=calc(g);
-    $('slip').innerHTML=c.bets.map((b,i)=>{const ok=['mlHome','mlAway','spreadOddsHome','spreadOddsAway'][i];return `<div class="bet" style="--c:var(--${b.t})"><div class="hd"><span class="nm2" id="nm${i}"></span><span class="lb">${b.kind}</span></div><div class="row"><div class="step"><button type="button" data-k="${ok}" data-d="-5" aria-label="Lower odds">−</button><input id="in-${ok}" type="number" step="5" inputmode="numeric" aria-label="Odds"><button type="button" data-k="${ok}" data-d="5" aria-label="Raise odds">+</button></div><span class="pill" id="vd${i}"></span></div><div class="stats"><div><span>Model</span><b id="mp${i}"></b></div><div><span>Break-even</span><b id="nd${i}"></b></div><div><span>EV / $100</span><b id="ed${i}"></b></div></div><div class="meter"><i id="mt${i}"></i></div><div class="note" id="sub${i}"></div></div>`}).join('');
-    ['spread','mlHome','mlAway','spreadOddsHome','spreadOddsAway'].forEach(k=>{const el=$('in-'+k);el.value=st.lines[k];el.addEventListener('input',()=>{const v=parseFloat(el.value);if(!isNaN(v)&&(k==='spread'||Math.abs(v)>=100)){st.lines[k]=v;up()}})});
-    $('panel').addEventListener('click',e=>{const b=e.target.closest('[data-k]');if(!b)return;const k=b.dataset.k;st.lines[k]=Math.round((st.lines[k]+parseFloat(b.dataset.d))*2)/2;if(k!=='spread'&&st.lines[k]>-100&&st.lines[k]<100)st.lines[k]=parseFloat(b.dataset.d)>0?100:-100;const el=$('in-'+k);if(el)el.value=st.lines[k];up()});
+    $('slip').innerHTML=c.bets.map((b,i)=>`<div class="bet" style="--c:var(--${b.t})"><div class="hd"><span class="nm2" id="nm${i}"></span><span class="pill" id="vd${i}"></span></div><div class="stats"><div><span>Model</span><b id="mp${i}"></b></div><div><span>Break-even</span><b id="nd${i}"></b></div><div><span>EV / $100</span><b id="ed${i}"></b></div></div><div class="meter"><i id="mt${i}"></i></div><div class="note" id="sub${i}"></div></div>`).join('');
+    const K=['spread','spreadOddsHome','spreadOddsAway','mlHome','mlAway'],isOdds=k=>k!=='spread';
+    const show=k=>{const v=st.lines[k],el=$('in-'+k),sg=document.querySelector(`[data-sg="${k}"]`);
+      if(document.activeElement!==el)el.value=isOdds(k)?Math.abs(v):Math.abs(v).toFixed(1).replace(/\.0$/,'');
+      sg.textContent=v<0?'−':'+';sg.classList.toggle('neg',v<0);
+      $('hint-'+k).textContent=k==='spread'?(v===0?'Pick’em':`${v<0?g.home.name:g.away.name} favored by ${Math.abs(v)}`):(v<0?`Favorite: bet ${Math.abs(v)} to win 100`:`Underdog: bet 100 to win ${v}`)};
+    const setV=(k,v)=>{if(isOdds(k)){if(Math.abs(v)<100)v=v<0?-100:100}st.lines[k]=v;show(k);up()};
+    K.forEach(k=>{show(k);const el=$('in-'+k);
+      el.addEventListener('input',()=>{const raw=el.value.trim();const n=parseFloat(raw.replace(/[^\d.]/g,''));if(isNaN(n))return;
+        let sign=raw.includes('-')||raw.includes('−')?-1:raw.includes('+')?1:(st.lines[k]<0?-1:1);if(k==='spread'&&n===0)sign=1;
+        if(isOdds(k)&&n<100)return;st.lines[k]=sign*n;show(k);up()});
+      el.addEventListener('blur',()=>show(k))});
+    $('panel').addEventListener('click',e=>{const sg=e.target.closest('[data-sg]');if(sg){const k=sg.dataset.sg;setV(k,-st.lines[k]||0);return}
+      const b=e.target.closest('[data-k]');if(!b)return;const k=b.dataset.k,v=st.lines[k],d=+b.dataset.d,stp=isOdds(k)?5:.5,sgn_=v<0?-1:1;
+      let m=Math.abs(v)+d*stp;if(isOdds(k))m=Math.max(100,m);else m=Math.max(0,m);setV(k,sgn_*m)});
     $('rl').addEventListener('click',()=>{st.lines={...g.lines};save(key(g),st);game(g,tab)})}
   if(tab==='drivers'){
     $('pl').innerHTML=g.players.length?g.players.map((p,i)=>`<div class="pr"><div><b>${esc(p.player)} <span style="color:var(--dim);font-weight:600">${esc(p.team)} ${esc(p.pos)}</span></b><small>${esc(p.note)}</small></div><div class="tg" role="group" aria-label="${esc(p.player)} status"><button type="button" class="y" data-p="${i}" data-v="1">Plays</button><button type="button" class="n" data-p="${i}" data-v="0">Out</button></div></div>`).join(''):'<div class="empty">No injury-relevant players for this game.</div>';
@@ -433,13 +462,13 @@ function bind(g,tab){
 }
 function render(g,tab){
   const c=calc(g);CW=g.week;const L=stateFor(g).lines;
-  $('wpA').textContent=pct(1-c.pw,0);$('wpH').textContent=pct(c.pw,0);
+  if(tab==='pick'){$('wpA').textContent=pct(1-c.pw,0);$('wpH').textContent=pct(c.pw,0);
   $('wpA').style.color=c.pw<.5?'var(--ink)':'var(--mute)';$('wpH').style.color=c.pw>=.5?'var(--ink)':'var(--mute)';
   $('pbA').style.width=(1-c.pw)*100+'%';$('pbH').style.width=c.pw*100+'%';
   $('cW').textContent=c.win;$('cWs').textContent=`${pct(c.wp,0)} · fair ML ${odds(fair(c.wp))}`;
   $('cB').textContent=c.best.ev>0?c.best.n:'None';$('cBs').innerHTML=c.best.ev>0?`<span class="pill p-${c.best.v}">${c.best.v}</span> ${money(c.best.ev)} per $100`:'No bet returns money';
   $('cS').textContent=c.sb.v==='Pass'?'Pass':c.sb.n;$('cSs').textContent=c.sb.v==='Pass'?`No value at ${g.home.abbr} ${sgn(L.spread)}`:`${c.sb.v} · ${money(c.sb.ev)} per $100`;
-  $('cP').textContent=`${g.home.abbr} ${Math.round(c.hs)}–${Math.round(c.as)}`;$('cPs').textContent=`Model ${g.home.abbr} ${sgn(-c.m)} · market ${sgn(L.spread)}`;
+  $('cP').textContent=`${g.home.abbr} ${Math.round(c.hs)}–${Math.round(c.as)}`;$('cPs').textContent=`Model ${g.home.abbr} ${sgn(-c.m)} · market ${sgn(L.spread)}`;}
   if(tab==='pick'){
     const spT=c.sb.v==='Bet'?`<b>${esc(c.sb.n)}</b> returns <b>${money(c.sb.ev)}</b> per $100 on average. That's a bet.`:c.sb.v==='Lean'?`<b>${esc(c.sb.n)}</b> returns <b>${money(c.sb.ev)}</b> per $100: positive, but too small to trust.`:`Both sides of the spread lose money on average after the juice (best: ${esc(c.sb.n)}, ${money(c.sb.ev)} per $100). <b>Pass.</b>`;
     const mlT=c.mb.ev>0?`Moneyline: <b>${esc(c.mb.n)} ${odds(c.mb.o)}</b> returns ${money(c.mb.ev)} per $100 (${c.mb.v.toLowerCase()}).`:`Moneyline: no value. Fair prices are ${esc(g.home.name)} ${odds(fair(c.pw))} and ${esc(g.away.name)} ${odds(fair(1-c.pw))}.`;
