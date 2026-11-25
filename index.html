@@ -803,8 +803,8 @@ const bookLines=(g,bk=BOOK)=>{const L={...g.lines},b=bookOf(g,bk);if(b)for(const
 const bookGap=(g,bk=BOOK)=>{const b=bookOf(g,bk);return b?['spreadOddsHome','spreadOddsAway','mlHome','mlAway'].filter(k=>b[k]==null):[]};
 const bookName=g=>bookOf(g)?BOOK:(g.lines.source||'Consensus');
 const allBooks=()=>{const B=[...new Set(GAMES.flatMap(g=>Object.keys(g.books||{})))].sort();const i=B.indexOf('Hard Rock Bet');if(i>0){B.splice(i,1);B.unshift('Hard Rock Bet')}return B};
-const BKDOM={'Hard Rock Bet':'hardrock.bet','DraftKings':'draftkings.com','FanDuel':'fanduel.com','BetMGM':'betmgm.com','Caesars':'caesars.com','Fanatics':'fanatics.com','ESPN BET':'espnbet.com','bet365':'bet365.com','BetRivers':'betrivers.com'};
-const BKCOL={'Hard Rock Bet':'#6d28d9','DraftKings':'#1b8a3a','FanDuel':'#1493ff','BetMGM':'#b8975a','Caesars':'#0a2240','Fanatics':'#d50a0a','ESPN BET':'#e8402d','bet365':'#027b5b','BetRivers':'#1f3c88'};
+const BKDOM={'Hard Rock Bet':'hardrock.bet','DraftKings':'draftkings.com','FanDuel':'fanduel.com','BetMGM':'betmgm.com','Caesars':'caesars.com','Fanatics':'fanatics.com','ESPN BET':'espnbet.com','bet365':'bet365.com'};
+const BKCOL={'Hard Rock Bet':'#6d28d9','DraftKings':'#1b8a3a','FanDuel':'#1493ff','BetMGM':'#b8975a','Caesars':'#0a2240','Fanatics':'#d50a0a','ESPN BET':'#e8402d','bet365':'#027b5b'};
 const bkSlug=b=>b.toLowerCase().replace(/[^a-z0-9]+/g,'');
 const bkLogo=(b,sz)=>{const src=[`books/${bkSlug(b)}.png`].concat(BKDOM[b]?[`https://www.google.com/s2/favicons?domain=${BKDOM[b]}&sz=128`]:[]);
   return `<span class="bkl${sz?' '+sz:''}" title="${esc(b)}" style="--bk:${BKCOL[b]||'#3a4370'}"><i>${esc(b.replace(/[^A-Z0-9]/g,'').slice(0,2)||b.slice(0,2))}</i><img src="${src[0]}" data-srcs="${src.join('|')}" alt="" onload="this.parentNode.classList.add('on')" onerror="bkNext(this)"></span>`};
@@ -860,8 +860,7 @@ const THEME={
  'FanDuel':{bg:'#07111f',card:'#0f1d31',card2:'#16273f',line:'#223a5c',acc:'#2a9bff'},
  'BetMGM':{bg:'#0d0c0a',card:'#1a1814',card2:'#24211b',line:'#3a3428',acc:'#d4b26f'},
  'Caesars':{bg:'#08111d',card:'#0f1b2c',card2:'#162538',line:'#24374f',acc:'#c9a55c'},
- 'Fanatics':{bg:'#0c0a0b',card:'#1a1416',card2:'#241b1e',line:'#3a2a2e',acc:'#ff4d5e'},
- 'BetRivers':{bg:'#07101f',card:'#0f1b30',card2:'#172540',line:'#26385a',acc:'#f5b82e'}};
+ 'Fanatics':{bg:'#0c0a0b',card:'#1a1416',card2:'#241b1e',line:'#3a2a2e',acc:'#ff4d5e'}};
 const DEFTH={bg:'#0b0f1e',card:'#141a30',card2:'#1b2240',line:'#2a3358',acc:'#7c8cff'};
 const setAcc=k=>{const t=THEME[BOOK]||DEFTH,r=document.documentElement.style;r.setProperty('--bg',t.bg);r.setProperty('--card',t.card);r.setProperty('--card2',t.card2);r.setProperty('--line',t.line);r.setProperty('--line2',t.line);r.setProperty('--lime',t.acc);
   const m=document.querySelector('meta[name=theme-color]');if(m)m.content=t.bg};
@@ -918,14 +917,13 @@ function dayName(d,today){if(d===today)return 'Today';if(d==='tbd')return 'Date 
   if(diff===1)return 'Tomorrow';if(diff===-1)return 'Yesterday';return dLabel(d,{weekday:'long',month:'short',day:'numeric'})}
 function board(){
   document.title='EV Betting Model';anim();const D=days(),today=curDay();if(SELDAY==null||!D.includes(SELDAY))SELDAY=pickDay();
-  const wk=(GAMES.find(g=>dayOf(g)===SELDAY)||{}).week,show=D.filter(d=>GAMES.some(g=>dayOf(g)===d&&g.week===wk));
+  const show=[SELDAY];
   const tab=d=>`<a class="dtab ${d===SELDAY?'on':''}" href="#day-${d}" ${d===SELDAY?'aria-current="date"':''}>${d===today?'Today':d==='tbd'?'TBD':dLabel(d,{weekday:'short',month:'short',day:'numeric'}).replace(',','')}</a>`;
   const sec=d=>{const gs=GAMES.filter(g=>dayOf(g)===d).sort((a,b)=>String(a.kickoff).localeCompare(String(b.kickoff)));
     return `<section class="day" id="sec-${d}"><h3>${esc(dayName(d,today))}${d!==today&&dayName(d,today).match(/^(Tomorrow|Yesterday)$/)?`<small>${esc(dLabel(d,{weekday:'long',month:'short',day:'numeric'}))}</small>`:''}</h3><div class="${VIEW==='compact'?'sbs':'hcs'}">${gs.map(gameCard).join('')}</div></section>`};
   $('app').innerHTML=`<nav class="dtabs" id="dayStrip">${D.map(tab).join('')}</nav>${show.map(sec).join('')||'<div class="empty">No games yet.</div>'}`;
   const ds=$('dayStrip');centerIn(ds,ds.querySelector('.on'));
   let st_;ds.addEventListener('scroll',()=>{clearTimeout(st_);st_=setTimeout(()=>{const a=nearestCenter(ds,'.dtab');if(a&&!a.classList.contains('on'))location.replace(a.getAttribute('href'))},160)});
-  const tgt=$('sec-'+SELDAY);if(tgt&&show[0]!==SELDAY)requestAnimationFrame(()=>tgt.scrollIntoView({block:'start'}));
 }
 let BBF={game:'all',book:null};
 function best(){
