@@ -747,7 +747,8 @@ body.home .vt{display:inline-flex}
 @media(max-width:640px){.wpb-l b{text-align:center}}
 
 .lgw{position:relative;max-width:560px;margin:0 auto}
-.edb{position:absolute;top:7px;right:10px;z-index:2;display:inline-flex;align-items:center;gap:6px;padding:5px 11px;border:0;border-radius:999px;background:color-mix(in srgb,var(--lime) 14%,transparent);box-shadow:inset 0 0 0 1px color-mix(in srgb,var(--lime) 40%,transparent);color:var(--lime);font:700 12px 'Source Sans 3',sans-serif;cursor:pointer;transition:background .15s}
+.edw{position:absolute;top:7px;right:10px;z-index:2;display:flex;gap:6px}.lgw.mv .og-cap{padding-right:180px!important}.rsb{background:transparent!important;color:var(--txt,#e8ebf5)!important;box-shadow:inset 0 0 0 1px var(--line)!important}.rsb:hover{box-shadow:inset 0 0 0 1px var(--lime)!important}
+.edb{display:inline-flex;align-items:center;gap:6px;padding:5px 11px;border:0;border-radius:999px;background:color-mix(in srgb,var(--lime) 14%,transparent);box-shadow:inset 0 0 0 1px color-mix(in srgb,var(--lime) 40%,transparent);color:var(--lime);font:700 12px 'Source Sans 3',sans-serif;cursor:pointer;transition:background .15s}
 .edb:hover,.edb.on{background:var(--lime);color:#0b0f1e}
 #adjBox{max-width:560px;margin:0 auto 10px}
 .ln-bar{border-radius:12px;margin-top:8px}.ln-bar .reset[hidden]{display:none}
@@ -755,6 +756,9 @@ body.home .vt{display:inline-flex}
 body,.tab-bar,.dtabs,.gbar{transition:background-color .25s}
 .lgw .og-cap{min-height:30px;padding-right:96px;margin-bottom:6px!important}
 .cx-li em{white-space:nowrap!important;flex:none;text-align:right;font-size:14px!important;line-height:1.25}.cx-li em.lw{white-space:normal!important;flex:0 1 48%}.cx-li>div{min-width:0}
+.fx-mk{margin:10px 2px 0;font-size:12.5px;line-height:1.45}
+.lnk{border:0;background:none;padding:0;color:var(--lime);font:inherit;font-weight:700;text-decoration:underline;cursor:pointer}
+.edb[hidden]{display:none!important}
 </style>
 </head>
 <body>
@@ -811,6 +815,8 @@ const bkLogo=(b,sz)=>{const src=[`books/${bkSlug(b)}.png`].concat(BKDOM[b]?[`htt
 if(typeof window!=='undefined')window.bkNext=img=>{const L=img.dataset.srcs.split('|'),i=+(img.dataset.f||0)+1;if(i<L.length){img.dataset.f=i;img.src=L[i]}else img.remove()};
 const key=g=>'pm3-'+g.id+'-'+g.lines.asOf+'-'+BOOK;
 const saveSt=(g,st)=>{save(key(g),st);save('pmP-'+g.id,st.plays)};
+const linesMoved=g=>JSON.stringify(stateFor(g).lines)!==JSON.stringify(bookLines(g));
+const resetLines=(g,tab)=>{const st=stateFor(g);st.lines={...bookLines(g)};saveSt(g,st);game(g,tab)};
 const payout=o=>o>0?o:10000/-o;
 const logOf=g=>LOG.find(l=>l.gameId===g.id),resOf=id=>RES.find(r=>r.gameId===id&&r.homeScore!=null&&r.awayScore!=null);
 function grade(l){const r=resOf(l.gameId);if(!r)return null;const m=r.homeScore-r.awayScore,x=m+l.spread;
@@ -838,7 +844,7 @@ function calc(g,Lo){
   if(wx){const sh=t=>{const p=bl(val,'PassYPG_O',t,t===H?'home':'away'),r=bl(val,'RushYPG_O',t,t===H?'home':'away');return p/(p+r)};F.push(['Situation','Weather',sev*(sh(A)-sh(H))*SET.wxW])}
   g.adjustments.forEach(a=>F.push([a.group,a.label,a.pts]));
   g.players.forEach((p,i)=>{const v=st.plays[i]?p.ptsPlays:p.ptsOut;if(v)F.push(['Players',`${p.player} ${st.plays[i]?'plays':'out'}`,v])});
-  const m=F.reduce((s,f)=>s+f[2],0),tot=hp+ap-sev*SET.wxTotal,sd=SET.sd,pw=Phi(m/sd),x=m+L.spread,whole=Number.isInteger(L.spread);
+  const mRaw=F.reduce((s,f)=>s+f[2],0),totRaw=hp+ap-sev*SET.wxTotal,k=SET.mktW??1,m=L.spread!=null?-L.spread+k*(mRaw+L.spread):mRaw,tot=L.total!=null?L.total+k*(totRaw-L.total):totRaw,sd=SET.sd,nvH=(L.mlHome!=null&&L.mlAway!=null)?be(L.mlHome)/(be(L.mlHome)+be(L.mlAway)):null,pw=nvH!=null&&k<1?nvH+k*(Phi(mRaw/sd)-nvH):Phi(m/sd),x=m+L.spread,whole=Number.isInteger(L.spread);
   const hc=whole?Phi((x-.5)/sd):Phi(x/sd),push=whole?Phi((x+.5)/sd)-hc:0,ac=1-hc-push,pc=hc;
   const vd=ev=>ev>=SET.betEV?'Bet':ev>0?'Lean':'Pass';
   const mk=(n,t,kind,pW,pP,o,oo)=>{const pr=profit(o),pL=1-pW-pP,ev=pW*pr-pL*100,b=pr/100,k=Math.max(0,(b*pW-pL)/b);return {n,t,kind,p:pW,push:pP,o,need:be(o),nv:be(o)/(be(o)+be(oo)),ev,roi:ev/100,kelly:k/4,fairO:fairOdds(pW/(pW+pL)),v:vd(ev)}};
@@ -846,7 +852,7 @@ function calc(g,Lo){
   let tb=[];if(L.total!=null){const sdT=SET.sdTotal||13.5,tl=L.total,wh=Number.isInteger(tl),pO=wh?1-Phi((tl+.5-tot)/sdT):1-Phi((tl-tot)/sdT),pP=wh?Phi((tl+.5-tot)/sdT)-Phi((tl-.5-tot)/sdT):0,oO=L.overOdds??-110,oU=L.underOdds??-110;
     tb=[mk('Over '+tl,'over','Total',pO,pP,oO,oU),mk('Under '+tl,'under','Total',1-pO-pP,pP,oU,oO)]}
   const sb=bets[2].ev>=bets[3].ev?bets[2]:bets[3],mb=bets[0].ev>=bets[1].ev?bets[0]:bets[1],best=bets.reduce((a,b)=>b.ev>a.ev?b:a);
-  return {F,m,sev,tot,tb,hs:(tot+m)/2,as:(tot-m)/2,pw,pc,push,bets,sb,mb,best,w,win:pw>=.5?g.home.name:g.away.name,wp:Math.max(pw,1-pw),fav:m>=0?g.home.name:g.away.name};
+  return {F,m,mRaw,totRaw,k,sev,tot,tb,hs:(tot+m)/2,as:(tot-m)/2,pw,pc,push,bets,sb,mb,best,w,win:pw>=.5?g.home.name:g.away.name,wp:Math.max(pw,1-pw),fav:m>=0?g.home.name:g.away.name};
 }
 
 const TAB_IDX={board:0,best:1,record:2,books:3};let curTop=0;
@@ -939,7 +945,7 @@ function best(){
   <div class="ev-h"><span>Week ${esc(wk)} · best edges${BBF.book==='all'?' across every book':' at '+esc(BBF.book)}</span><span><i class="k1"></i>Bet <i class="k2"></i>Lean <i class="k3"></i>No edge</span></div>
   <div class="card ev">${pos.length?pos.map(row).join(''):'<div class="empty">No bet has an edge at these lines.</div>'}
   ${neg.length?`<details class="ev-x"><summary>Show ${neg.length} lines with no edge</summary>${neg.map(row).join('')}</details>`:''}</div>
-  <p class="note" style="text-align:center">EV = average return per bet if the model is right. BET at +${SET.betEV}% or better, LEAN above 0%. Same bet at different books = shop for the best price.</p>`;
+  <p class="note" style="text-align:center">EV = average return per bet if the model is right. Each projection is blended ${Math.round((SET.mktW??1)*100)}% model / ${Math.round(100-(SET.mktW??1)*100)}% market line. BET at +${SET.betEV}% or better, LEAN above 0%. Same bet at different books = shop for the best price.</p>`;
   $('bfG').onchange=e=>{BBF.game=e.target.value;best()};$('bfB').onchange=e=>{BBF.book=e.target.value;best()};
 }
 function soon(){document.title='Track Record';anim();
@@ -971,11 +977,11 @@ function game(g,tab){
   const wx=g.inputs&&g.inputs.weather;
   const lg0=logOf(g),gr0=lg0&&grade(lg0);
   $('app').innerHTML=`<nav class="gbar" id="gbar">${TABS.map(([t,n])=>`<a class="${t===tab?'on':''}" href="#${esc(g.id)}-${t}">${n}</a>`).join('')}</nav><a class="fab" href="#day-${dayOf(g)}" aria-label="Back to all games"><svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true"><path d="M15 18l-6-6 6-6" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg>All games</a>${tab==='pick'&&gr0?`<div class="final">Final · ${esc(g.away.abbr)} ${gr0.r.awayScore} – ${gr0.r.homeScore} ${esc(g.home.abbr)} · Straight up <b class="${RC[gr0.su]}">${gr0.su}</b> · ATS <b class="${RC[gr0.ats]}">${gr0.ats}</b>${gr0.best?` · Best bet <b class="${RC[gr0.best]}">${gr0.best} ${money(gr0.profit)}</b>`:''}${gr0.clv!=null?` · CLV ${sgn(gr0.clv)} pts`:''}</div>`:''}
-  ${tab==='lines'?`<div id="pkWrap"><div class="lgw"><button type="button" class="edb" id="adjB" aria-expanded="false"><svg viewBox="0 0 24 24" width="13" height="13" aria-hidden="true"><path d="M4 20h4L19 9l-4-4L4 16v4z" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linejoin="round"/></svg><span>Edit lines</span></button><div class="ogw info" id="lgG"></div></div>
+  ${tab==='lines'?`<div id="pkWrap"><div class="lgw${linesMoved(g)?' mv':''}"><div class="edw"><button type="button" class="edb rsb" id="rsB" ${linesMoved(g)?'':'hidden'} title="Put back the book's original lines"><svg viewBox="0 0 24 24" width="13" height="13" aria-hidden="true"><path d="M4 12a8 8 0 1 0 2.4-5.7M4 4v5h5" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg><span>Reset</span></button><button type="button" class="edb" id="adjB" aria-expanded="false"><svg viewBox="0 0 24 24" width="13" height="13" aria-hidden="true"><path d="M4 20h4L19 9l-4-4L4 16v4z" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linejoin="round"/></svg><span>Edit lines</span></button></div><div class="ogw info" id="lgG"></div></div>
   <div id="adjBox" hidden><div class="lr"><div class="lr-g"><span class="lr-l">Spread</span><div class="ln-c"><button type="button" class="sg" data-sg="spread" aria-label="Flip + or −"></button><input id="in-spread" type="text" inputmode="decimal" autocomplete="off" aria-label="${esc(g.home.name)} spread"><button type="button" class="nd" data-k="spread" data-d="-1" aria-label="Lower">${CHD}</button><button type="button" class="nd" data-k="spread" data-d="1" aria-label="Raise">${CHU}</button></div><small id="hint-spread"></small></div>
   <div class="lr-g lr-o"><div class="lr-oh"><span class="lr-l">Odds <em>tap to edit</em></span><button type="button" class="lr-rs" id="rl">Reset lines</button></div><div class="ocs">${[['spreadOddsAway',g.away,'sp'],['spreadOddsHome',g.home,'sp'],['mlAway',g.away,'ml'],['mlHome',g.home,'ml']].map(([k,t,kind])=>`<button type="button" class="oc" data-ok="${k}">${badge(t)}<span id="ocl-${k}"></span><b id="oc-${k}"></b></button>`).join('')}</div></div></div>
   <div class="ox" id="ox" hidden><span id="oxL"></span><div class="ln-c"><button type="button" class="sg" data-sg="ed" aria-label="Flip + or −"></button><input id="in-ed" type="text" inputmode="decimal" autocomplete="off" aria-label="Odds"><button type="button" class="nd" data-k="ed" data-d="-1" aria-label="Lower">${CHD}</button><button type="button" class="nd" data-k="ed" data-d="1" aria-label="Raise">${CHU}</button></div><small id="oxH"></small><button type="button" class="save" id="oxD">Done</button></div><div class="ia-bar ln-bar" id="lnBar"><span id="lnMsg"></span><button class="reset" id="lnX" type="button">Discard</button><button class="save" id="lnSv" type="button">Saved</button></div></div>
-  <p class="note" style="text-align:center;margin-top:10px">Book: <b>${esc(bookName(g))}</b>${bookGap(g).length?` · this book's ${bookGap(g).some(k=>k.startsWith('spread'))?'spread prices':'prices'} weren't available, so those use the consensus price`:''}. Use Edit lines for alternates or another price, then Save to update The pick and every other page. Reset lines puts back the book's numbers.</p>
+  <p class="note" style="text-align:center;margin-top:10px">Book: <b>${esc(bookName(g))}</b>${bookGap(g).length?` · this book's ${bookGap(g).some(k=>k.startsWith('spread'))?'spread prices':'prices'} weren't available, so those use the consensus price`:''}. Use Edit lines for alternates or another price, then Save to update The pick and every other page. Reset puts back the book's original lines right away.</p>
   </div>`:''}
   <div id="panel"></div>`;
   centerIn($('gbar'),$('gbar').querySelector('.on'));document.documentElement.style.setProperty('--gbh',$('gbar').offsetHeight+'px');
@@ -1023,13 +1029,13 @@ function bind(g,tab){
     $('in-ed').addEventListener('input',e=>EK&&typed(EK,e.target));$('in-ed').addEventListener('blur',()=>show(EK));
     const pick=k=>{EK=k;document.querySelectorAll('.oc').forEach(b=>b.classList.toggle('on',b.dataset.ok===k));$('ox').hidden=!k;show(k)};
     const openEd=o=>{$('adjBox').hidden=!o;$('adjB').classList.toggle('on',o);$('adjB').setAttribute('aria-expanded',String(o));$('adjB').querySelector('span').textContent=o?'Close':'Edit lines'};
-    openEd(false);$('adjB').onclick=()=>openEd($('adjBox').hidden);
-    $('lnSv').onclick=()=>{st.lines={...D};saveSt(g,st);render(g,tab);const c1=calc(g);
+    openEd(false);$('adjB').onclick=()=>openEd($('adjBox').hidden);$('rsB').onclick=()=>resetLines(g,tab);
+    $('lnSv').onclick=()=>{st.lines={...D};saveSt(g,st);render(g,tab);{const mv=linesMoved(g);$('rsB').hidden=!mv;document.querySelector('.lgw').classList.toggle('mv',mv)}const c1=calc(g);
       const sp=c1.bets[2].p>=c1.bets[3].p?c1.bets[2]:c1.bets[3];bar(`Saved. Spread: <b>${esc(sp.n)}</b> ${evp(sp.ev)} (${sp.v}) · Best value: <b>${c1.best.ev>0?esc(c1.best.n)+'</b> '+evp(c1.best.ev):'none</b>'}`)};
     $('lnX').onclick=()=>{D={...st.lines};show('spread');if(EK)show(EK);up2()};
     $('pkWrap').addEventListener('click',e=>{const oc=e.target.closest('[data-ok]');if(oc){pick(EK===oc.dataset.ok?null:oc.dataset.ok);return}
       if(e.target.closest('#oxD')){pick(null);return}
-      if(e.target.closest('#rl')){D={...D,...bookLines(g)};show('spread');if(EK)show(EK);up2();return}
+      if(e.target.closest('#rl')){resetLines(g,tab);return}
       const sg=e.target.closest('[data-sg]');if(sg){const k=sg.dataset.sg==='ed'?EK:'spread';if(k)setV(k,-D[k]||0);return}
       const b=e.target.closest('[data-k]');if(!b)return;const k=b.dataset.k==='ed'?EK:'spread';if(!k)return;const v=D[k],stp=isOdds(k)?5:.5,sg_=v<0?-1:1;
       let m=Math.abs(v)+(+b.dataset.d)*stp;m=isOdds(k)?Math.max(100,m):Math.max(0,m);setV(k,sg_*m)});
@@ -1071,11 +1077,11 @@ function render(g,tab){
     $('ppS').innerHTML=`<span class="pp-tag">Projected score</span><div class="ps">${badge(g.away)}<span class="pt2 ${as>hs?'':'lo'}"><b>${as}</b><small>${esc(g.away.name)}</small></span><i>–</i><span class="pt2 ${hs>=as?'':'lo'}"><b>${hs}</b><small>${esc(g.home.name)}</small></span>${badge(g.home)}</div>
       <div class="wpb"><div class="wpb-l"><span>${esc(g.away.abbr)} ${pct(1-c.pw,0)}</span><b>${esc(fv.name)} win ${pct(c.wp,0)} · fair ${odds(fair(c.wp))}</b><span>${esc(g.home.abbr)} ${pct(c.pw,0)}</span></div><div class="bar"><i style="width:${(1-c.pw)*100}%;background:${esc(g.away.night)}"></i><i style="width:${c.pw*100}%;background:${esc(g.home.night)}"></i></div><small>Projected total ${c.tot.toFixed(1)}</small></div>`;
     const ch=g.players.some((p,i)=>stateFor(g).plays[i]!==p.plays),moved=JSON.stringify(L)!==JSON.stringify(bookLines(g));
-    $('ppN').innerHTML=moved||ch?`Using ${[moved?`<a href="#${esc(g.id)}-lines">your lines</a>`:'',ch?`<a href="#${esc(g.id)}-inactives">your inactives</a>`:''].filter(Boolean).join(' and ')}.`:`Lines: <b>${esc(bookName(g))}</b>${bookOf(g)?`, ${esc(g.booksAsOf||g.lines.asOf)}`:`, ${esc(g.lines.asOf)}`}. See or change lines on <a href="#${esc(g.id)}-lines">Game lines</a>.`;}
+    $('ppN').innerHTML=moved||ch?`Using ${[moved?`<a href="#${esc(g.id)}-lines">your lines</a>`:'',ch?`<a href="#${esc(g.id)}-inactives">your inactives</a>`:''].filter(Boolean).join(' and ')}.${moved?' <button type="button" class="lnk" id="ppR">Reset lines</button>':''}`:`Lines: <b>${esc(bookName(g))}</b>${bookOf(g)?`, ${esc(g.booksAsOf||g.lines.asOf)}`:`, ${esc(g.lines.asOf)}`}. See or change lines on <a href="#${esc(g.id)}-lines">Game lines</a>.`;if($('ppR'))$('ppR').onclick=()=>resetLines(g,tab);}
   if(tab==='breakdown'){const T=v=>v>=0?g.home:g.away;
     $('bdH').innerHTML=`${badge(T(c.m))}<div><b>${esc(c.fav)} by ${Math.abs(c.m).toFixed(1)}</b><small>The biggest pieces of the projected margin</small></div>`;
     const F=c.F.filter(f=>Math.abs(f[2])>=.05).sort((a,b)=>Math.abs(b[2])-Math.abs(a[2])),top=F.slice(0,6),rest=F.slice(6).reduce((a,f)=>a+f[2],0),mx=Math.max(...top.map(f=>Math.abs(f[2])),1);
-    $('bdF').innerHTML=top.map(([gr,n,v])=>`<div class="fx"><span class="fx-n">${esc(n)}</span><span class="fx-t" ${tc(T(v))}>${badge(T(v))}${esc(T(v).abbr)}</span><b>+${Math.abs(v).toFixed(1)}</b><div class="fx-b"><i style="width:${Math.abs(v)/mx*100}%;background:var(${v>=0?'--home':'--away'})"></i></div></div>`).join('')+(Math.abs(rest)>=.05?`<div class="fx fx-o"><span class="fx-n">Everything else</span><span class="fx-t">${esc(T(rest).abbr)}</span><b>+${Math.abs(rest).toFixed(1)}</b></div>`:'');
+    $('bdF').innerHTML=top.map(([gr,n,v])=>`<div class="fx"><span class="fx-n">${esc(n)}</span><span class="fx-t" ${tc(T(v))}>${badge(T(v))}${esc(T(v).abbr)}</span><b>+${Math.abs(v).toFixed(1)}</b><div class="fx-b"><i style="width:${Math.abs(v)/mx*100}%;background:var(${v>=0?'--home':'--away'})"></i></div></div>`).join('')+(Math.abs(rest)>=.05?`<div class="fx fx-o"><span class="fx-n">Everything else</span><span class="fx-t">${esc(T(rest).abbr)}</span><b>+${Math.abs(rest).toFixed(1)}</b></div>`:'')+(c.k<1?`<p class="note fx-mk">Model on its own: <b>${esc(T(c.mRaw).name)} by ${Math.abs(c.mRaw).toFixed(1)}</b>. Market line: <b>${esc(T(-stateFor(g).lines.spread).name)} by ${Math.abs(stateFor(g).lines.spread).toFixed(1)}</b>. The pick moves ${Math.round(c.k*100)}% of the way from the market toward the model: <b>${esc(T(c.m).name)} by ${Math.abs(c.m).toFixed(1)}</b>.</p>`:'');
     {const wx=g.inputs&&g.inputs.weather,el=$('bdW');if(el){if(!wx)el.innerHTML='';else if(wx.roof==='Dome')el.innerHTML=`<div class="wxb in"><span class="wx-i">⌂</span><div><b>Indoors</b><small>${esc(g.venue||'Dome')} · weather isn't a factor</small></div></div>`;else{
       const f=c.F.find(x=>x[1]==='Weather'),mv=f?f[2]:0,tl=c.sev*SET.wxTotal,lvl=c.sev<.05?'None':c.sev<.5?'Mild':c.sev<1?'Moderate':'Severe';
       el.innerHTML=`<div class="wxb wx-${lvl}"><span class="wx-i">${c.sev<.05?'☀':/Snow/.test(wx.precip)?'❄':/Rain/.test(wx.precip)?'☂':'≋'}</span><div><b>Weather · ${lvl} impact</b><small>${esc(wxText(wx))}${wx.roof&&wx.roof!=='Open'?' · '+esc(wx.roof)+' roof':''}</small></div>
@@ -1116,7 +1122,7 @@ function fromWorkbook(wb){
   const T=n=>{const ws=wb.Sheets[n];if(!ws)throw new Error('Missing sheet: '+n);return XLSX.utils.sheet_to_json(ws,{defval:null,raw:true})};
   const st={};let curD=null;T('Settings').forEach(r=>{if(!r['Setting'])return;if(r['Setting']==='Current day (site opens here)')curD=isoOf(r['Value']);else st[r['Setting']]=num(r['Value'])});
   const settings={wSeason:st['Weight: full season'],wVenue:st['Weight: venue split'],wL3:st['Weight: last 3 games'],hfa:st['Home-field points'],sd:st['Std. dev. of NFL margin'],toPts:st['Points per turnover'],toReg:st['Turnover regression'],sosW:st['Schedule-strength weight'],byeW:st['Post-bye weight'],betEV:st['Bet threshold (EV per $100)'],currentDay:curD,
-    statWeights:{RushYPG:st['Weight: rushing yds/game'],RushYPC:st['Weight: yards per rush'],PassYPG:st['Weight: passing yds/game'],PassYPA:st['Weight: yards per pass att'],RZTD:st['Weight: red zone TD %']},wxW:st['Weather: pass-share weight']??6,wxTotal:st['Weather: total points lost per severity']??4,sdTotal:st['Std. dev. of NFL total']??13.5};
+    mktW:st['Market blend: model share']??1,statWeights:{RushYPG:st['Weight: rushing yds/game'],RushYPC:st['Weight: yards per rush'],PassYPG:st['Weight: passing yds/game'],PassYPA:st['Weight: yards per pass att'],RZTD:st['Weight: red zone TD %']},wxW:st['Weather: pass-share weight']??6,wxTotal:st['Weather: total points lost per severity']??4,sdTotal:st['Std. dev. of NFL total']??13.5};
   const rows=T('League Data').filter(r=>r['Stat key']).map(r=>[r['Stat key'],r['Team'],num(r['Season']),num(r['Home']),num(r['Away']),num(r['Last 3']),num(r['Week'])]);
   const h1=wb.Sheets['League Data']['I1'];const note=h1?String(h1.v):'';
   const by=(n,id)=>T(n).filter(r=>r['Game ID']===id);
