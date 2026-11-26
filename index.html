@@ -759,6 +759,25 @@ body,.tab-bar,.dtabs,.gbar{transition:background-color .25s}
 .fx-mk{margin:10px 2px 0;font-size:12.5px;line-height:1.45}
 .lnk{border:0;background:none;padding:0;color:var(--lime);font:inherit;font-weight:700;text-decoration:underline;cursor:pointer}
 .edb[hidden]{display:none!important}
+.sg-n{display:inline-flex;align-items:center;justify-content:center;min-width:38px;font:700 11px Oswald,sans-serif;letter-spacing:.5px;color:var(--mute)}
+.fbar{display:flex;gap:6px;align-items:center;overflow-x:auto;scrollbar-width:none;padding:2px 2px 10px;margin:0 0 2px}.fbar::-webkit-scrollbar{display:none}
+.fc{position:relative;flex:none;display:inline-flex;align-items:center;border-radius:999px;background:var(--card);box-shadow:inset 0 0 0 1px var(--line);color:var(--ink)}
+.fc select{appearance:none;-webkit-appearance:none;border:0;background:transparent;color:inherit;font:700 12px 'Source Sans 3',sans-serif;padding:6px 22px 6px 10px;cursor:pointer;max-width:118px;text-overflow:ellipsis}
+.fc svg{position:absolute;right:7px;pointer-events:none;opacity:.7}
+.fc.on{background:color-mix(in srgb,var(--lime) 16%,transparent);box-shadow:inset 0 0 0 1px color-mix(in srgb,var(--lime) 55%,transparent);color:var(--lime)}
+.fc select option{color:#111;background:#fff}
+.fclr{flex:none;border:0;background:none;color:var(--mute);font:700 12px 'Source Sans 3',sans-serif;text-decoration:underline;cursor:pointer;padding:6px 4px}
+.pq{padding:4px 0}.pq-p{padding:10px 14px;border-bottom:1px solid var(--line2)}.pq-p:last-child{border-bottom:0}
+.pq-h{display:flex;align-items:center;gap:8px;margin-bottom:6px}.pq-h b{font-size:15px}.pq-h small{color:var(--mute);font-weight:700;font-size:11.5px}
+.pq-r{display:grid;grid-template-columns:minmax(78px,1.2fr) 50px 1fr 1fr 52px;gap:6px;align-items:center;padding:6px 0}
+.pq-m b{display:block;font-size:13px}.pq-m small,.pq-j small{display:block;color:var(--mute);font-size:11px}.pq-j{text-align:center}.pq-j b{font-size:14px}
+.pq-s{display:flex;flex-direction:column;align-items:center;padding:4px 2px;border-radius:9px;background:var(--card2);font-size:12px;font-weight:700}.pq-s em{font-style:normal;font-size:11.5px;color:var(--mute)}
+.pq-s.on{box-shadow:inset 0 0 0 1.5px var(--lime)}.pq-s.on em{color:var(--lime)}
+.pq-r .vc{justify-self:end}.pq-d{grid-column:1/-1;color:var(--dim);font-size:11px;margin-top:-2px}
+.pq-ct{flex:none;color:var(--mute);font-size:12px;font-weight:700;margin-left:4px}
+.ev-r.ev-prop .ev-n b{white-space:normal;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;line-height:1.2}
+.pq-mn{display:block;margin-top:3px;color:var(--mute);font-size:11.5px}
+.pq-s.on span{color:var(--ink)!important}.pq-s.on{background:var(--card2)!important}
 </style>
 </head>
 <body>
@@ -778,7 +797,7 @@ body,.tab-bar,.dtabs,.gbar{transition:background-color .25s}
 const $=id=>document.getElementById(id);
 const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const STATS=[['RushYPG','Rushing yards/game'],['RushYPC','Yards per rush'],['PassYPG','Passing yards/game'],['PassYPA','Yards per pass attempt'],['RZTD','Red zone TD %'],['PPG','Points/game']];
-const TABS=[['pick','The pick'],['lines','Game lines'],['inactives','Injury report'],['breakdown','Breakdown'],['writeup','Write-up']];
+const TABS=[['pick','The pick'],['lines','Game lines'],['inactives','Injury report'],['breakdown','Breakdown'],['props','Props'],['writeup','Write-up']];
 const COL={season:2,home:3,away:4,l3:5};
 let LD=[],GAMES=[],META={},SET={},ST={},LOG=[],RES=[],CW=null,SELWK=null,SELDAY=null;
 const load=(k,d)=>{try{const v=JSON.parse(localStorage.getItem(k)||'null');return v??d}catch(e){return d}};
@@ -797,6 +816,16 @@ const wxText=wx=>{if(!wx)return '';if(wx.roof==='Dome')return 'Indoors';const p=
 const CHD='<svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path d="M6 9l6 6 6-6" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg>',CHU='<svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path d="M6 15l6-6 6 6" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg>';
 const ord=n=>{n=Math.round(n);const s=['th','st','nd','rd'],v=n%100;return n+(s[(v-20)%10]||s[v]||s[0])};
 const evp=ev=>(ev>=0?'+':'−')+Math.abs(ev).toFixed(1)+'%';
+const propOut=g=>{const st=stateFor(g),n=x=>String(x).toLowerCase().replace(/[^a-z ]/g,'').replace(/\b(jr|sr|ii|iii|iv|v)\b/g,'').trim().replace(/\s+/g,' ');return new Set(g.players.filter((p,i)=>!st.plays[i]).map(p=>n(p.player))).add('__')&&{has:x=>g.players.some((p,i)=>!st.plays[i]&&n(p.player)===n(x))}};
+const poiC=(x,mu)=>{let t=Math.exp(-mu),c=0;for(let i=0;i<=x;i++){if(i)t*=mu/i;c+=t}return c},poiP=(x,mu)=>{let t=Math.exp(-mu);for(let i=1;i<=x;i++)t*=mu/i;return t};
+const propGrade=(p,bk)=>{const b=p.books[bk];if(!b)return null;const k=SET.propW??SET.mktW??1,L=b.line,wh=Number.isInteger(L),cnt=p.market==='Receptions',mu=Math.max(.05,p.proj),sd=p.sd,
+  nv=x=>be(x.over)/(be(x.over)+be(x.under)),same=Object.values(p.books).filter(x=>x.line===L),mO=same.reduce((a,x)=>a+nv(x),0)/same.length,
+  modO=cnt?1-poiC(Math.floor(L),mu):wh?1-Phi((L+.5-mu)/sd):1-Phi((L-mu)/sd),modP=cnt?(wh?poiP(L,mu):0):wh?Phi((L+.5-mu)/sd)-Phi((L-.5-mu)/sd):0,
+  pO=mO+k*(modO-mO),pP=k*modP,pU=1-pO-pP,proj=p.line+k*(p.proj-p.line),
+  mk=(side,pW,o)=>{const ev=pW*profit(o)-(1-pW-pP)*100;return {side,p:pW,o,ev,v:ev>=SET.betEV?'Bet':ev>0?'Lean':'Pass'}};
+  return {L,proj,bk,mO,modO,o:mk('over',pO,b.over),u:mk('under',pU,b.under)}};
+const propBets=(g,bk)=>{const out=propOut(g);return (g.props||[]).filter(p=>!out.has(p.player)).flatMap(p=>{const r=propGrade(p,bk);if(!r)return[];return [r.o,r.u].map(x=>({n:`${p.player} ${x.side==='over'?'Over':'Under'} ${r.L} ${p.market}`,o:x.o,ev:x.ev,v:x.v,p:x.p,kind:'Prop',team:p.team,t:x.side}))})};
+let PF={edges:true,mkt:'all'};
 const money=v=>(v<0?'−$':'+$')+Math.abs(v).toFixed(2);
 const rowsOf=k=>LD.filter(r=>r[0]===k&&(CW==null||r[6]===CW));
 const val=(k,t,c)=>{const r=rowsOf(k).find(r=>r[1]===t);return r?r[COL[c]]:NaN};
@@ -844,7 +873,7 @@ function calc(g,Lo){
   if(wx){const sh=t=>{const p=bl(val,'PassYPG_O',t,t===H?'home':'away'),r=bl(val,'RushYPG_O',t,t===H?'home':'away');return p/(p+r)};F.push(['Situation','Weather',sev*(sh(A)-sh(H))*SET.wxW])}
   g.adjustments.forEach(a=>F.push([a.group,a.label,a.pts]));
   g.players.forEach((p,i)=>{const v=st.plays[i]?p.ptsPlays:p.ptsOut;if(v)F.push(['Players',`${p.player} ${st.plays[i]?'plays':'out'}`,v])});
-  const mRaw=F.reduce((s,f)=>s+f[2],0),totRaw=hp+ap-sev*SET.wxTotal,k=SET.mktW??1,m=L.spread!=null?-L.spread+k*(mRaw+L.spread):mRaw,tot=L.total!=null?L.total+k*(totRaw-L.total):totRaw,sd=SET.sd,nvH=(L.mlHome!=null&&L.mlAway!=null)?be(L.mlHome)/(be(L.mlHome)+be(L.mlAway)):null,pw=nvH!=null&&k<1?nvH+k*(Phi(mRaw/sd)-nvH):Phi(m/sd),x=m+L.spread,whole=Number.isInteger(L.spread);
+  const mRaw=F.reduce((s,f)=>s+f[2],0),totRaw=hp+ap-sev*SET.wxTotal,k=SET.mktW??1,A0=g.lines,m=A0.spread!=null?-A0.spread+k*(mRaw+A0.spread):mRaw,tot=A0.total!=null?A0.total+k*(totRaw-A0.total):totRaw,sd=SET.sd,nvH=(A0.mlHome!=null&&A0.mlAway!=null)?be(A0.mlHome)/(be(A0.mlHome)+be(A0.mlAway)):null,pw=nvH!=null&&k<1?nvH+k*(Phi(mRaw/sd)-nvH):Phi(m/sd),x=m+L.spread,whole=Number.isInteger(L.spread);
   const hc=whole?Phi((x-.5)/sd):Phi(x/sd),push=whole?Phi((x+.5)/sd)-hc:0,ac=1-hc-push,pc=hc;
   const vd=ev=>ev>=SET.betEV?'Bet':ev>0?'Lean':'Pass';
   const mk=(n,t,kind,pW,pP,o,oo)=>{const pr=profit(o),pL=1-pW-pP,ev=pW*pr-pL*100,b=pr/100,k=Math.max(0,(b*pW-pL)/b);return {n,t,kind,p:pW,push:pP,o,need:be(o),nv:be(o)/(be(o)+be(oo)),ev,roi:ev/100,kelly:k/4,fairO:fairOdds(pW/(pW+pL)),v:vd(ev)}};
@@ -931,22 +960,35 @@ function board(){
   const ds=$('dayStrip');centerIn(ds,ds.querySelector('.on'));
   let st_;ds.addEventListener('scroll',()=>{clearTimeout(st_);st_=setTimeout(()=>{const a=nearestCenter(ds,'.dtab');if(a&&!a.classList.contains('on'))location.replace(a.getAttribute('href'))},160)});
 }
-let BBF={game:'all',book:null};
+let BBF={day:null,game:'all',book:null,type:'all'};
 function best(){
   document.title='Best Bets';anim();
-  const W=weeks(),wk=(GAMES.find(g=>dayOf(g)===(SELDAY||pickDay()))||{}).week||W[W.length-1],GS=GAMES.filter(g=>g.week===wk),BKS=allBooks();
+  const W=weeks(),wk=(GAMES.find(g=>dayOf(g)===(SELDAY||pickDay()))||{}).week||W[W.length-1],WG=GAMES.filter(g=>g.week===wk),BKS=allBooks();
+  const DAYS=[...new Set(WG.map(dayOf))].sort();
+  if(BBF.day==null||(BBF.day!=='all'&&!DAYS.includes(BBF.day)))BBF.day=DAYS.includes(curDay())?curDay():(DAYS.find(d=>d>=curDay())||'all');
+  const GS=WG.filter(g=>BBF.day==='all'||dayOf(g)===BBF.day);
   if(BBF.game!=='all'&&!GS.some(g=>g.id===BBF.game))BBF.game='all';if(BBF.book==null||(BBF.book!=='all'&&!BKS.includes(BBF.book)))BBF.book=BKS.includes(BOOK)?BOOK:'all';
-  const all=[];GS.filter(g=>BBF.game==='all'||g.id===BBF.game).forEach(g=>{const fin=!!resOf(g.id);(BBF.book==='all'?BKS:[BBF.book]).forEach(bk=>{if(!bookOf(g,bk))return;const c=calc(g,bookLines(g,bk));c.bets.concat(c.tb).forEach(b=>all.push({g,b,fin,bk}))})});
+  const hasProps=GS.some(g=>(g.props||[]).length);if(!hasProps&&BBF.type==='prop')BBF.type='all';
+  const all=[];GS.filter(g=>BBF.game==='all'||g.id===BBF.game).forEach(g=>{const fin=!!resOf(g.id);(BBF.book==='all'?BKS:[BBF.book]).forEach(bk=>{if(!bookOf(g,bk))return;
+    if(BBF.type==='all'||BBF.type==='side'||BBF.type==='total'){const c=calc(g,bookLines(g,bk));(BBF.type==='side'?c.bets:BBF.type==='total'?c.tb:c.bets.concat(c.tb)).forEach(b=>all.push({g,b,fin,bk}))}
+    if((BBF.type==='all'||BBF.type==='prop')&&typeof propBets==='function')propBets(g,bk).forEach(b=>all.push({g,b,fin,bk}))})});
   all.sort((a,b)=>b.b.ev-a.b.ev);const pos=all.filter(x=>x.b.ev>0),neg=all.filter(x=>x.b.ev<=0);
-  const T=(g,t)=>t==='home'?g.home:g.away,mx=Math.max(1,...all.map(x=>Math.abs(x.b.ev)));
+  const T=(g,t)=>t==='home'?g.home:t==='away'?g.away:null,mx=Math.max(1,...all.map(x=>Math.abs(x.b.ev)));
   const time=g=>{const d=dayOf(g);return `${d==='tbd'?'':dLabel(d,{weekday:'short'})} ${(String(g.kickoff||'').split('·').slice(1).join('·').trim()).replace(/\s*ET$/,'')}`};
-  const row=({g,b,fin,bk},i)=>`<a class="ev-r ev-${b.ev>0?b.v:'neg'}" href="#${esc(g.id)}"><span class="ev-k">${b.ev>0?i+1:''}</span><div class="ev-n">${b.kind==='Total'?`<span class="tot-i">${b.t==='over'?'O':'U'}</span>`:badge(T(g,b.t))}<div><b>${esc(b.n)} <small class="od">${odds(b.o)}</small></b><span>${esc(g.away.abbr)} @ ${esc(g.home.abbr)} · ${fin?'Final':esc(time(g))}</span></div></div><div class="ev-bk">${bkLogo(bk)}<span>${esc(bk)}</span></div><div class="ev-b"><i style="width:${Math.max(2,Math.abs(b.ev)/mx*100)}%"></i></div><b class="ev-v">${evp(b.ev)}</b><em class="vc v-${b.ev>0?b.v:'Pass'}">${b.ev>0?b.v:'Pass'}</em></a>`;
-  $('app').innerHTML=`<div class="ev-f"><label><span>Game</span><select id="bfG"><option value="all">All games</option>${GS.map(g=>`<option value="${esc(g.id)}"${BBF.game===g.id?' selected':''}>${esc(g.away.abbr)} @ ${esc(g.home.abbr)}</option>`).join('')}</select></label><label><span>Book</span><select id="bfB"><option value="all">All books</option>${BKS.map(b=>`<option${BBF.book===b?' selected':''}>${esc(b)}</option>`).join('')}</select></label></div>
-  <div class="ev-h"><span>Week ${esc(wk)} · best edges${BBF.book==='all'?' across every book':' at '+esc(BBF.book)}</span><span><i class="k1"></i>Bet <i class="k2"></i>Lean <i class="k3"></i>No edge</span></div>
+  const ico=(g,b)=>b.kind==='Total'?`<span class="tot-i">${b.t==='over'?'O':'U'}</span>`:b.kind==='Prop'?badge(b.team===g.home.abbr?g.home:g.away):badge(T(g,b.t));
+  const row=({g,b,fin,bk},i)=>`<a class="ev-r ev-${b.ev>0?b.v:'neg'}${b.kind==='Prop'?' ev-prop':''}" href="#${esc(g.id)}${b.kind==='Prop'?'-props':''}"><span class="ev-k">${b.ev>0?i+1:''}</span><div class="ev-n">${ico(g,b)}<div><b>${esc(b.n)} <small class="od">${odds(b.o)}</small></b><span>${b.kind==='Prop'?'Prop · ':''}${esc(g.away.abbr)} @ ${esc(g.home.abbr)} · ${fin?'Final':esc(time(g))}</span></div></div><div class="ev-bk">${bkLogo(bk)}<span>${esc(bk)}</span></div><div class="ev-b"><i style="width:${Math.max(2,Math.abs(b.ev)/mx*100)}%"></i></div><b class="ev-v">${evp(b.ev)}</b><em class="vc v-${b.ev>0?b.v:'Pass'}">${b.ev>0?b.v:'Pass'}</em></a>`;
+  const opt=(v,lab,cur)=>`<option value="${esc(v)}"${cur===v?' selected':''}>${esc(lab)}</option>`;
+  const chip=(id,cur,def,opts,label)=>`<label class="fc${cur!==def?' on':''}"><select id="${id}" aria-label="${label}">${opts}</select><svg viewBox="0 0 24 24" width="12" height="12" aria-hidden="true"><path d="M6 9l6 6 6-6" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg></label>`;
+  const dayLab=d=>d==='all'?'All week':d===curDay()?'Today':d==='tbd'?'TBD':dLabel(d,{weekday:'short',month:'short',day:'numeric'}).replace(',','');
+  const defDay=DAYS.includes(curDay())?curDay():(DAYS.find(d=>d>=curDay())||'all'),defBook=BKS.includes(BOOK)?BOOK:'all';
+  const any=BBF.day!==defDay||BBF.game!=='all'||BBF.book!==defBook||BBF.type!=='all';
+  $('app').innerHTML=`<div class="fbar">${chip('bfD',BBF.day,defDay,opt('all','All week',BBF.day)+DAYS.map(d=>opt(d,dayLab(d),BBF.day)).join(''),'Day')}${chip('bfT',BBF.type,'all',opt('all','All bets',BBF.type)+opt('side','Spread & ML',BBF.type)+opt('total','Totals',BBF.type)+(hasProps?opt('prop','Props',BBF.type):''),'Bet type')}${chip('bfG',BBF.game,'all',opt('all','All games',BBF.game)+GS.map(g=>opt(g.id,`${g.away.abbr} @ ${g.home.abbr}`,BBF.game)).join(''),'Game')}${chip('bfB',BBF.book,defBook,opt('all','All books',BBF.book)+BKS.map(b=>opt(b,b,BBF.book)).join(''),'Book')}${any?'<button type="button" class="fclr" id="bfX">Reset</button>':''}</div>
+  <div class="ev-h"><span>${esc(dayLab(BBF.day))} · ${pos.length} with an edge${BBF.book==='all'?' across every book':' at '+esc(BBF.book)}</span><span><i class="k1"></i>Bet <i class="k2"></i>Lean <i class="k3"></i>No edge</span></div>
   <div class="card ev">${pos.length?pos.map(row).join(''):'<div class="empty">No bet has an edge at these lines.</div>'}
   ${neg.length?`<details class="ev-x"><summary>Show ${neg.length} lines with no edge</summary>${neg.map(row).join('')}</details>`:''}</div>
   <p class="note" style="text-align:center">EV = average return per bet if the model is right. Each projection is blended ${Math.round((SET.mktW??1)*100)}% model / ${Math.round(100-(SET.mktW??1)*100)}% market line. BET at +${SET.betEV}% or better, LEAN above 0%. Same bet at different books = shop for the best price.</p>`;
-  $('bfG').onchange=e=>{BBF.game=e.target.value;best()};$('bfB').onchange=e=>{BBF.book=e.target.value;best()};
+  $('bfD').onchange=e=>{BBF.day=e.target.value;BBF.game='all';best()};$('bfG').onchange=e=>{BBF.game=e.target.value;best()};$('bfB').onchange=e=>{BBF.book=e.target.value;best()};$('bfT').onchange=e=>{BBF.type=e.target.value;best()};
+  if($('bfX'))$('bfX').onclick=()=>{BBF={day:null,game:'all',book:null,type:'all'};best()};
 }
 function soon(){document.title='Track Record';anim();
   $('app').innerHTML=`<div class="soon"><b>Coming soon</b><p>The track record will grade every locked pick once results start coming in.</p></div>`}
@@ -976,10 +1018,11 @@ function game(g,tab){
   teamCol(g);document.title=`${g.away.abbr} @ ${g.home.abbr}`;anim();
   const wx=g.inputs&&g.inputs.weather;
   const lg0=logOf(g),gr0=lg0&&grade(lg0);
-  $('app').innerHTML=`<nav class="gbar" id="gbar">${TABS.map(([t,n])=>`<a class="${t===tab?'on':''}" href="#${esc(g.id)}-${t}">${n}</a>`).join('')}</nav><a class="fab" href="#day-${dayOf(g)}" aria-label="Back to all games"><svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true"><path d="M15 18l-6-6 6-6" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg>All games</a>${tab==='pick'&&gr0?`<div class="final">Final · ${esc(g.away.abbr)} ${gr0.r.awayScore} – ${gr0.r.homeScore} ${esc(g.home.abbr)} · Straight up <b class="${RC[gr0.su]}">${gr0.su}</b> · ATS <b class="${RC[gr0.ats]}">${gr0.ats}</b>${gr0.best?` · Best bet <b class="${RC[gr0.best]}">${gr0.best} ${money(gr0.profit)}</b>`:''}${gr0.clv!=null?` · CLV ${sgn(gr0.clv)} pts`:''}</div>`:''}
+  $('app').innerHTML=`<nav class="gbar" id="gbar">${TABS.filter(([t])=>t!=='props'||(g.props||[]).length||tab==='props').map(([t,n])=>`<a class="${t===tab?'on':''}" href="#${esc(g.id)}-${t}">${n}</a>`).join('')}</nav><a class="fab" href="#day-${dayOf(g)}" aria-label="Back to all games"><svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true"><path d="M15 18l-6-6 6-6" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg>All games</a>${tab==='pick'&&gr0?`<div class="final">Final · ${esc(g.away.abbr)} ${gr0.r.awayScore} – ${gr0.r.homeScore} ${esc(g.home.abbr)} · Straight up <b class="${RC[gr0.su]}">${gr0.su}</b> · ATS <b class="${RC[gr0.ats]}">${gr0.ats}</b>${gr0.best?` · Best bet <b class="${RC[gr0.best]}">${gr0.best} ${money(gr0.profit)}</b>`:''}${gr0.clv!=null?` · CLV ${sgn(gr0.clv)} pts`:''}</div>`:''}
   ${tab==='lines'?`<div id="pkWrap"><div class="lgw${linesMoved(g)?' mv':''}"><div class="edw"><button type="button" class="edb rsb" id="rsB" ${linesMoved(g)?'':'hidden'} title="Put back the book's original lines"><svg viewBox="0 0 24 24" width="13" height="13" aria-hidden="true"><path d="M4 12a8 8 0 1 0 2.4-5.7M4 4v5h5" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg><span>Reset</span></button><button type="button" class="edb" id="adjB" aria-expanded="false"><svg viewBox="0 0 24 24" width="13" height="13" aria-hidden="true"><path d="M4 20h4L19 9l-4-4L4 16v4z" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linejoin="round"/></svg><span>Edit lines</span></button></div><div class="ogw info" id="lgG"></div></div>
   <div id="adjBox" hidden><div class="lr"><div class="lr-g"><span class="lr-l">Spread</span><div class="ln-c"><button type="button" class="sg" data-sg="spread" aria-label="Flip + or −"></button><input id="in-spread" type="text" inputmode="decimal" autocomplete="off" aria-label="${esc(g.home.name)} spread"><button type="button" class="nd" data-k="spread" data-d="-1" aria-label="Lower">${CHD}</button><button type="button" class="nd" data-k="spread" data-d="1" aria-label="Raise">${CHU}</button></div><small id="hint-spread"></small></div>
-  <div class="lr-g lr-o"><div class="lr-oh"><span class="lr-l">Odds <em>tap to edit</em></span><button type="button" class="lr-rs" id="rl">Reset lines</button></div><div class="ocs">${[['spreadOddsAway',g.away,'sp'],['spreadOddsHome',g.home,'sp'],['mlAway',g.away,'ml'],['mlHome',g.home,'ml']].map(([k,t,kind])=>`<button type="button" class="oc" data-ok="${k}">${badge(t)}<span id="ocl-${k}"></span><b id="oc-${k}"></b></button>`).join('')}</div></div></div>
+  ${g.lines.total!=null?`<div class="lr-g"><span class="lr-l">Total (O/U)</span><div class="ln-c"><span class="sg sg-n">O/U</span><input id="in-total" type="text" inputmode="decimal" autocomplete="off" aria-label="Total points"><button type="button" class="nd" data-k="total" data-d="-1" aria-label="Lower">${CHD}</button><button type="button" class="nd" data-k="total" data-d="1" aria-label="Raise">${CHU}</button></div><small id="hint-total"></small></div>`:''}
+  <div class="lr-g lr-o"><div class="lr-oh"><span class="lr-l">Odds <em>tap to edit</em></span><button type="button" class="lr-rs" id="rl">Reset lines</button></div><div class="ocs">${[['spreadOddsAway',g.away,'sp'],['spreadOddsHome',g.home,'sp'],['mlAway',g.away,'ml'],['mlHome',g.home,'ml']].map(([k,t,kind])=>`<button type="button" class="oc" data-ok="${k}">${badge(t)}<span id="ocl-${k}"></span><b id="oc-${k}"></b></button>`).join('')+(g.lines.total!=null?[['overOdds','O'],['underOdds','U']].map(([k,ic])=>`<button type="button" class="oc" data-ok="${k}"><span class="tot-i">${ic}</span><span id="ocl-${k}"></span><b id="oc-${k}"></b></button>`).join(''):'')}</div></div></div>
   <div class="ox" id="ox" hidden><span id="oxL"></span><div class="ln-c"><button type="button" class="sg" data-sg="ed" aria-label="Flip + or −"></button><input id="in-ed" type="text" inputmode="decimal" autocomplete="off" aria-label="Odds"><button type="button" class="nd" data-k="ed" data-d="-1" aria-label="Lower">${CHD}</button><button type="button" class="nd" data-k="ed" data-d="1" aria-label="Raise">${CHU}</button></div><small id="oxH"></small><button type="button" class="save" id="oxD">Done</button></div><div class="ia-bar ln-bar" id="lnBar"><span id="lnMsg"></span><button class="reset" id="lnX" type="button">Discard</button><button class="save" id="lnSv" type="button">Saved</button></div></div>
   <p class="note" style="text-align:center;margin-top:10px">Book: <b>${esc(bookName(g))}</b>${bookGap(g).length?` · this book's ${bookGap(g).some(k=>k.startsWith('spread'))?'spread prices':'prices'} weren't available, so those use the consensus price`:''}. Use Edit lines for alternates or another price, then Save to update The pick and every other page. Reset puts back the book's original lines right away.</p>
   </div>`:''}
@@ -1003,41 +1046,50 @@ function game(g,tab){
     const body=t=>t===H2?h2h(t):t.rows.length===2&&t.cols.length>=3?vs(t):list(t);
     return `<h3 class="cx-hd">Matchup notes</h3><div class="cx-g">${C.map(t=>`<div class="card cx-c${t===H2?' cx-w':''}"><h2>${esc(t.title)}</h2>${body(t)}${t.note?`<div class="cx-n">${esc(t.note)}</div>`:''}</div>`).join('')}</div>`})()}`;
   if(tab==='inactives')P.innerHTML=`<div class="card ia"><div class="body" id="ia"></div><div class="ia-bar" id="iaBar"><span id="iaMsg"></span><button class="reset" id="iaRs" type="button">Reset to report</button><button class="save" id="iaSv" type="button">Save</button></div></div>`;
+  if(tab==='props'){const out=propOut(g),T=ab=>ab===g.home.abbr?g.home:g.away,PS=(g.props||[]).filter(p=>!out.has(p.player));
+    const MK=[...new Set(PS.map(p=>p.market))],rows=PS.filter(p=>PF.mkt==='all'||p.market===PF.mkt).map(p=>{const bk=p.books[BOOK]?BOOK:Object.keys(p.books)[0],r=propGrade(p,bk);return {p,r,bk,best:r.o.ev>=r.u.ev?r.o:r.u}}).filter(x=>!PF.edges||x.best.ev>0);
+    const by={};rows.forEach(x=>(by[x.p.player]=by[x.p.player]||[]).push(x));
+    const nb=PS.filter(p=>!p.books[BOOK]).length;
+    const side=(x,s,lab)=>`<div class="pq-s${x.best===s&&s.ev>0?' on v-'+s.v:''}"><span>${lab} ${odds(s.o)}</span><em>${evp(s.ev)}</em></div>`;
+    P.innerHTML=`<div class="fbar"><label class="fc${PF.edges?' on':''}"><select id="pfE" aria-label="Show"><option value="1"${PF.edges?' selected':''}>Edges only</option><option value="0"${PF.edges?'':' selected'}>All props</option></select><svg viewBox="0 0 24 24" width="12" height="12" aria-hidden="true"><path d="M6 9l6 6 6-6" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg></label><label class="fc${PF.mkt!=='all'?' on':''}"><select id="pfM" aria-label="Market"><option value="all">All markets</option>${MK.map(m=>`<option${PF.mkt===m?' selected':''}>${esc(m)}</option>`).join('')}</select><svg viewBox="0 0 24 24" width="12" height="12" aria-hidden="true"><path d="M6 9l6 6 6-6" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg></label><span class="pq-ct">${rows.length} of ${PS.length} props</span></div>
+    <div class="card pq">${Object.entries(by).map(([pl,xs])=>`<div class="pq-p"><div class="pq-h" ${tc(T(xs[0].p.team))}>${badge(T(xs[0].p.team))}<b>${esc(pl)}</b><small>${esc(xs[0].p.pos)} · ${esc(xs[0].p.team)}</small></div>${xs.map(x=>`<div class="pq-r"><div class="pq-m"><b>${esc(x.p.market)}</b><small>Line ${x.r.L}${x.bk!==BOOK?` · ${esc(x.bk)}`:''}</small></div><div class="pq-j"><b>${x.r.proj.toFixed(1)}</b><small>proj.</small></div>${side(x,x.r.o,'O')}${side(x,x.r.u,'U')}<em class="vc v-${x.best.ev>0?x.best.v:'Pass'}">${x.best.ev>0?x.best.v:'Pass'}</em><div class="pq-d">Over chance: books ${(x.r.mO*100).toFixed(0)}% · model ${(x.r.modO*100).toFixed(0)}% · blended ${(x.r.o.p*100).toFixed(0)}% · Model alone ${(x.p.proj).toFixed(1)} · season avg ${x.p.season} · last 3 ${x.p.l3} · ${x.p.n} games${x.p.rnote?`<span class="pq-mn"><b>Role:</b> ${esc(x.p.rnote)}</span>`:''}${x.p.gnote?`<span class="pq-mn"><b>Game:</b> ${esc(x.p.gnote)}</span>`:''}${x.p.mnote?`<span class="pq-mn"><b>Matchup (×${x.p.opp}):</b> ${esc(x.p.mnote)}</span>`:''}</div></div>`).join('')}</div>`).join('')||'<div class="empty">No prop has an edge at these lines. Switch to All props to see every line.</div>'}</div>
+    <p class="note" style="text-align:center">Each prop's chance = the books' no-vig chance at that line + ${Math.round((SET.propW??SET.mktW??1)*100)}% of the gap to the player model's chance. Player model = team volume from the game line (expected lead or deficit, implied points, weather) × his share of that volume (re-figured when a teammate is out, from games without him) × his per-target or per-carry efficiency × the scheme matchup: what the defense allows to his position group and in the areas he's targeted, plus blitz rate for QBs and run direction and 8-man boxes for backs; receptions use a Poisson count model). Book: <b>${esc(BOOK)}</b>${nb?` · ${nb} props aren't posted there, so those show another book's line`:''}. Lines as of ${esc(g.propsAsOf||'')}. Players marked Out on the Injury report are hidden.</p>`;
+    $('pfE').onchange=e=>{PF.edges=e.target.value==='1';game(g,tab)};$('pfM').onchange=e=>{PF.mkt=e.target.value;game(g,tab)};}
   if(tab==='writeup')P.innerHTML=`<div class="wu">${g.writeup.map(([b,t])=>`<p>${b?`<b>${esc(b)}</b> `:''}${esc(t)}</p>`).join('')}<div class="wu-s">Written ${esc(g.writeupAsOf)}. Other tabs update live. Sources: ${g.sources.map(([n,u])=>`<a href="${esc(u)}">${esc(n)}</a>`).join(' · ')}. Analysis only, not betting advice.</div></div>`;
   bind(g,tab);render(g,tab);
 }
 function bind(g,tab){
   const st=stateFor(g),up=()=>{saveSt(g,st);render(g,tab)};
   if(tab==='lines'){
-    let EK=null,D={...st.lines};const isOdds=k=>k!=='spread',inp=k=>$(k==='spread'?'in-spread':'in-ed'),sgb=k=>document.querySelector(`[data-sg="${k==='spread'?'spread':'ed'}"]`);
-    const NM={spreadOddsAway:()=>`${g.away.name} ${sgn(-D.spread)}`,spreadOddsHome:()=>`${g.home.name} ${sgn(D.spread)}`,mlAway:()=>`${g.away.name} moneyline`,mlHome:()=>`${g.home.name} moneyline`};
-    const show=k=>{if(!k)return;const v=D[k],el=inp(k),sg=sgb(k);
+    let EK=null,D={...st.lines};const LV=(o,k)=>o[k]??((k==='overOdds'||k==='underOdds')?-110:null),isOdds=k=>k!=='spread'&&k!=='total',inp=k=>$(k==='spread'?'in-spread':k==='total'?'in-total':'in-ed'),sgb=k=>k==='total'?null:document.querySelector(`[data-sg="${k==='spread'?'spread':'ed'}"]`);
+    const NM={spreadOddsAway:()=>`${g.away.name} ${sgn(-D.spread)}`,spreadOddsHome:()=>`${g.home.name} ${sgn(D.spread)}`,mlAway:()=>`${g.away.name} moneyline`,mlHome:()=>`${g.home.name} moneyline`,overOdds:()=>`Over ${D.total}`,underOdds:()=>`Under ${D.total}`};
+    const show=k=>{if(!k)return;const v=LV(D,k),el=inp(k),sg=sgb(k);if(v==null)return;
       if(document.activeElement!==el)el.value=isOdds(k)?Math.abs(v):Math.abs(v).toFixed(1).replace(/\.0$/,'');
-      sg.textContent=v<0?'−':'+';sg.classList.toggle('neg',v<0);
-      if(k==='spread')$('hint-spread').textContent=v===0?'Pick’em':`${v<0?g.home.abbr:g.away.abbr} favored`;
+      if(sg){sg.textContent=v<0?'−':'+';sg.classList.toggle('neg',v<0)}
+      if(k==='total')$('hint-total').textContent='Combined points';else if(k==='spread')$('hint-spread').textContent=v===0?'Pick’em':`${v<0?g.home.abbr:g.away.abbr} favored`;
       else{$('oxL').textContent=NM[k]();$('oxH').textContent=v<0?`Bet ${Math.abs(v)} to win 100`:`Bet 100 to win ${v}`}};
-    const chips=()=>[['spreadOddsAway',`${g.away.abbr} ${sgn(-D.spread)}`],['spreadOddsHome',`${g.home.abbr} ${sgn(D.spread)}`],['mlAway',`${g.away.abbr} ML`],['mlHome',`${g.home.abbr} ML`]].forEach(([k,lb])=>{$('ocl-'+k).textContent=lb;$('oc-'+k).textContent=odds(D[k])});
-    const bar=msg=>{const n=['spread','spreadOddsHome','spreadOddsAway','mlHome','mlAway'].filter(k=>D[k]!==st.lines[k]).length;
+    const chips=()=>[['spreadOddsAway',`${g.away.abbr} ${sgn(-D.spread)}`],['spreadOddsHome',`${g.home.abbr} ${sgn(D.spread)}`],['mlAway',`${g.away.abbr} ML`],['mlHome',`${g.home.abbr} ML`],['overOdds',`Over ${D.total??''}`],['underOdds',`Under ${D.total??''}`]].forEach(([k,lb])=>{const el=$('ocl-'+k);if(!el)return;el.textContent=lb;$('oc-'+k).textContent=odds(LV(D,k))});
+    const bar=msg=>{const n=['spread','spreadOddsHome','spreadOddsAway','mlHome','mlAway','total','overOdds','underOdds'].filter(k=>LV(D,k)!==LV(st.lines,k)).length;
       $('lnSv').disabled=!n;$('lnSv').textContent=n?`Save ${n} change${n>1?'s':''}`:'Saved';$('lnX').hidden=!n;$('lnBar').classList.toggle('pending',!!n);
       if(msg)$('lnMsg').innerHTML=msg;else $('lnMsg').textContent=n?'Unsaved: the site still uses the last saved lines.':'Change a line, then Save.'};
     const up2=()=>{chips();bar();if(EK)show(EK)};
     const setV=(k,v)=>{if(isOdds(k)&&Math.abs(v)<100)v=v<0?-100:100;D[k]=v;show(k);up2()};
     const typed=(k,el)=>{const raw=el.value.trim(),n=parseFloat(raw.replace(/[^\d.]/g,''));if(isNaN(n))return;
-      let sign=/[-−]/.test(raw)?-1:raw.includes('+')?1:(D[k]<0?-1:1);if(k==='spread'&&n===0)sign=1;if(isOdds(k)&&n<100)return;D[k]=sign*n;show(k);up2()};
-    show('spread');chips();bar();
-    $('in-spread').addEventListener('input',e=>typed('spread',e.target));$('in-spread').addEventListener('blur',()=>show('spread'));
+      let sign=/[-−]/.test(raw)?-1:raw.includes('+')?1:(LV(D,k)<0?-1:1);if((k==='spread'&&n===0)||k==='total')sign=1;if(isOdds(k)&&n<100)return;D[k]=sign*n;show(k);up2()};
+    show('spread');show('total');chips();bar();
+    $('in-spread').addEventListener('input',e=>typed('spread',e.target));$('in-spread').addEventListener('blur',()=>show('spread'));if($('in-total')){$('in-total').addEventListener('input',e=>typed('total',e.target));$('in-total').addEventListener('blur',()=>show('total'))}
     $('in-ed').addEventListener('input',e=>EK&&typed(EK,e.target));$('in-ed').addEventListener('blur',()=>show(EK));
-    const pick=k=>{EK=k;document.querySelectorAll('.oc').forEach(b=>b.classList.toggle('on',b.dataset.ok===k));$('ox').hidden=!k;show(k)};
+    const pick=k=>{if(k&&D[k]==null)D[k]=LV(D,k);EK=k;document.querySelectorAll('.oc').forEach(b=>b.classList.toggle('on',b.dataset.ok===k));$('ox').hidden=!k;show(k)};
     const openEd=o=>{$('adjBox').hidden=!o;$('adjB').classList.toggle('on',o);$('adjB').setAttribute('aria-expanded',String(o));$('adjB').querySelector('span').textContent=o?'Close':'Edit lines'};
     openEd(false);$('adjB').onclick=()=>openEd($('adjBox').hidden);$('rsB').onclick=()=>resetLines(g,tab);
     $('lnSv').onclick=()=>{st.lines={...D};saveSt(g,st);render(g,tab);{const mv=linesMoved(g);$('rsB').hidden=!mv;document.querySelector('.lgw').classList.toggle('mv',mv)}const c1=calc(g);
       const sp=c1.bets[2].p>=c1.bets[3].p?c1.bets[2]:c1.bets[3];bar(`Saved. Spread: <b>${esc(sp.n)}</b> ${evp(sp.ev)} (${sp.v}) · Best value: <b>${c1.best.ev>0?esc(c1.best.n)+'</b> '+evp(c1.best.ev):'none</b>'}`)};
-    $('lnX').onclick=()=>{D={...st.lines};show('spread');if(EK)show(EK);up2()};
+    $('lnX').onclick=()=>{D={...st.lines};show('spread');show('total');if(EK)show(EK);up2()};
     $('pkWrap').addEventListener('click',e=>{const oc=e.target.closest('[data-ok]');if(oc){pick(EK===oc.dataset.ok?null:oc.dataset.ok);return}
       if(e.target.closest('#oxD')){pick(null);return}
       if(e.target.closest('#rl')){resetLines(g,tab);return}
       const sg=e.target.closest('[data-sg]');if(sg){const k=sg.dataset.sg==='ed'?EK:'spread';if(k)setV(k,-D[k]||0);return}
-      const b=e.target.closest('[data-k]');if(!b)return;const k=b.dataset.k==='ed'?EK:'spread';if(!k)return;const v=D[k],stp=isOdds(k)?5:.5,sg_=v<0?-1:1;
+      const b=e.target.closest('[data-k]');if(!b)return;const k=b.dataset.k==='ed'?EK:b.dataset.k;if(!k)return;const v=LV(D,k),stp=isOdds(k)?5:.5,sg_=v<0?-1:1;
       let m=Math.abs(v)+(+b.dataset.d)*stp;m=isOdds(k)?Math.max(100,m):Math.max(0,m);setV(k,sg_*m)});
   }
   if(tab==='inactives'){
@@ -1081,7 +1133,7 @@ function render(g,tab){
   if(tab==='breakdown'){const T=v=>v>=0?g.home:g.away;
     $('bdH').innerHTML=`${badge(T(c.m))}<div><b>${esc(c.fav)} by ${Math.abs(c.m).toFixed(1)}</b><small>The biggest pieces of the projected margin</small></div>`;
     const F=c.F.filter(f=>Math.abs(f[2])>=.05).sort((a,b)=>Math.abs(b[2])-Math.abs(a[2])),top=F.slice(0,6),rest=F.slice(6).reduce((a,f)=>a+f[2],0),mx=Math.max(...top.map(f=>Math.abs(f[2])),1);
-    $('bdF').innerHTML=top.map(([gr,n,v])=>`<div class="fx"><span class="fx-n">${esc(n)}</span><span class="fx-t" ${tc(T(v))}>${badge(T(v))}${esc(T(v).abbr)}</span><b>+${Math.abs(v).toFixed(1)}</b><div class="fx-b"><i style="width:${Math.abs(v)/mx*100}%;background:var(${v>=0?'--home':'--away'})"></i></div></div>`).join('')+(Math.abs(rest)>=.05?`<div class="fx fx-o"><span class="fx-n">Everything else</span><span class="fx-t">${esc(T(rest).abbr)}</span><b>+${Math.abs(rest).toFixed(1)}</b></div>`:'')+(c.k<1?`<p class="note fx-mk">Model on its own: <b>${esc(T(c.mRaw).name)} by ${Math.abs(c.mRaw).toFixed(1)}</b>. Market line: <b>${esc(T(-stateFor(g).lines.spread).name)} by ${Math.abs(stateFor(g).lines.spread).toFixed(1)}</b>. The pick moves ${Math.round(c.k*100)}% of the way from the market toward the model: <b>${esc(T(c.m).name)} by ${Math.abs(c.m).toFixed(1)}</b>.</p>`:'');
+    $('bdF').innerHTML=top.map(([gr,n,v])=>`<div class="fx"><span class="fx-n">${esc(n)}</span><span class="fx-t" ${tc(T(v))}>${badge(T(v))}${esc(T(v).abbr)}</span><b>+${Math.abs(v).toFixed(1)}</b><div class="fx-b"><i style="width:${Math.abs(v)/mx*100}%;background:var(${v>=0?'--home':'--away'})"></i></div></div>`).join('')+(Math.abs(rest)>=.05?`<div class="fx fx-o"><span class="fx-n">Everything else</span><span class="fx-t">${esc(T(rest).abbr)}</span><b>+${Math.abs(rest).toFixed(1)}</b></div>`:'')+(c.k<1?`<p class="note fx-mk">Model on its own: <b>${esc(T(c.mRaw).name)} by ${Math.abs(c.mRaw).toFixed(1)}</b>. Market line (consensus of all books): <b>${esc(T(-g.lines.spread).name)} by ${Math.abs(g.lines.spread).toFixed(1)}</b>. The pick moves ${Math.round(c.k*100)}% of the way from the market toward the model: <b>${esc(T(c.m).name)} by ${Math.abs(c.m).toFixed(1)}</b>.</p>`:'');
     {const wx=g.inputs&&g.inputs.weather,el=$('bdW');if(el){if(!wx)el.innerHTML='';else if(wx.roof==='Dome')el.innerHTML=`<div class="wxb in"><span class="wx-i">⌂</span><div><b>Indoors</b><small>${esc(g.venue||'Dome')} · weather isn't a factor</small></div></div>`;else{
       const f=c.F.find(x=>x[1]==='Weather'),mv=f?f[2]:0,tl=c.sev*SET.wxTotal,lvl=c.sev<.05?'None':c.sev<.5?'Mild':c.sev<1?'Moderate':'Severe';
       el.innerHTML=`<div class="wxb wx-${lvl}"><span class="wx-i">${c.sev<.05?'☀':/Snow/.test(wx.precip)?'❄':/Rain/.test(wx.precip)?'☂':'≋'}</span><div><b>Weather · ${lvl} impact</b><small>${esc(wxText(wx))}${wx.roof&&wx.roof!=='Open'?' · '+esc(wx.roof)+' roof':''}</small></div>
@@ -1122,7 +1174,7 @@ function fromWorkbook(wb){
   const T=n=>{const ws=wb.Sheets[n];if(!ws)throw new Error('Missing sheet: '+n);return XLSX.utils.sheet_to_json(ws,{defval:null,raw:true})};
   const st={};let curD=null;T('Settings').forEach(r=>{if(!r['Setting'])return;if(r['Setting']==='Current day (site opens here)')curD=isoOf(r['Value']);else st[r['Setting']]=num(r['Value'])});
   const settings={wSeason:st['Weight: full season'],wVenue:st['Weight: venue split'],wL3:st['Weight: last 3 games'],hfa:st['Home-field points'],sd:st['Std. dev. of NFL margin'],toPts:st['Points per turnover'],toReg:st['Turnover regression'],sosW:st['Schedule-strength weight'],byeW:st['Post-bye weight'],betEV:st['Bet threshold (EV per $100)'],currentDay:curD,
-    mktW:st['Market blend: model share']??1,statWeights:{RushYPG:st['Weight: rushing yds/game'],RushYPC:st['Weight: yards per rush'],PassYPG:st['Weight: passing yds/game'],PassYPA:st['Weight: yards per pass att'],RZTD:st['Weight: red zone TD %']},wxW:st['Weather: pass-share weight']??6,wxTotal:st['Weather: total points lost per severity']??4,sdTotal:st['Std. dev. of NFL total']??13.5};
+    mktW:st['Market blend: model share']??1,propW:st['Props: model share']??st['Market blend: model share']??1,statWeights:{RushYPG:st['Weight: rushing yds/game'],RushYPC:st['Weight: yards per rush'],PassYPG:st['Weight: passing yds/game'],PassYPA:st['Weight: yards per pass att'],RZTD:st['Weight: red zone TD %']},wxW:st['Weather: pass-share weight']??6,wxTotal:st['Weather: total points lost per severity']??4,sdTotal:st['Std. dev. of NFL total']??13.5};
   const rows=T('League Data').filter(r=>r['Stat key']).map(r=>[r['Stat key'],r['Team'],num(r['Season']),num(r['Home']),num(r['Away']),num(r['Last 3']),num(r['Week'])]);
   const h1=wb.Sheets['League Data']['I1'];const note=h1?String(h1.v):'';
   const by=(n,id)=>T(n).filter(r=>r['Game ID']===id);
@@ -1150,6 +1202,9 @@ function fromWorkbook(wb){
   const results=opt('Results').filter(r=>r['Game ID']).map(r=>({gameId:r['Game ID'],week:num(r['Week']),awayScore:num(r['Away score']),homeScore:num(r['Home score']),closingSpread:num(r['Closing home spread']),closingMLHome:num(r['Closing home ML'])}));
   if(wb.Sheets['Book Lines'])T('Book Lines').filter(r=>r['Game ID']&&r['Book']).forEach(r=>{const g=games.find(x=>x.id===r['Game ID']);if(!g)return;g.books=g.books||{};
     g.books[String(r['Book']).trim()]={spread:num(r['Home spread']),spreadOddsHome:num(r['Home spread odds']),spreadOddsAway:num(r['Away spread odds']),mlHome:num(r['Home ML']),mlAway:num(r['Away ML']),total:num(r['Total']),overOdds:num(r['Over odds']),underOdds:num(r['Under odds'])};if(r['As of'])g.booksAsOf=txt(r['As of'])});
+  if(wb.Sheets['Props'])T('Props').filter(r=>r['Game ID']&&r['Book']).forEach(r=>{const g=games.find(x=>x.id===r['Game ID']);if(!g)return;g.props=g.props||[];
+    let q=g.props.find(x=>x.player===r['Player']&&x.market===r['Market']);if(!q){q={player:txt(r['Player']),team:txt(r['Team']),pos:txt(r['Pos']),market:txt(r['Market']),line:num(r['Consensus line']),proj:num(r['Model proj']),sd:num(r['SD']),n:num(r['Games']),season:num(r['Season avg']),venue:num(r['Venue avg']),l3:num(r['Last 3 avg']),opp:num(r['Matchup factor']),mnote:txt(r['Matchup notes']),vol:num(r['Team volume']),share:num(r['Share']),eff:num(r['Per-opportunity']),gnote:txt(r['Game notes']),rnote:txt(r['Role notes']),cal:num(r['Calibration']),books:{}};g.props.push(q)}
+    q.books[String(r['Book']).trim()]={line:num(r['Book line']),over:num(r['Over odds']),under:num(r['Under odds'])};if(r['Lines as of'])g.propsAsOf=txt(r['Lines as of'])});
   return [{note,rows},{season:2026,week,settings,games,pickLog,results}];
 }
 const loadXlsx=()=>fetch('NFL_Pick_Model.xlsx?t='+Date.now(),{cache:'no-store'}).then(r=>{if(!r.ok)throw new Error('no workbook');return r.arrayBuffer()}).then(b=>fromWorkbook(XLSX.read(new Uint8Array(b),{type:'array'})));
