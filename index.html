@@ -804,6 +804,14 @@ body,.tab-bar,.dtabs,.gbar{transition:background-color .25s}
 .pq-bl{display:flex;justify-content:space-between;font-size:11.5px;color:var(--mute)}.pq-bl b{color:var(--ink)}
 .pq-ft{display:flex;justify-content:space-between;gap:8px;margin-top:7px;padding-top:6px;border-top:1px solid var(--line2);font-size:11.5px;color:var(--mute)}.pq-ft b{color:var(--ink)}
 .pq-c .pq-why{margin-top:6px}
+.pq-cs{gap:6px}.pq-c{padding:7px 10px 6px 12px;border-radius:10px}.pq-c:before{width:3px}
+.pq-top{margin-bottom:1px}.pq-mk{font-size:10.5px}.pq-pj{margin-left:6px;font:600 11px 'Source Sans 3',sans-serif;letter-spacing:0;text-transform:none;color:var(--dim)}
+.pq-top .vc{transform:scale(.85);transform-origin:right center}
+.pq-pick{gap:6px}.pq-pick b{font-size:18px}.pq-ar{font-size:15px}.pq-od{font-size:12px;padding:1px 6px}.pq-ev{font-size:12.5px}.pq-pick.none b{font-size:16px}
+.pq-br{display:flex;align-items:center;gap:8px;margin-top:4px}.pq-br .pq-bar{flex:1;margin:0 2px;height:4px}.pq-br .pq-nd{top:-3px;height:10px}.pq-br .pq-pt{top:-3px;width:10px;height:10px;margin-left:-5px}
+.pq-bt{flex:none;font-size:11px;color:var(--mute)}.pq-bt b{color:var(--ink)}
+.pq-c .pq-why{margin-top:3px}.pq-why summary{font-size:11.5px}.pq-e{margin:5px 0 2px;font-size:12.5px;line-height:1.45;color:var(--ink)}
+.pq-p{padding:8px 10px}.pq-h{margin-bottom:5px}
 </style>
 </head>
 <body>
@@ -1077,17 +1085,24 @@ function game(g,tab){
     const by={};rows.forEach(x=>(by[x.p.player]=by[x.p.player]||[]).push(x));
     const nb=PS.filter(p=>!p.books[BOOK]).length;
     const pc=v=>Math.round(v*100)+'%';
-    const card=x=>{const b=x.best,edge=b.ev>0,ov=b.side==='over',o2=ov?x.r.u:x.r.o,need=be(b.o),v=edge?b.v:'Pass',lo=Math.min(need,b.p)-.08,hi=Math.max(need,b.p)+.08,pos=q=>Math.max(0,Math.min(100,(q-lo)/(hi-lo)*100));
-      return `<div class="pq-c pq-${v}"><div class="pq-top"><span class="pq-mk">${esc(x.p.market)}${x.bk!==BOOK?` · ${esc(x.bk)}`:''}</span><em class="vc v-${v}">${v==='Pass'?'No edge':v}</em></div>
-      ${edge?`<div class="pq-pick"><span class="pq-ar">${ov?'↑':'↓'}</span><b>${ov?'Over':'Under'} ${x.r.L}</b><span class="pq-od">${odds(b.o)}</span><span class="pq-ev">${evp(b.ev)} EV</span></div>
-      <div class="pq-bar" title="Blended chance vs break-even"><i style="left:${pos(Math.min(need,b.p))}%;width:${pos(Math.max(need,b.p))-pos(Math.min(need,b.p))}%"></i><span class="pq-nd" style="left:${pos(need)}%"></span><span class="pq-pt" style="left:${pos(b.p)}%"></span></div>
-      <div class="pq-bl"><span>Our chance <b>${Math.round(b.p*100)}%</b></span><span>Break-even ${Math.round(need*100)}%</span></div>`
-      :`<div class="pq-pick none"><b>O/U ${x.r.L}</b><span class="pq-od">Over ${odds(x.r.o.o)} · Under ${odds(x.r.u.o)}</span></div>`}
-      <div class="pq-ft"><span>Projection <b>${x.r.proj.toFixed(1)}</b></span>${edge?`<span>${ov?'Under':'Over'} ${odds(o2.o)} · ${evp(o2.ev)}</span>`:`<span>Best side ${evp(b.ev)}</span>`}</div>
+    const card=x=>{const b=x.best,edge=b.ev>0,ov=b.side==='over',need=be(b.o),v=edge?b.v:'Pass',lo=Math.min(need,b.p)-.06,hi=Math.max(need,b.p)+.06,pos=q=>Math.max(0,Math.min(100,(q-lo)/(hi-lo)*100));
+      return `<div class="pq-c pq-${v}"><div class="pq-top"><span class="pq-mk">${esc(x.p.market)}${x.bk!==BOOK?` · ${esc(x.bk)}`:''} <span class="pq-pj">Proj ${x.r.proj.toFixed(1)}</span></span><em class="vc v-${v}">${v==='Pass'?'No edge':v}</em></div>
+      ${edge?`<div class="pq-pick"><span class="pq-ar">${ov?'↑':'↓'}</span><b>${ov?'Over':'Under'} ${x.r.L}</b><span class="pq-od">${odds(b.o)}</span><span class="pq-ev">${evp(b.ev)}</span></div>
+      <div class="pq-br"><div class="pq-bar"><i style="left:${pos(Math.min(need,b.p))}%;width:${pos(Math.max(need,b.p))-pos(Math.min(need,b.p))}%"></i><span class="pq-nd" style="left:${pos(need)}%"></span><span class="pq-pt" style="left:${pos(b.p)}%"></span></div><span class="pq-bt"><b>${Math.round(b.p*100)}%</b> vs ${Math.round(need*100)}% needed</span></div>`
+      :`<div class="pq-pick none"><b>O/U ${x.r.L}</b><span class="pq-od">O ${odds(x.r.o.o)} · U ${odds(x.r.u.o)}</span></div>`}
       <details class="pq-why"><summary>Why this line</summary>${why(x)}</details></div>`};
-    const why=x=>{const b=x.best,ov=b.side==='over',mkt=ov?x.r.mO:1-x.r.mO,mod=ov?x.r.modO:1-x.r.modO-(x.r.o.p+x.r.u.p<1?0:0),need=be(b.o),diff=x.r.proj-x.r.L;
-      return `<p class="pq-e"><b>${b.ev>0?(ov?'Over':'Under')+' '+x.r.L+' · '+evp(b.ev):'No edge on either side'}</b><br>The books give the ${ov?'Over':'Under'} a ${pc(mkt)} chance. The player model says ${pc(mod)}, so the blended chance is <b>${pc(b.p)}</b>, against the ${pc(need)} needed to break even at ${odds(b.o)}. Projection ${x.r.proj.toFixed(1)} is ${Math.abs(diff).toFixed(1)} ${diff>=0?'above':'below'} the line.</p>
-      <ul class="pq-w">${x.p.rnote?`<li><b>Role</b>${esc(x.p.rnote)}</li>`:''}${x.p.gnote?`<li><b>Game</b>${esc(x.p.gnote)}</li>`:''}${x.p.mnote?`<li><b>Matchup ×${x.p.opp}</b>${esc(x.p.mnote)}</li>`:''}<li><b>History</b>Season avg ${x.p.season} · last 3 ${x.p.l3} · ${x.p.n} games · model alone ${x.p.proj.toFixed(1)}</li></ul>`};
+    const why=x=>{const p=x.p,b=x.best,ov=b.side==='over',L=x.r.L,first=p.player.split(' ').slice(-1)[0],tm=p.team===g.home.abbr?g.home:g.away,op=p.team===g.home.abbr?g.away:g.home,
+      unit={'Pass yds':'passing yards','Rush yds':'rushing yards','Rec yds':'receiving yards','Receptions':'catches'}[p.market]||p.market,
+      sp=g.lines.spread,m=sp==null?0:(p.team===g.home.abbr?-sp:sp),rush=p.market==='Rush yds',S=[];
+      S.push(`We project ${first} for ${x.r.proj.toFixed(1)} ${unit}, ${Math.abs(x.r.proj-L).toFixed(1)} ${x.r.proj>=L?'over':'under'} the ${L} line.`);
+      const why2=[];const out=(p.rnote||'').match(/^(.+?) out →/);
+      if(p.share!=null){const sh=Math.round(p.share*100);why2.push(out?`with ${out[1]} out he should get about ${sh}% of the ${tm.name}' ${rush?'running back carries':'targets'}`:`he gets about ${sh}% of the ${tm.name}' ${rush?'running back carries':'targets'}`)}
+      if(/replaces/.test(p.rnote||'')){const q=p.rnote.match(/QB (.+?) \(/);if(q)why2.push(`${q[1]} at quarterback ${/fewer/.test(p.rnote)?'trims':'helps'} his efficiency`)}
+      if(Math.abs(m)>=3&&!/QB/.test(p.pos))why2.push(m<0?`as ${Math.abs(m)}-point underdogs the ${tm.name} should ${rush?'run less':'throw more'}`:`as ${Math.abs(m)}-point favorites the ${tm.name} should ${rush?'lean on the run':'throw a bit less'}`);
+      if(p.opp>=1.08)why2.push(`the ${op.name} defense is a good matchup for him`);else if(p.opp<=0.92)why2.push(`the ${op.name} defense is a tough matchup for him`);
+      if(why2.length)S.push(why2[0][0].toUpperCase()+why2[0].slice(1)+(why2.length>1?(why2.length>2?', ':' and ')+why2.slice(1,3).join(' and '):'')+'.');
+      S.push(b.ev>0?`The books give the ${ov?'Over':'Under'} a ${Math.round((ov?x.r.mO:1-x.r.mO)*100)}% chance; we have it at ${Math.round(b.p*100)}%, worth ${evp(b.ev)} at ${odds(b.o)}.`:`That isn't far enough from the books' number to beat the price on either side.`);
+      return `<p class="pq-e">${esc(S.join(' '))}</p>`};
     P.innerHTML=`<div class="fbar"><label class="fc${PF.edges?' on':''}"><select id="pfE" aria-label="Show"><option value="1"${PF.edges?' selected':''}>Edges only</option><option value="0"${PF.edges?'':' selected'}>All props</option></select><svg viewBox="0 0 24 24" width="12" height="12" aria-hidden="true"><path d="M6 9l6 6 6-6" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg></label><label class="fc${PF.mkt!=='all'?' on':''}"><select id="pfM" aria-label="Market"><option value="all">All markets</option>${MK.map(m=>`<option${PF.mkt===m?' selected':''}>${esc(m)}</option>`).join('')}</select><svg viewBox="0 0 24 24" width="12" height="12" aria-hidden="true"><path d="M6 9l6 6 6-6" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg></label><span class="pq-ct">${rows.length} of ${PS.length} props</span></div>
     <div class="card pq">${Object.entries(by).map(([pl,xs])=>`<div class="pq-p"><div class="pq-h" ${tc(T(xs[0].p.team))}>${badge(T(xs[0].p.team))}<b>${esc(pl)}</b><small>${esc(xs[0].p.pos)} · ${esc(xs[0].p.team)}</small></div><div class="pq-cs">${xs.map(card).join('')}</div></div>`).join('')||'<div class="empty">No prop has an edge at these lines. Switch to All props to see every line.</div>'}</div>
     <p class="note" style="text-align:center">Each prop's chance = the books' no-vig chance at that line + ${Math.round((SET.propW??SET.mktW??1)*100)}% of the gap to the player model's chance. Player model = team volume from the game line (expected lead or deficit, implied points, weather) × his share of that volume (re-figured when a teammate is out, from games without him) × his per-target or per-carry efficiency × the scheme matchup: what the defense allows to his position group and in the areas he's targeted, plus blitz rate for QBs and run direction and 8-man boxes for backs; receptions use a Poisson count model). Book: <b>${esc(BOOK)}</b>${nb?` · ${nb} props aren't posted there, so those show another book's line`:''}. Lines as of ${esc(g.propsAsOf||'')}. Players marked Out on the Injury report are hidden.</p>`;
