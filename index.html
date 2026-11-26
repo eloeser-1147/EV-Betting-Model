@@ -886,6 +886,9 @@ body,.tab-bar,.dtabs,.gbar{transition:background-color .25s}
 .pq .bb-r .pq-pick{white-space:nowrap}
 .pq .bb-r{display:block!important;padding:0!important}.pq .bb-r>summary{grid-template-columns:1fr auto 48px 54px 46px!important;padding:6px 10px}
 .pq .bb-r.gl-r>summary{grid-template-columns:auto 1fr 44px 54px 46px!important;padding-left:14px}.pq .bb-r>.pq-e,.pq .bb-r>.pq-bt{padding-left:14px}.pq .bb-r .pq-bt a{color:var(--acc,#a78bfa);text-decoration:none;font-weight:600}
+.oc-est{font-size:9px;font-weight:700;margin-left:3px;color:#e9d8a6;letter-spacing:.02em}.ah{font-weight:600}.ah-book{color:#5fd39a}.ah-est{color:#e9d8a6}
+.pq.gl .pq-c>summary{grid-template-columns:minmax(78px,auto) minmax(0,1fr) 50px 44px!important;gap:6px!important}.pq.gl .gl-p{justify-self:end;white-space:nowrap;font-size:15px}.pq.gl .pq-mk{white-space:nowrap}
+body{padding-bottom:calc(96px + env(safe-area-inset-bottom))}
 </style>
 </head>
 <body>
@@ -965,6 +968,11 @@ function grade(l){const r=resOf(l.gameId);if(!r)return null;const m=r.homeScore-
 const weeks=()=>[...new Set(GAMES.map(g=>g.week))].sort((a,b)=>a-b);
 const rec=(arr)=>{const w=arr.filter(x=>x==='W').length,l=arr.filter(x=>x==='L').length,p=arr.filter(x=>x==='P').length;return {w,l,p,s:`${w}-${l}${p?'-'+p:''}`,pct:w+l?w/(w+l):null}};
 const RC={W:'w',L:'l',P:'t'};
+function altPrice(g,bk,mk,x){const a=((g.alt||{})[bk]||{})[mk==='spread'?'s':'t'];if(!a||!a.length||x==null)return null;
+  const ex=a.find(r=>r[0]===x);if(ex)return {o1:ex[1],o2:ex[2],est:false};
+  const lo=a.filter(r=>r[0]<x).pop(),hi=a.find(r=>r[0]>x);if(!lo||!hi)return null;
+  const ip=o=>o<0?-o/(100-o):100/(o+100),am=q=>{const v=q>=.5?-q/(1-q)*100:(1-q)/q*100;const r=Math.round(Math.abs(v)/5)*5;return Math.max(100,r)*(v<0?-1:1)},f=(x-lo[0])/(hi[0]-lo[0]);
+  return {o1:am(ip(lo[1])+f*(ip(hi[1])-ip(lo[1]))),o2:am(ip(lo[2])+f*(ip(hi[2])-ip(lo[2]))),est:true}}
 function stateFor(g){const sk=g.id+'|'+BOOK;if(!ST[sk]){const pl=load('pmP-'+g.id,null),plays=pl&&pl.length===g.players.length?pl:g.players.map(p=>p.plays);const s=load(key(g),null);ST[sk]=s&&s.lines?{lines:s.lines,plays}:{lines:bookLines(g),plays}}return ST[sk]}
 function calc(g,Lo){
   CW=g.week;const pr0=rowsOf('PPG_O'),LG=pr0.reduce((a,r)=>a+r[2],0)/(pr0.length||1);
@@ -1155,7 +1163,7 @@ function game(g,tab){
   ${g.lines.total!=null?`<div class="lr-g"><span class="lr-l">Total (O/U)</span><div class="ln-c"><span class="sg sg-n">O/U</span><input id="in-total" type="text" inputmode="decimal" autocomplete="off" aria-label="Total points"><button type="button" class="nd" data-k="total" data-d="-1" aria-label="Lower">${CHD}</button><button type="button" class="nd" data-k="total" data-d="1" aria-label="Raise">${CHU}</button></div><small id="hint-total"></small></div>`:''}
   <div class="lr-g lr-o"><div class="lr-oh"><span class="lr-l">Odds <em>tap to edit</em></span><button type="button" class="lr-rs" id="rl">Reset lines</button></div><div class="ocs">${[['spreadOddsAway',g.away,'sp'],['spreadOddsHome',g.home,'sp'],['mlAway',g.away,'ml'],['mlHome',g.home,'ml']].map(([k,t,kind])=>`<button type="button" class="oc" data-ok="${k}">${badge(t)}<span id="ocl-${k}"></span><b id="oc-${k}"></b></button>`).join('')+(g.lines.total!=null?[['overOdds','O'],['underOdds','U']].map(([k,ic])=>`<button type="button" class="oc" data-ok="${k}"><span class="tot-i">${ic}</span><span id="ocl-${k}"></span><b id="oc-${k}"></b></button>`).join(''):'')}</div></div></div>
   <div class="ox" id="ox" hidden><span id="oxL"></span><div class="ln-c"><button type="button" class="sg" data-sg="ed" aria-label="Flip + or −"></button><input id="in-ed" type="text" inputmode="decimal" autocomplete="off" aria-label="Odds"><button type="button" class="nd" data-k="ed" data-d="-1" aria-label="Lower">${CHD}</button><button type="button" class="nd" data-k="ed" data-d="1" aria-label="Raise">${CHU}</button></div><small id="oxH"></small><button type="button" class="save" id="oxD">Done</button></div><div class="ia-bar ln-bar" id="lnBar"><span id="lnMsg"></span><button class="reset" id="lnX" type="button">Discard</button><button class="save" id="lnSv" type="button">Saved</button></div></div>
-  <p class="note" style="text-align:center;margin-top:10px">Book: <b>${esc(bookName(g))}</b>${bookGap(g).length?` · this book's ${bookGap(g).some(k=>k.startsWith('spread'))?'spread prices':'prices'} weren't available, so those use the consensus price`:''}. Use Edit lines for alternates or another price, then Save to update The pick and every other page. Reset puts back the book's original lines right away.</p>
+  <p class="note" style="text-align:center;margin-top:10px">Book: <b>${esc(bookName(g))}</b>${bookGap(g).length?` · this book's ${bookGap(g).some(k=>k.startsWith('spread'))?'spread prices':'prices'} weren't available, so those use the consensus price`:''}. Use Edit lines for alternates or another price: change the spread or total and the odds fill in with this book's price for that number (marked est. when the book doesn't post it). Save to update The pick and every other page. Reset puts back the book's original lines right away.</p>
   </div>`:''}
   <div id="panel"></div>`;
   centerIn($('gbar'),$('gbar').querySelector('.on'));document.documentElement.style.setProperty('--gbh',$('gbar').offsetHeight+'px');
@@ -1204,14 +1212,17 @@ function bind(g,tab){
       if(sg){sg.textContent=v<0?'−':'+';sg.classList.toggle('neg',v<0)}
       if(k==='total')$('hint-total').textContent='Combined points';else if(k==='spread')$('hint-spread').textContent=v===0?'Pick’em':`${v<0?g.home.abbr:g.away.abbr} favored`;
       else{$('oxL').textContent=NM[k]();$('oxH').textContent=v<0?`Bet ${Math.abs(v)} to win 100`:`Bet 100 to win ${v}`}};
-    const chips=()=>[['spreadOddsAway',`${g.away.abbr} ${sgn(-D.spread)}`],['spreadOddsHome',`${g.home.abbr} ${sgn(D.spread)}`],['mlAway',`${g.away.abbr} ML`],['mlHome',`${g.home.abbr} ML`],['overOdds',`Over ${D.total??''}`],['underOdds',`Under ${D.total??''}`]].forEach(([k,lb])=>{const el=$('ocl-'+k);if(!el)return;el.textContent=lb;$('oc-'+k).textContent=odds(LV(D,k))});
+    const chips=()=>[['spreadOddsAway',`${g.away.abbr} ${sgn(-D.spread)}`],['spreadOddsHome',`${g.home.abbr} ${sgn(D.spread)}`],['mlAway',`${g.away.abbr} ML`],['mlHome',`${g.home.abbr} ML`],['overOdds',`Over ${D.total??''}`],['underOdds',`Under ${D.total??''}`]].forEach(([k,lb])=>{const el=$('ocl-'+k);if(!el)return;el.textContent=lb;$('oc-'+k).innerHTML=odds(LV(D,k))+(srcOf(k)==='est'?'<small class="oc-est">est.</small>':'')});
     const bar=msg=>{const n=['spread','spreadOddsHome','spreadOddsAway','mlHome','mlAway','total','overOdds','underOdds'].filter(k=>LV(D,k)!==LV(st.lines,k)).length;
       $('lnSv').disabled=!n;$('lnSv').textContent=n?`Save ${n} change${n>1?'s':''}`:'Saved';$('lnX').hidden=!n;$('lnBar').classList.toggle('pending',!!n);
       if(msg)$('lnMsg').innerHTML=msg;else $('lnMsg').textContent=n?'Unsaved: the site still uses the last saved lines.':'Change a line, then Save.'};
-    const up2=()=>{chips();bar();if(EK)show(EK)};
-    const setV=(k,v)=>{if(isOdds(k)&&Math.abs(v)<100)v=v<0?-100:100;D[k]=v;show(k);up2()};
+    const SRC={},OK={spread:['spreadOddsHome','spreadOddsAway'],total:['overOdds','underOdds']};
+    const auto=k=>{if(!OK[k])return;const r=altPrice(g,BOOK,k,D[k]);if(!r){SRC[k]=null;return}D[OK[k][0]]=r.o1;D[OK[k][1]]=r.o2;SRC[k]=r.est?'est':'book'};
+    const srcOf=k=>k==='spreadOddsHome'||k==='spreadOddsAway'?SRC.spread:k==='overOdds'||k==='underOdds'?SRC.total:null;
+    const up2=()=>{chips();bar();if(EK)show(EK);['spread','total'].forEach(k=>{const h=$('hint-'+k);if(h&&!h.querySelector('.ah')&&SRC[k])h.insertAdjacentHTML('beforeend',`<span class="ah ah-${SRC[k]}"> · ${SRC[k]==='est'?'odds estimated':'book odds'}</span>`)})};
+    const setV=(k,v)=>{if(isOdds(k)&&Math.abs(v)<100)v=v<0?-100:100;D[k]=v;if(isOdds(k)){if(srcOf(k))SRC[OK.spread.includes(k)?'spread':'total']=null}else auto(k);show(k);up2()};
     const typed=(k,el)=>{const raw=el.value.trim(),n=parseFloat(raw.replace(/[^\d.]/g,''));if(isNaN(n))return;
-      let sign=/[-−]/.test(raw)?-1:raw.includes('+')?1:(LV(D,k)<0?-1:1);if((k==='spread'&&n===0)||k==='total')sign=1;if(isOdds(k)&&n<100)return;D[k]=sign*n;show(k);up2()};
+      let sign=/[-−]/.test(raw)?-1:raw.includes('+')?1:(LV(D,k)<0?-1:1);if((k==='spread'&&n===0)||k==='total')sign=1;if(isOdds(k)&&n<100)return;D[k]=sign*n;if(isOdds(k)){if(srcOf(k))SRC[OK.spread.includes(k)?'spread':'total']=null}else auto(k);show(k);up2()};
     show('spread');show('total');chips();bar();
     $('in-spread').addEventListener('input',e=>typed('spread',e.target));$('in-spread').addEventListener('blur',()=>show('spread'));if($('in-total')){$('in-total').addEventListener('input',e=>typed('total',e.target));$('in-total').addEventListener('blur',()=>show('total'))}
     $('in-ed').addEventListener('input',e=>EK&&typed(EK,e.target));$('in-ed').addEventListener('blur',()=>show(EK));
@@ -1220,7 +1231,7 @@ function bind(g,tab){
     openEd(false);$('adjB').onclick=()=>openEd($('adjBox').hidden);$('rsB').onclick=()=>resetLines(g,tab);
     $('lnSv').onclick=()=>{st.lines={...D};saveSt(g,st);render(g,tab);{const mv=linesMoved(g);$('rsB').hidden=!mv;document.querySelector('.lgw').classList.toggle('mv',mv)}const c1=calc(g);
       const sp=c1.bets[2].p>=c1.bets[3].p?c1.bets[2]:c1.bets[3];bar(`Saved. Spread: <b>${esc(sp.n)}</b> ${evp(sp.ev)} (${sp.v}) · Best value: <b>${c1.best.ev>0?esc(c1.best.n)+'</b> '+evp(c1.best.ev):'none</b>'}`)};
-    $('lnX').onclick=()=>{D={...st.lines};show('spread');show('total');if(EK)show(EK);up2()};
+    $('lnX').onclick=()=>{D={...st.lines};SRC.spread=SRC.total=null;show('spread');show('total');if(EK)show(EK);up2()};
     $('pkWrap').addEventListener('click',e=>{const oc=e.target.closest('[data-ok]');if(oc){pick(EK===oc.dataset.ok?null:oc.dataset.ok);return}
       if(e.target.closest('#oxD')){pick(null);return}
       if(e.target.closest('#rl')){resetLines(g,tab);return}
@@ -1345,7 +1356,8 @@ function fromWorkbook(wb){
   const results=opt('Results').filter(r=>r['Game ID']).map(r=>({gameId:r['Game ID'],week:num(r['Week']),awayScore:num(r['Away score']),homeScore:num(r['Home score']),closingSpread:num(r['Closing home spread']),closingMLHome:num(r['Closing home ML'])}));
   if(wb.Sheets['Book Lines'])T('Book Lines').filter(r=>r['Game ID']&&r['Book']).forEach(r=>{const g=games.find(x=>x.id===r['Game ID']);if(!g)return;g.books=g.books||{};
     g.books[String(r['Book']).trim()]={spread:num(r['Home spread']),spreadOddsHome:num(r['Home spread odds']),spreadOddsAway:num(r['Away spread odds']),mlHome:num(r['Home ML']),mlAway:num(r['Away ML']),total:num(r['Total']),overOdds:num(r['Over odds']),underOdds:num(r['Under odds'])};if(r['As of'])g.booksAsOf=txt(r['As of'])});
-  if(wb.Sheets['Props'])T('Props').filter(r=>r['Game ID']&&r['Book']).forEach(r=>{const g=games.find(x=>x.id===r['Game ID']);if(!g)return;g.props=g.props||[];
+  if(wb.Sheets['Alt Lines'])T('Alt Lines').filter(r=>r['Game ID']&&r['Book']).forEach(r=>{const g=games.find(x=>x.id===r['Game ID']);if(!g)return;g.alt=g.alt||{};const b=g.alt[String(r['Book']).trim()]=g.alt[String(r['Book']).trim()]||{s:[],t:[]};(String(r['Market'])[0]==='S'?b.s:b.t).push([+r['Line'],+r['Home / Over odds'],+r['Away / Under odds']]);if(r['As of'])g.altAsOf=txt(r['As of'])});
+if(wb.Sheets['Props'])T('Props').filter(r=>r['Game ID']&&r['Book']).forEach(r=>{const g=games.find(x=>x.id===r['Game ID']);if(!g)return;g.props=g.props||[];
     let q=g.props.find(x=>x.player===r['Player']&&x.market===r['Market']);if(!q){q={player:txt(r['Player']),team:txt(r['Team']),pos:txt(r['Pos']),market:txt(r['Market']),line:num(r['Consensus line']),proj:num(r['Model proj']),sd:num(r['SD']),n:num(r['Games']),season:num(r['Season avg']),venue:num(r['Venue avg']),l3:num(r['Last 3 avg']),opp:num(r['Matchup factor']),mnote:txt(r['Matchup notes']),vol:num(r['Team volume']),share:num(r['Share']),eff:num(r['Per-opportunity']),gnote:txt(r['Game notes']),rnote:txt(r['Role notes']),cal:num(r['Calibration']),books:{}};g.props.push(q)}
     q.books[String(r['Book']).trim()]={line:num(r['Book line']),over:num(r['Over odds']),under:num(r['Under odds'])};if(r['Lines as of'])g.propsAsOf=txt(r['Lines as of'])});
   return [{note,rows},{season:2026,week,settings,games,pickLog,results}];
