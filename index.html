@@ -995,7 +995,7 @@ body{padding-bottom:calc(96px + env(safe-area-inset-bottom))}
 .rs-pr{padding:4px 12px!important;font-size:12.5px!important}.rs-prw .rs-r{padding:4px 10px 4px 14px!important}.rs-prw .rs-r .pq-mk{font-size:12px!important}.rs-prw .rs-pk b{font-size:13px}.rs-prw .rs-pk>small{font-size:10.5px}.rs-prw .rs-i{width:19px;height:19px;font-size:10.5px}.rs-prw .rs-u{font-size:12px}
 .pp-sc.pp-tap{padding:6px 12px 8px!important;gap:2px!important}.sb2.pj{padding:0 0 2px!important}.sb2.pj .badge{--s:40px!important}.sb2.pj .sb2-c em{font-size:26px!important}
 .pp-sc .wpb{margin-top:0}.pp-sc .wpb small{margin-top:3px}.pp-tap .pp-hint{margin-top:4px!important;font:600 11px 'Source Sans 3',sans-serif!important;letter-spacing:.2px!important;text-transform:none!important;color:var(--dim)!important}.pp-tap .pp-hint:after{display:none}
-#ppMain{min-height:calc(100svh - 330px);display:flex;flex-direction:column;justify-content:center}#ppMain[hidden]{display:none}
+
 .nbar{filter:saturate(1.5) brightness(1.15)!important}
 .irx{margin:0 0 10px!important}.irx .body{padding:10px 14px 12px}.irx .cx-l,.irx .h2{padding-left:0;padding-right:0}.irx .cx-tb .l{padding-left:4px}.irx .cx-n{padding:6px 0 0;margin:0}
 .irx>summary span{font-size:13.5px}
@@ -1007,6 +1007,11 @@ body{padding-bottom:calc(96px + env(safe-area-inset-bottom))}
 .pp-tap .pp-hint{font-size:10.5px!important;color:var(--dim)!important;opacity:.85}
 .pp-sc.pp-tap{padding:10px 14px 6px!important}.pp-sc .wpb{margin-top:2px!important}.pp-sc .wpb-l{justify-content:space-between}.pj-ft{display:block;text-align:center;margin-top:4px!important;font-size:10px!important;color:var(--dim)!important}
 .wu-back{background:none!important;box-shadow:none!important;padding:2px 0!important;margin:0 0 8px!important;border-radius:0!important;color:var(--mute)!important;font:600 12px 'Source Sans 3',sans-serif!important}.wu-back:hover{color:var(--ink)!important}
+.gbar{gap:6px!important;border-bottom:1px solid rgba(255,255,255,.05)!important}
+.gbar a{padding:11px 12px 15px!important;font-size:15px!important;font-weight:600!important;color:var(--dim)!important;letter-spacing:.2px}
+.gbar a.on{color:var(--lime)!important;font-weight:800!important}.gbar a.on::after{left:50%!important;right:auto!important;width:6px!important;height:6px!important;margin-left:-3px;bottom:5px!important;border-radius:50%!important;background:var(--lime)!important;box-shadow:0 0 8px var(--lime)}
+.rsr-s{border-radius:10px;margin:6px 3px}.rsr-s.up{background:linear-gradient(180deg,rgba(46,158,106,.26),rgba(46,158,106,.1))!important;box-shadow:inset 0 0 0 1px rgba(95,211,154,.35)}.rsr-s.dn{background:linear-gradient(180deg,rgba(190,70,70,.28),rgba(190,70,70,.1))!important;box-shadow:inset 0 0 0 1px rgba(240,138,138,.35)}
+.rsr-s+.rsr-s{border-left:0!important}.rsr{gap:0}
 </style>
 </head>
 <body>
@@ -1026,7 +1031,7 @@ body{padding-bottom:calc(96px + env(safe-area-inset-bottom))}
 const $=id=>document.getElementById(id);
 const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const STATS=[['RushYPG','Rushing yards/game'],['RushYPC','Yards per rush'],['PassYPG','Passing yards/game'],['PassYPA','Yards per pass attempt'],['RZTD','Red zone TD %'],['PPG','Points/game']];
-const TABS=[['results','Results'],['pick','The pick'],['lines','Game lines'],['props','Props'],['inactives','Injury report'],['breakdown','Breakdown']];
+const TABS=[['pick','The pick'],['results','Results'],['lines','Game lines'],['props','Props'],['inactives','Injury report'],['breakdown','Breakdown']];
 let WU_OPEN=false;
 const COL={season:2,home:3,away:4,l3:5};
 let LD=[],GAMES=[],META={},SET={},ST={},LOG=[],RES=[],BETLOG=[],BOX=[],CW=null,SELWK=null,SELDAY=null;
