@@ -1101,6 +1101,33 @@ body{padding-bottom:calc(96px + env(safe-area-inset-bottom))}
 .bk-g.zoom .bk-x{display:block!important;margin:0 auto 8px}
 .bk-g.zoom .bk-s.on>.bk-b{background:none!important;box-shadow:none!important;min-height:0!important;border-radius:0!important}.bk-g.zoom .bk-s.on>.bk-b:before{display:none!important}
 .sb2:has(.sb2-cap){position:relative;padding:20px 10px!important}.sb2>.sb2-cap{position:absolute!important;left:0;right:0;bottom:5px;margin:0!important}
+/* Lines: game lines always shown, props as injury-report style ribbons */
+.bk-acc .ln-sec>.bk-b{display:none!important}.bk-acc .ln-sec>.body{display:block!important;background:none!important;box-shadow:none!important;padding:0!important;animation:none!important}
+.ln-h{font:600 15.5px Oswald,sans-serif;letter-spacing:1.4px;text-transform:uppercase;color:var(--ink);padding:14px 2px 8px;border-bottom:2px solid color-mix(in srgb,var(--lime) 55%,transparent);margin-top:8px}
+.bk-acc .bk-s:not(.ln-sec)>.bk-b{border-radius:0!important;border:0!important;border-left:3px solid var(--tc)!important;box-shadow:none!important;padding:8px 14px!important;background:linear-gradient(90deg,color-mix(in srgb,var(--tc) 30%,transparent),color-mix(in srgb,var(--tc) 6%,transparent) 70%)!important}
+.bk-acc .bk-s:not(.ln-sec)>.bk-b>span:not(.bk-lg){font:800 12.5px 'Source Sans 3',sans-serif!important;letter-spacing:.06em!important;text-transform:uppercase!important}
+.bk-acc .bk-s:not(.ln-sec)>.bk-b .bk-lg .badge{--s:20px!important}
+.bk-acc .bk-s:not(.ln-sec)>.body{background:none!important;box-shadow:none!important;border-radius:0!important;padding:0!important}
+.bk-acc .bk-s.open:not(.ln-sec)>.bk-b{border-radius:0!important}
+.bk-acc{gap:10px!important}
+/* bigger player names */
+.rs-pr{font-size:14.5px!important;padding:6px 12px!important}.rs-pr small{font-size:11.5px}
+/* breakdown tiles: brighter, alive */
+.bk-g:not(.bk-acc):not(.zoom) .bk-b{background:linear-gradient(135deg,color-mix(in srgb,var(--ta) 42%,var(--card2)),color-mix(in srgb,var(--card2) 85%,#fff 4%) 50%,color-mix(in srgb,var(--th) 38%,var(--card2)))!important;
+  box-shadow:0 0 0 1px rgba(255,255,255,.12),0 0 18px color-mix(in srgb,var(--ta) 22%,transparent),0 0 18px color-mix(in srgb,var(--th) 18%,transparent),0 12px 26px rgba(0,0,0,.4)!important}
+.bk-g:not(.bk-acc):not(.zoom) .bk-b:before{background:linear-gradient(115deg,transparent 30%,rgba(255,255,255,.14) 45%,transparent 60%)!important;background-size:250% 100%!important;animation:bksh 5s ease-in-out infinite}
+.bk-g:not(.bk-acc):not(.zoom) .bk-s:nth-child(even) .bk-b:before{animation-delay:1.2s}.bk-g:not(.bk-acc):not(.zoom) .bk-s:nth-child(3n) .bk-b:before{animation-delay:2.4s}
+@keyframes bksh{0%,55%{background-position:150% 0}100%{background-position:-60% 0}}
+.bk-g:not(.bk-acc):not(.zoom) .bk-b:after{content:'›';position:absolute;right:12px;bottom:8px;font-size:18px;color:rgba(255,255,255,.55);z-index:1}
+.bk-g:not(.bk-acc):not(.zoom) .bk-b:hover{transform:translateY(-3px) scale(1.03)!important;box-shadow:0 0 0 1px color-mix(in srgb,var(--lime) 70%,transparent),0 0 24px color-mix(in srgb,var(--lime) 30%,transparent),0 14px 30px rgba(0,0,0,.45)!important}
+@media(prefers-reduced-motion:reduce){.bk-b:before{animation:none!important}}
+.bk-acc .pq-v{display:none!important}
+.bk-acc .pq-c>summary{grid-template-columns:minmax(0,1fr) auto 46px 54px!important}
+.bk-acc .pq.gl .pq-c>summary{grid-template-columns:minmax(78px,auto) minmax(0,1fr) 58px!important}
+.bk-acc .pq-ev{text-align:right;line-height:1.1;font-weight:800!important}
+.bk-acc .pq-Bet .pq-ev{color:#5fd39a!important}.bk-acc .pq-Lean .pq-ev{color:#f2b33d!important}.bk-acc .pq-Pass .pq-ev{color:var(--dim)!important;font-weight:600!important}
+.bk-acc .pq-Bet .pq-ev:after,.bk-acc .pq-Lean .pq-ev:after{display:block;font-size:9px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;opacity:.8;margin-top:1px}
+.bk-acc .pq-Bet .pq-ev:after{content:'Value'}.bk-acc .pq-Lean .pq-ev:after{content:'Lean'}
 </style>
 </head>
 <body>
@@ -1379,7 +1406,7 @@ function game(g,tab){
   ${g.lines.total!=null?`<div class="lr-g"><span class="lr-l">Total (O/U)</span><div class="ln-c"><span class="sg sg-n">O/U</span><input id="in-total" type="text" inputmode="decimal" autocomplete="off" aria-label="Total points"><button type="button" class="nd" data-k="total" data-d="-1" aria-label="Lower">${CHD}</button><button type="button" class="nd" data-k="total" data-d="1" aria-label="Raise">${CHU}</button></div><small id="hint-total"></small></div>`:''}
   <div class="lr-g lr-o lr-rsw"><button type="button" class="lr-rs" id="rl">Reset lines</button></div></div>
   <div class="ox" id="ox" hidden><span id="oxL"></span><div class="ln-c"><button type="button" class="sg" data-sg="ed" aria-label="Flip + or −"></button><input id="in-ed" type="text" inputmode="decimal" autocomplete="off" aria-label="Odds"><button type="button" class="nd" data-k="ed" data-d="-1" aria-label="Lower">${CHD}</button><button type="button" class="nd" data-k="ed" data-d="1" aria-label="Raise">${CHU}</button></div><small id="oxH"></small><button type="button" class="save" id="oxD">Done</button></div><div class="ia-bar ln-bar" id="lnBar"><span id="lnMsg"></span><button class="reset" id="lnX" type="button">Discard</button><button class="save" id="lnSv" type="button">Saved</button></div></div>
-  <p class="note" style="text-align:center;margin-top:10px">Book: <b>${esc(bookName(g))}</b>${bookGap(g).length?` · this book's ${bookGap(g).some(k=>k.startsWith('spread'))?'spread prices':'prices'} weren't available, so those use the consensus price`:''}. Use Edit lines for alternate lines: as you move the spread or total, the odds fill in with this book's price for that number (estimated between posted lines when needed) and the card above updates live. Save to lock it in for The pick and every other page. Reset puts back the book's original lines right away.</p>
+
   </div></div></section>`:''}
   <div id="panel"></div>`;
   centerIn($('gbar'),$('gbar').querySelector('.on'));document.documentElement.style.setProperty('--gbh',$('gbar').offsetHeight+'px');
@@ -1400,7 +1427,7 @@ function game(g,tab){
       return `<div class="h2-r"><div class="h2-s" ${tc(A)}>${badge(A)}<div><b>${esc(who(r[0].t))}</b><small>${esc(role(r[0].t))}</small></div><em class="${a>b?'w':''}">${a}</em></div><span class="h2-v">vs</span><div class="h2-s r" ${tc(B)}><em class="${b>a?'w':''}">${b}</em><div><b>${esc(who(r[3].t))}</b><small>${esc(role(r[3].t))}</small></div>${badge(B)}</div>
       <div class="h2-b"><i style="width:${a/n*100}%;background:${esc(A.night||A.color)}"></i><i style="width:${b/n*100}%;background:${esc(B.night||B.color)}"></i></div>${r[0].d?`<p class="h2-d">${esc(r[0].d)}</p>`:''}</div>`}).join('')}</div>`;
     const body=t=>t===H2?h2h(t):t.rows.length===2&&t.cols.length>=3?vs(t):list(t);
-    return C.map(t=>`<section class="bk-s" style="--ta:${esc(g.away.night||g.away.color)};--th:${esc(g.home.night||g.home.color)}"><button type="button" class="bk-b"><span class="bk-lg">${badge(g.away)}${badge(g.home)}</span><span>${esc(t.title)}</span></button><div class="body">${body(t)}${t.note?`<div class="cx-n">${esc(t.note)}</div>`:''}</div></section>`).join('')})()}${resOf(g.id)&&g.players.length?`<section class="bk-s" style="--ta:${esc(g.away.night||g.away.color)};--th:${esc(g.home.night||g.home.color)}"><button type="button" class="bk-b"><span class="bk-lg">${badge(g.away)}${badge(g.home)}</span><span>Injury report</span><small>pre-game</small></button><div class="body"><div class="ir-g">${[g.away,g.home].map(t=>{const M=g.players.filter(p=>p.team===t.abbr);return `<div class="ir-c" ${tc(t)}><div class="ir-t">${badge(t)}<b>${esc(t.name)}</b></div>${M.length?M.map(p=>{const o=!p.plays;return `<div class="ir-r"><span><b>${esc(p.player)}</b> <small>${esc(p.pos)}${p.status?' · '+esc(p.status):''}</small></span><em class="${o?'o':'a'}">${o?'Out':'Active'}</em></div>`}).join(''):'<div class="ir-r"><small>Nobody listed</small></div>'}</div>`}).join('')}</div></div></section>`:''}</div>`;
+    return C.map(t=>`<section class="bk-s" style="--ta:${esc(g.away.night||g.away.color)};--th:${esc(g.home.night||g.home.color)}"><button type="button" class="bk-b"><span class="bk-lg">${badge(g.away)}${badge(g.home)}</span><span>${esc(t.title)}</span></button><div class="body">${body(t)}${t.note?`<div class="cx-n">${esc(t.note)}</div>`:''}</div></section>`).join('')})()}</div>`;
   if(tab==='results')P.innerHTML=resultsPane(g);
   if(tab==='inactives')P.innerHTML=`<div class="card ia"><div class="body" id="ia"></div><div class="ia-bar" id="iaBar"><span id="iaMsg"></span><button class="reset" id="iaRs" type="button">Reset to report</button><button class="save" id="iaSv" type="button">Save</button></div></div>`;
   if(tab==='lines'){const out=propOut(g),PS=(g.props||[]).filter(p=>!out.has(p.player));
@@ -1412,7 +1439,7 @@ function game(g,tab){
       const pls=Object.entries(by).map(([k,v])=>[k,v.sort((a,b)=>b.best.ev-a.best.ev)]).sort((a,b)=>b[1][0].best.ev-a[1][0].best.ev);
       const nb=xs.filter(x=>x.best.ev>0&&x.best.v==='Bet').length,nl=xs.filter(x=>x.best.ev>0&&x.best.v==='Lean').length;
       return `<section class="bk-s" style="--ta:${esc(t.night||t.color)};--th:${esc(t.night||t.color)};--tc:${esc(t.night||t.color)}"><button type="button" class="bk-b"><span class="bk-lg one">${badge(t)}</span><span>${esc(t.name)} props</span><small><span class="ln-tag">${nb?`<em class="lt-v">${nb} Value</em>`:''}${nl?`<em class="lt-l">${nl} Lean</em>`:''}${!nb&&!nl?'No edges':''}</span></small><i class="rs-ch"></i></button><div class="body"><div class="rs-pl">${pls.map(([pl,ys])=>`<div class="rs-pr" ${tc(t)}>${esc(pl)} <small>${esc(ys[0].p.pos)}</small></div><div class="pq rs-prw ln-prw"><div class="pq-p"><div class="pq-cs">${ys.map(card).join('')}</div></div></div>`).join('')}</div></div></section>`};
-    P.innerHTML='<div class="bk-g bk-acc" id="bkG"><button type="button" class="bk-x" id="bkX">‹ Lines</button></div>'+(PS.length?`<p class="note" style="text-align:center">Props: ${esc(BOOK)} lines as of ${esc(g.propsAsOf||'')}. Tap a line for the reasoning. Players marked Out on the injury report are left off.</p>`:'');{const G=$('bkG'),ls=document.querySelector('.ln-sec');if(ls)G.appendChild(ls);G.insertAdjacentHTML('beforeend',team(g.away)+team(g.home))}}
+    P.innerHTML='<div class="bk-g bk-acc" id="bkG"><button type="button" class="bk-x" id="bkX">‹ Lines</button></div>'+(PS.length?`<p class="note" style="text-align:center">Props: ${esc(BOOK)} lines as of ${esc(g.propsAsOf||'')}. Tap a line for the reasoning. Players marked Out on the injury report are left off.</p>`:'');{const G=$('bkG'),ls=document.querySelector('.ln-sec');if(ls)G.appendChild(ls);G.insertAdjacentHTML('beforeend',(PS.length?'<div class="ln-h">Player props</div>':'')+team(g.away)+team(g.home))}}
   bind(g,tab);render(g,tab);
   if((tab==='breakdown'||tab==='lines')&&$('bkG')){const G=$('bkG');G.querySelectorAll('.bk-b').forEach(btn=>btn.onclick=()=>{if(G.classList.contains('bk-acc')){btn.closest('.bk-s').classList.toggle('open');return}if(G.classList.contains('zoom'))return;const sec=btn.closest('.bk-s');G.querySelectorAll('.bk-s').forEach(x=>x.classList.toggle('on',x===sec));G.classList.add('zoom')});$('bkX').onclick=()=>{G.classList.remove('zoom');G.querySelectorAll('.bk-s').forEach(x=>x.classList.remove('on'))}}
   if(tab==='pick'&&$('ppS')){const tg=o=>{WU_OPEN=o;$('ppW').hidden=!o;$('ppMain').hidden=o};$('ppS').onclick=()=>tg(true);$('ppS').onkeydown=e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();tg(true)}};$('wuBack').onclick=()=>tg(false)}
