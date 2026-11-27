@@ -4,7 +4,10 @@
 <meta charset="UTF-8">
 <meta name="theme-color" content="#0b0f1e">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>EV Betting Model</title>
+<title>Plus Money</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20viewBox%3D%220%200%2040%2040%22%3E%3Crect%20x%3D%222%22%20y%3D%222%22%20width%3D%2236%22%20height%3D%2236%22%20rx%3D%2211%22%20fill%3D%22%232fc27f%22/%3E%3Cpath%20d%3D%22M20%2010v20M10%2020h20%22%20stroke%3D%22%2306231a%22%20stroke-width%3D%225.2%22%20stroke-linecap%3D%22round%22/%3E%3C/svg%3E">
+<link rel="apple-touch-icon" href="data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20viewBox%3D%220%200%2040%2040%22%3E%3Crect%20x%3D%222%22%20y%3D%222%22%20width%3D%2236%22%20height%3D%2236%22%20rx%3D%2211%22%20fill%3D%22%232fc27f%22/%3E%3Cpath%20d%3D%22M20%2010v20M10%2020h20%22%20stroke%3D%22%2306231a%22%20stroke-width%3D%225.2%22%20stroke-linecap%3D%22round%22/%3E%3C/svg%3E">
+<meta name="apple-mobile-web-app-title" content="Plus Money">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Oswald:wght@500;600;700&family=Source+Sans+3:wght@400;500;600;700;800;900&display=swap">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 <style>
@@ -1279,10 +1282,24 @@ body{padding-bottom:calc(96px + env(safe-area-inset-bottom))}
 .gbar a:not(.gb-ar){font-size:13.5px!important}
 @media(max-width:640px){.header{padding:12px 50px 8px!important}.tab-btn{font-size:14.5px!important;padding:12px 9px!important;letter-spacing:.5px!important}}
 @media(max-width:640px){.tab-bar{padding:0 6px!important;justify-content:space-between!important}.tab-bar>.tab-btn:first-child,.tab-bar>.tab-btn:nth-last-child(2){margin:0!important}.tab-btn{font-size:14px!important;padding:12px 6px!important;letter-spacing:.3px!important}}
+.gdtop{position:relative;display:flex;justify-content:center;align-items:center}.gdtop .gdots{margin:4px auto 18px!important}
+.gback{position:absolute;left:0;top:4px;padding:5px 10px 5px 6px;font:700 12.5px 'Source Sans 3',sans-serif;color:var(--mute);text-decoration:none;border-radius:8px}.gback:hover{color:var(--ink);background:rgba(255,255,255,.05)}
+.gdtop+.gbar{border-top:1px solid rgba(255,255,255,.1)!important}
+.day h3{margin-top:12px!important}
+.header h1{font-size:36px!important}@media(max-width:640px){.header h1{font-size:32px!important}.header{padding:14px 50px 10px!important}}
+.tab-bar{justify-content:center!important;gap:6px!important;padding:0 8px!important}.tab-bar>.tab-btn:first-child,.tab-bar>.tab-btn:nth-last-child(2){margin:0!important}
+@media(max-width:640px){.tab-btn{font-size:13.5px!important;padding:11px 7px!important;letter-spacing:.4px!important}}
+.gbar a.on::after{display:none!important}.gbar a{margin:0!important}.gbar{gap:18px!important;padding-left:0!important;padding-right:0!important}
+@media(max-width:640px){.header h1{font-size:29px!important;white-space:nowrap}.tab-bar{gap:2px!important}.tab-btn{font-size:12.5px!important;padding:11px 7px!important;letter-spacing:.2px!important}}
+@media(max-width:640px){.header h1{font-size:27px!important;letter-spacing:.2px!important}.header{padding:14px 52px 10px!important}}
+@media(max-width:640px){.header h1{font-size:25px!important}.bkt{top:50%!important;transform:translateY(-50%);right:10px!important}.header{padding:14px 54px 12px!important}}
+.gbar a{padding:12px 11px 10px!important}
+.pm-h{display:inline-flex;align-items:center;gap:10px}.pm-mk{width:1.05em;height:1.05em;flex:none;filter:drop-shadow(0 2px 8px rgba(47,194,127,.45))}
+.header h1.pm-h b{color:#3ee6a8!important}
 </style>
 </head>
 <body>
-<div class="header"><a class="bkt" id="bkTop" href="#books" aria-label="Sportsbook"></a><h1>EV Betting <b>Model</b></h1><div class="sub" id="subTitle">Loading…</div></div>
+<div class="header"><a class="bkt" id="bkTop" href="#books" aria-label="Sportsbook"></a><h1 class="pm-h"><svg class="pm-mk" viewBox="0 0 40 40" aria-hidden="true"><defs><linearGradient id="pmg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#5fe3a1"/><stop offset="1" stop-color="#1fae6b"/></linearGradient></defs><rect x="2" y="2" width="36" height="36" rx="11" fill="url(#pmg)"/><path d="M20 10v20M10 20h20" stroke="#06231a" stroke-width="5.2" stroke-linecap="round"/></svg><span>Plus <b>Money</b></span></h1><div class="sub" id="subTitle">Loading…</div></div>
 <div class="tab-bar" id="tabBar">
   <a class="tab-btn" href="#board" data-tab="board">Games</a>
   <a class="tab-btn" href="#best" data-tab="best">Best Bets</a>
@@ -1462,15 +1479,18 @@ function centerIn(box,el){if(!box||!el)return;const b=box.getBoundingClientRect(
 function nearestCenter(box,sel){const b=box.getBoundingClientRect(),mid=b.left+b.width/2;let best=null,bd=1e9;box.querySelectorAll(sel).forEach(a=>{const r=a.getBoundingClientRect(),d=Math.abs(r.left+r.width/2-mid);if(d<bd){bd=d;best=a}});return best}
 function dayName(d,today){if(d===today)return 'Today';if(d==='tbd')return 'Date TBD';const t=dObj(today),x=dObj(d),diff=Math.round((x-t)/864e5);
   if(diff===1)return 'Tomorrow';if(diff===-1)return 'Yesterday';return dLabel(d,{weekday:'long',month:'short',day:'numeric'})}
+function dayDock(cd,inGame){const DS=days();if(cd&&!DS.includes(cd)){DS.push(cd);DS.sort()}
+  return `<nav class="dock dk-days" aria-label="Days">${DS.map(d=>{const fg=GAMES.filter(x=>dayOf(x)===d).sort((a,b)=>String(a.kickoff).localeCompare(String(b.kickoff)))[0];return `<a class="dk-d${d===cd?' on':''}" href="${inGame&&fg?'#'+esc(fg.id):'#day-'+d}"><b>${esc(d==='tbd'?'TBD':d===curDay()?'Today':dLabel(d,{weekday:'short'}))}</b><small>${esc(d==='tbd'?'':dLabel(d,{month:'short',day:'numeric'}))}</small></a>`}).join('')}</nav>`}
+function mountDock(html){if(typeof document==='undefined'||!document.body||!document.body.appendChild||!document.createElement)return;document.querySelectorAll('body>.dock').forEach(x=>x.remove());const w=document.createElement('div');w.innerHTML=html;const dk=w.firstElementChild||w.firstChild;if(!dk)return;document.body.appendChild(dk);const cc=()=>{const o=dk.querySelector('.on');if(o)dk.scrollLeft=o.offsetLeft+o.offsetWidth/2-dk.clientWidth/2};cc();requestAnimationFrame(cc);setTimeout(cc,120)}
 function board(){
-  document.title='EV Betting Model';anim();const D=days(),today=curDay();if(SELDAY==null)SELDAY=pickDay();if(!D.includes(SELDAY)){D.push(SELDAY);D.sort()}
+  document.title='Plus Money';anim();const D=days(),today=curDay();if(SELDAY==null)SELDAY=pickDay();if(!D.includes(SELDAY)){D.push(SELDAY);D.sort()}
   const show=[SELDAY];
   const tab=d=>`<a class="dtab ${d===SELDAY?'on':''}" href="#day-${d}" ${d===SELDAY?'aria-current="date"':''}>${d===today?'Today':d==='tbd'?'TBD':dLabel(d,{weekday:'short',month:'short',day:'numeric'}).replace(',','')}</a>`;
   const sec=d=>{const gs=GAMES.filter(g=>dayOf(g)===d).sort((a,b)=>String(a.kickoff).localeCompare(String(b.kickoff)));
     return `<section class="day" id="sec-${d}"><h3>${esc(dayName(d,today))}${d!==today&&dayName(d,today).match(/^(Tomorrow|Yesterday)$/)?`<small>${esc(dLabel(d,{weekday:'long',month:'short',day:'numeric'}))}</small>`:''}</h3>${gs.length?`<div class="${VIEW==='compact'?'sbs':'hcs'} ${gs.length>2?'hx':''}">${gs.map(gameCard).join('')}</div>`:'<div class="empty nolines">No games on this day, so no lines yet.</div>'}</section>`};
-  $('app').innerHTML=`<nav class="dtabs" id="dayStrip">${D.map(tab).join('')}</nav>${show.map(sec).join('')||'<div class="empty">No games yet.</div>'}`;
-  const ds=$('dayStrip');centerIn(ds,ds.querySelector('.on'));
-  let st_;const go_=()=>{const a=nearestCenter(ds,'.dtab');if(a&&!a.classList.contains('on'))location.replace(a.getAttribute('href'))};ds.addEventListener('scroll',()=>{clearTimeout(st_);st_=setTimeout(go_,60)});if('onscrollend' in ds)ds.addEventListener('scrollend',()=>{clearTimeout(st_);go_()});
+  $('app').innerHTML=`${show.map(sec).join('')||'<div class="empty">No games yet.</div>'}`;mountDock(dayDock(SELDAY,false));
+  
+
 }
 let BBF={day:null,game:'all',book:null,type:'all'};
 function propWhy(g,x){const p=x.p,b=x.best,ov=b.side==='over',L=x.r.L,first=p.player.split(' ').slice(-1)[0],tm=p.team===g.home.abbr?g.home:g.away,op=p.team===g.home.abbr?g.away:g.home,
@@ -1553,8 +1573,8 @@ function game(g,tab){
   const lg0=logOf(g),gr0=lg0&&grade(lg0);
   const SW=GAMES.filter(x=>x.week===g.week&&dayOf(x)===dayOf(g)).sort((a,b)=>String(a.kickoff).localeCompare(String(b.kickoff))),si=SW.findIndex(x=>x.id===g.id),spv=SW[si-1],snx=SW[si+1],AR=(x,d)=>x?`<a class="gb-ar" href="#${esc(x.id)}" aria-label="${d?'Next':'Previous'} game: ${esc(x.away.abbr)} @ ${esc(x.home.abbr)}">${d?'›':'‹'}</a>`:`<span class="gb-ar off">${d?'›':'‹'}</span>`;
 {const AG=GAMES.slice().sort((a,b)=>(dayOf(a)+String(a.kickoff)).localeCompare(dayOf(b)+String(b.kickoff))),ai=AG.findIndex(x=>x.id===g.id);SWP=ai>0?AG[ai-1].id:null;SWN=ai<AG.length-1?AG[ai+1].id:null}
-  const DOTS=`<div class="gdots" aria-label="Game ${si+1} of ${SW.length}">${SWP&&!SW.some(x=>x.id===SWP)?`<a href="#${esc(SWP)}" class="ed" aria-label="Previous day"></a>`:''}${SW.map(x=>`<a href="#${esc(x.id)}" class="${x.id===g.id?'on':''}" aria-label="${esc(x.away.abbr)} @ ${esc(x.home.abbr)}"></a>`).join('')}${SWN&&!SW.some(x=>x.id===SWN)?`<a href="#${esc(SWN)}" class="ed" aria-label="Next day"></a>`:''}</div>`;
-  $('app').innerHTML=DOTS+`<nav class="gbar" id="gbar">${TABS.filter(([t])=>tabsFor(g).includes(t)).map(([t,n])=>`<a class="${t===tab?'on':''}" href="#${esc(g.id)}-${t}">${t==='breakdown'&&resOf(g.id)?'Recap':n}</a>`).join('')}</nav>${(()=>{const W=GAMES.filter(x=>x.week===g.week&&dayOf(x)===dayOf(g)).sort((a,b)=>(dayOf(a)+String(a.kickoff)).localeCompare(dayOf(b)+String(b.kickoff))),i=W.findIndex(x=>x.id===g.id),pv=W[i-1],nx=W[i+1],ch=d=>`<svg viewBox="0 0 24 24" width="15" height="15" aria-hidden="true"><path d="${d?'M9 6l6 6-6 6':'M15 18l-6-6 6-6'}" fill="none" stroke="currentColor" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round"/></svg>`;const cd=dayOf(g),DS=days();return `<nav class="dock dk-days" aria-label="Days">${DS.map(d=>{const fg=GAMES.filter(x=>dayOf(x)===d).sort((a,b)=>String(a.kickoff).localeCompare(String(b.kickoff)))[0];return `<a class="dk-d${d===cd?' on':''}" href="#${fg?esc(fg.id):'day-'+d}"><b>${esc(d==='tbd'?'TBD':d===curDay()?'Today':dLabel(d,{weekday:'short'}))}</b><small>${esc(d==='tbd'?'':dLabel(d,{month:'short',day:'numeric'}))}</small></a>`}).join('')}</nav>`})()}
+  const DOTS=`<div class="gdtop"><a class="gback" href="#day-${dayOf(g)}" aria-label="Back to games">‹ Games</a><div class="gdots" aria-label="Game ${si+1} of ${SW.length}">${SWP&&!SW.some(x=>x.id===SWP)?`<a href="#${esc(SWP)}" class="ed" aria-label="Previous day"></a>`:''}${SW.map(x=>`<a href="#${esc(x.id)}" class="${x.id===g.id?'on':''}" aria-label="${esc(x.away.abbr)} @ ${esc(x.home.abbr)}"></a>`).join('')}${SWN&&!SW.some(x=>x.id===SWN)?`<a href="#${esc(SWN)}" class="ed" aria-label="Next day"></a>`:''}</div></div>`;
+  $('app').innerHTML=DOTS+`<nav class="gbar" id="gbar">${TABS.filter(([t])=>tabsFor(g).includes(t)).map(([t,n])=>`<a class="${t===tab?'on':''}" href="#${esc(g.id)}-${t}">${t==='breakdown'&&resOf(g.id)?'Recap':n}</a>`).join('')}</nav>${(()=>{const W=GAMES.filter(x=>x.week===g.week&&dayOf(x)===dayOf(g)).sort((a,b)=>(dayOf(a)+String(a.kickoff)).localeCompare(dayOf(b)+String(b.kickoff))),i=W.findIndex(x=>x.id===g.id),pv=W[i-1],nx=W[i+1],ch=d=>`<svg viewBox="0 0 24 24" width="15" height="15" aria-hidden="true"><path d="${d?'M9 6l6 6-6 6':'M15 18l-6-6 6-6'}" fill="none" stroke="currentColor" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round"/></svg>`;return dayDock(dayOf(g),true)})()}
   ${tab==='lines'?(()=>{const L=bookLines(g),sp=L.spread,tm=(String(g.kickoff||'').split('·').slice(1).join('·').trim()).replace(/\s*ET$/,''),wx=g.inputs&&g.inputs.weather,t=x=>`<div class="pg-t" ${tc(x)}>${badge(x,1)}<b>${esc(x.name)}</b><small>${esc(x.record)}</small></div>`;
     return `<div class="sb2 pg" style="--away:${esc(g.away.night||g.away.color)};--home:${esc(g.home.night||g.home.color)}">${t(g.away)}<div class="sb2-c pg-c"><b>${esc(tm||'TBD')}</b><span>${esc(dLabel(dayOf(g),{weekday:'short',month:'short',day:'numeric'}))}</span><small>${esc(g.tv||'')}${wx&&wx.roof!=='Dome'?' · '+esc(wxText(wx)):''}</small></div>${t(g.home)}<div class="sb2-cap">${[sp==null?'':sp===0?"Pick'em":`${esc(sp<0?g.home.name:g.away.name)} ${sgn(-Math.abs(sp))}`,L.total!=null?'O/U '+L.total:''].filter(Boolean).join(' · ')}</div></div>`})()+`<section class="bk-s ln-sec" style="--ta:${esc(g.away.night||g.away.color)};--th:${esc(g.home.night||g.home.color)}"><button type="button" class="bk-b"><span class="bk-lg">${badge(g.away)}${badge(g.home)}</span><span>Game lines</span><small>${glTag(g)}</small><i class="rs-ch"></i></button><div class="body"><div id="pkWrap"><div class="lgw${linesMoved(g)?' mv':''}"><div class="edw"><button type="button" class="edb rsb" id="rsB" ${linesMoved(g)?'':'hidden'} title="Put back the book's original lines"><svg viewBox="0 0 24 24" width="13" height="13" aria-hidden="true"><path d="M4 12a8 8 0 1 0 2.4-5.7M4 4v5h5" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg><span>Reset</span></button><button type="button" class="edb" id="adjB" aria-expanded="false"><svg viewBox="0 0 24 24" width="13" height="13" aria-hidden="true"><path d="M4 20h4L19 9l-4-4L4 16v4z" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linejoin="round"/></svg><span>Edit lines</span></button></div><div class="ogw info" id="lgG"></div></div>
   <div id="adjBox" hidden><div class="lr"><div class="lr-g"><span class="lr-l">Spread</span><div class="ln-c"><button type="button" class="sg" data-sg="spread" aria-label="Flip + or −"></button><input id="in-spread" type="text" inputmode="decimal" autocomplete="off" aria-label="${esc(g.home.name)} spread"><button type="button" class="nd" data-k="spread" data-d="-1" aria-label="Lower">${CHD}</button><button type="button" class="nd" data-k="spread" data-d="1" aria-label="Raise">${CHU}</button></div><small id="hint-spread"></small></div>
