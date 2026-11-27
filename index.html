@@ -1263,12 +1263,28 @@ body{padding-bottom:calc(96px + env(safe-area-inset-bottom))}
 .hcs.hx .fin .mh-rec{display:none}.hcs.hx .fin .mh-wp{margin-top:1px!important;line-height:1}
 .gdots{padding:10px 0 0!important;margin-bottom:14px!important}.gdots+.gbar{border-top:1px solid rgba(255,255,255,.06)!important}
 .gdots{margin:4px auto 18px!important;padding:6px 10px!important;width:max-content;border-radius:999px;background:rgba(255,255,255,.04)}.gdots+.gbar{border-top:1px solid rgba(255,255,255,.1)!important}
+.gdots a.ed{width:4px;height:4px;opacity:.5;margin:0 2px}
+.gbar{justify-content:center!important}.gbar::before,.gbar::after{display:none!important;flex:0!important}
+.bk-g:not(.bk-acc) .bk-lg{display:none!important}
+.bk-g:not(.bk-acc):not(.zoom) .bk-b{min-height:64px!important;background:var(--card)!important;box-shadow:0 0 0 1px var(--line2)!important;padding:12px 14px!important}
+.bk-g:not(.bk-acc):not(.zoom) .bk-b:before{display:none!important}
+.bk-g:not(.bk-acc):not(.zoom) .bk-b>span:not(.bk-lg){font:700 13px 'Source Sans 3',sans-serif!important;letter-spacing:.04em!important;text-transform:uppercase;text-shadow:none!important;color:var(--ink)}
+.bk-g:not(.bk-acc):not(.zoom) .bk-b:after{color:var(--mute)!important;top:50%;bottom:auto!important;transform:translateY(-55%)}
+.bk-g:not(.bk-acc):not(.zoom) .bk-b:hover{transform:none!important;box-shadow:0 0 0 1px color-mix(in srgb,var(--lime) 60%,transparent)!important}
+.bk-g:not(.zoom):not(.bk-acc){gap:8px!important}
+.bk-g:not(.bk-acc):not(.zoom) .bk-b .bk-lg{display:none!important}.bk-g:not(.bk-acc):not(.zoom) .bk-b{padding:12px 26px 12px 14px!important}
+.header{padding:14px 24px 10px!important}.header h1{font-size:24px!important}.header .sub{display:none!important}.bkt{top:8px!important}.bkl.lg{width:32px!important;height:32px!important}
+@media(max-width:640px){.header{padding:12px 56px 8px!important}.header h1{font-size:22px!important}}
+.tab-btn{font-size:16px!important;font-weight:600!important;padding:12px 14px!important;letter-spacing:.9px!important}
+.gbar a:not(.gb-ar){font-size:13.5px!important}
+@media(max-width:640px){.header{padding:12px 50px 8px!important}.tab-btn{font-size:14.5px!important;padding:12px 9px!important;letter-spacing:.5px!important}}
+@media(max-width:640px){.tab-bar{padding:0 6px!important;justify-content:space-between!important}.tab-bar>.tab-btn:first-child,.tab-bar>.tab-btn:nth-last-child(2){margin:0!important}.tab-btn{font-size:14px!important;padding:12px 6px!important;letter-spacing:.3px!important}}
 </style>
 </head>
 <body>
 <div class="header"><a class="bkt" id="bkTop" href="#books" aria-label="Sportsbook"></a><h1>EV Betting <b>Model</b></h1><div class="sub" id="subTitle">Loading…</div></div>
 <div class="tab-bar" id="tabBar">
-  <a class="tab-btn" href="#board" data-tab="board">Home</a>
+  <a class="tab-btn" href="#board" data-tab="board">Games</a>
   <a class="tab-btn" href="#best" data-tab="best">Best Bets</a>
   <a class="tab-btn" href="#record" data-tab="record">Track Record</a>
   <a class="tab-btn" href="#books" data-tab="books">Books</a>
@@ -1536,7 +1552,8 @@ function game(g,tab){
   const wx=g.inputs&&g.inputs.weather;
   const lg0=logOf(g),gr0=lg0&&grade(lg0);
   const SW=GAMES.filter(x=>x.week===g.week&&dayOf(x)===dayOf(g)).sort((a,b)=>String(a.kickoff).localeCompare(String(b.kickoff))),si=SW.findIndex(x=>x.id===g.id),spv=SW[si-1],snx=SW[si+1],AR=(x,d)=>x?`<a class="gb-ar" href="#${esc(x.id)}" aria-label="${d?'Next':'Previous'} game: ${esc(x.away.abbr)} @ ${esc(x.home.abbr)}">${d?'›':'‹'}</a>`:`<span class="gb-ar off">${d?'›':'‹'}</span>`;
-  {const AG=GAMES.slice().sort((a,b)=>(dayOf(a)+String(a.kickoff)).localeCompare(dayOf(b)+String(b.kickoff))),ai=AG.findIndex(x=>x.id===g.id);SWP=ai>0?AG[ai-1].id:null;SWN=ai<AG.length-1?AG[ai+1].id:null}const DOTS=SW.length>1?`<div class="gdots" aria-label="Game ${si+1} of ${SW.length}">${SW.map(x=>`<a href="#${esc(x.id)}" class="${x.id===g.id?'on':''}" aria-label="${esc(x.away.abbr)} @ ${esc(x.home.abbr)}"></a>`).join('')}</div>`:'';
+{const AG=GAMES.slice().sort((a,b)=>(dayOf(a)+String(a.kickoff)).localeCompare(dayOf(b)+String(b.kickoff))),ai=AG.findIndex(x=>x.id===g.id);SWP=ai>0?AG[ai-1].id:null;SWN=ai<AG.length-1?AG[ai+1].id:null}
+  const DOTS=`<div class="gdots" aria-label="Game ${si+1} of ${SW.length}">${SWP&&!SW.some(x=>x.id===SWP)?`<a href="#${esc(SWP)}" class="ed" aria-label="Previous day"></a>`:''}${SW.map(x=>`<a href="#${esc(x.id)}" class="${x.id===g.id?'on':''}" aria-label="${esc(x.away.abbr)} @ ${esc(x.home.abbr)}"></a>`).join('')}${SWN&&!SW.some(x=>x.id===SWN)?`<a href="#${esc(SWN)}" class="ed" aria-label="Next day"></a>`:''}</div>`;
   $('app').innerHTML=DOTS+`<nav class="gbar" id="gbar">${TABS.filter(([t])=>tabsFor(g).includes(t)).map(([t,n])=>`<a class="${t===tab?'on':''}" href="#${esc(g.id)}-${t}">${t==='breakdown'&&resOf(g.id)?'Recap':n}</a>`).join('')}</nav>${(()=>{const W=GAMES.filter(x=>x.week===g.week&&dayOf(x)===dayOf(g)).sort((a,b)=>(dayOf(a)+String(a.kickoff)).localeCompare(dayOf(b)+String(b.kickoff))),i=W.findIndex(x=>x.id===g.id),pv=W[i-1],nx=W[i+1],ch=d=>`<svg viewBox="0 0 24 24" width="15" height="15" aria-hidden="true"><path d="${d?'M9 6l6 6-6 6':'M15 18l-6-6 6-6'}" fill="none" stroke="currentColor" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round"/></svg>`;const cd=dayOf(g),DS=days();return `<nav class="dock dk-days" aria-label="Days">${DS.map(d=>{const fg=GAMES.filter(x=>dayOf(x)===d).sort((a,b)=>String(a.kickoff).localeCompare(String(b.kickoff)))[0];return `<a class="dk-d${d===cd?' on':''}" href="#${fg?esc(fg.id):'day-'+d}"><b>${esc(d==='tbd'?'TBD':d===curDay()?'Today':dLabel(d,{weekday:'short'}))}</b><small>${esc(d==='tbd'?'':dLabel(d,{month:'short',day:'numeric'}))}</small></a>`}).join('')}</nav>`})()}
   ${tab==='lines'?(()=>{const L=bookLines(g),sp=L.spread,tm=(String(g.kickoff||'').split('·').slice(1).join('·').trim()).replace(/\s*ET$/,''),wx=g.inputs&&g.inputs.weather,t=x=>`<div class="pg-t" ${tc(x)}>${badge(x,1)}<b>${esc(x.name)}</b><small>${esc(x.record)}</small></div>`;
     return `<div class="sb2 pg" style="--away:${esc(g.away.night||g.away.color)};--home:${esc(g.home.night||g.home.color)}">${t(g.away)}<div class="sb2-c pg-c"><b>${esc(tm||'TBD')}</b><span>${esc(dLabel(dayOf(g),{weekday:'short',month:'short',day:'numeric'}))}</span><small>${esc(g.tv||'')}${wx&&wx.roof!=='Dome'?' · '+esc(wxText(wx)):''}</small></div>${t(g.home)}<div class="sb2-cap">${[sp==null?'':sp===0?"Pick'em":`${esc(sp<0?g.home.name:g.away.name)} ${sgn(-Math.abs(sp))}`,L.total!=null?'O/U '+L.total:''].filter(Boolean).join(' · ')}</div></div>`})()+`<section class="bk-s ln-sec" style="--ta:${esc(g.away.night||g.away.color)};--th:${esc(g.home.night||g.home.color)}"><button type="button" class="bk-b"><span class="bk-lg">${badge(g.away)}${badge(g.home)}</span><span>Game lines</span><small>${glTag(g)}</small><i class="rs-ch"></i></button><div class="body"><div id="pkWrap"><div class="lgw${linesMoved(g)?' mv':''}"><div class="edw"><button type="button" class="edb rsb" id="rsB" ${linesMoved(g)?'':'hidden'} title="Put back the book's original lines"><svg viewBox="0 0 24 24" width="13" height="13" aria-hidden="true"><path d="M4 12a8 8 0 1 0 2.4-5.7M4 4v5h5" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg><span>Reset</span></button><button type="button" class="edb" id="adjB" aria-expanded="false"><svg viewBox="0 0 24 24" width="13" height="13" aria-hidden="true"><path d="M4 20h4L19 9l-4-4L4 16v4z" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linejoin="round"/></svg><span>Edit lines</span></button></div><div class="ogw info" id="lgG"></div></div>
@@ -1574,7 +1591,7 @@ function game(g,tab){
       return `<div class="bk-sub"><h4>Staff</h4><table class="st2"><thead><tr><th></th><th ${tc(g.away)}><span class="st2-h">${badge(g.away)}<span>${esc(g.away.name)}</span></span></th><th ${tc(g.home)}><span class="st2-h">${badge(g.home)}<span>${esc(g.home.name)}</span></span></th></tr></thead><tbody>${R.map(([l,x,y])=>`<tr><td class="l">${l}</td><td>${x}</td><td>${y}</td></tr>`).join('')}</tbody></table><div class="cx-n">Records are regular season with the current team.</div></div>`};
     const YR=C.filter(t=>/record|bye/i.test(t.title)),rk=t=>/head coaches/i.test(t.title)?0:/coordinator/i.test(t.title)?1:t===H2?2:3,CH=C.filter(t=>!YR.includes(t)).sort((a,b)=>rk(a)-rk(b));
     const HCt=CH.find(t=>/head coaches/i.test(t.title)),COt=CH.find(t=>/coordinator/i.test(t.title)),RST=CH.filter(t=>t!==HCt&&t!==COt);
-    return (YR.length?SEC('2026',YR.map(sub).join('')):'')+(CH.length?SEC('Coaching History',(HCt?staff(HCt,COt):'')+RST.map(t=>t===H2?`<div class="bk-sub"><h4>Matchup history</h4>${h2h(t)}</div>`:sub(t)).join('')):'')})()}</div>`;
+    return (YR.length?SEC('2026 Recap',YR.map(sub).join('')):'')+(CH.length?SEC('Coaching History',(HCt?staff(HCt,COt):'')+RST.map(t=>t===H2?`<div class="bk-sub"><h4>Matchup history</h4>${h2h(t)}</div>`:sub(t)).join('')):'')})()}</div>`;
   if(tab==='results')P.innerHTML=resultsPane(g);
   if(tab==='inactives')P.innerHTML=`<div class="card ia"><div class="body" id="ia"></div><div class="ia-bar" id="iaBar"><span id="iaMsg"></span><button class="reset" id="iaRs" type="button">Reset to report</button><button class="save" id="iaSv" type="button">Save</button></div></div>`;
   if(tab==='lines'){const out=propOut(g),PS=(g.props||[]).filter(p=>!out.has(p.player));
