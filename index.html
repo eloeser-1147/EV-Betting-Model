@@ -902,6 +902,25 @@ body{padding-bottom:calc(96px + env(safe-area-inset-bottom))}
 .rs-p{font-style:normal;font-size:11px;font-weight:800;text-align:center;border-radius:999px;padding:3px 0}.rs-W{background:#1f6b48;color:#c9f5dd}.rs-L{background:#6b2525;color:#ffd0d0}.rs-P,.rs-V,.rs-pd{background:var(--card2);color:var(--mut,#9aa)}.rs-u{text-align:right;font-weight:800;font-size:13px}.rs-u.up{color:#5fd39a}.rs-u.dn{color:#f08a8a}
 .rs-rib small{margin-left:auto;font-size:11px;color:var(--mut,#9aa)}.rs-l .rs-rib{padding-right:10px!important}
 .pq .rs-r .pq-mk{text-transform:none;letter-spacing:0;font-size:13px;line-height:1.2;white-space:normal;overflow:visible}.pq .rs-r .pq-mk small{text-transform:none}.rs-t em{font-size:11px;line-height:1.25}
+.hc-fin .hf-top{text-align:center}.hf-b{display:inline-block;font-size:11px;font-weight:800;letter-spacing:.12em;text-transform:uppercase;color:var(--lime);border:1px solid color-mix(in srgb,var(--lime) 45%,transparent);border-radius:999px;padding:2px 10px}
+.hf-sc{font-size:44px;font-weight:800;line-height:1.05;margin-top:2px}.hf-t.lo .hf-sc{opacity:.4}.hf-t.lo .mh-ab{opacity:.6}.hc-fin .hc-ft{font-weight:700}
+.rs-hero{background:var(--card);border:1px solid var(--line2);border-radius:16px;padding:14px;margin:10px 0 8px;text-align:center}.rs-hero.up{border-color:#2e9e6a;background:linear-gradient(180deg,rgba(46,158,106,.16),var(--card) 70%)}.rs-hero.dn{border-color:#a24a4a;background:linear-gradient(180deg,rgba(162,74,74,.16),var(--card) 70%)}
+.rs-hl{display:flex;align-items:center;justify-content:center;gap:8px;font-size:12px;font-weight:800;letter-spacing:.05em;text-transform:uppercase;color:var(--mut,#9aa)}
+.rs-hm{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:8px}.rs-hm>div{display:flex;flex-direction:column}.rs-hm b{font-size:34px;font-weight:800;line-height:1.1}.rs-hm small{font-size:12px;color:var(--mut,#9aa);font-weight:700}.rs-hero.up .rs-hu,.rs-hero.up .rs-hm div+div small{color:#5fd39a}.rs-hero.dn .rs-hu,.rs-hero.dn .rs-hm div+div small{color:#f08a8a}.rs-pn{font-size:11px;color:var(--mut,#9aa);margin-top:6px}
+.rs-ts.rs-2{grid-template-columns:1fr 1fr}.rs-ts.rs-2 .rs-t b{font-size:20px}
+.rs-sh{font-size:13px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--mut,#9aa);margin:16px 2px 8px}
+.rs-tm{margin-bottom:12px}.rs-th{display:flex;align-items:center;gap:8px;padding:6px 4px;border-bottom:2px solid var(--tc);margin-bottom:8px}.rs-th b{font-size:15px}.rs-th span{margin-left:auto;font-weight:800;font-size:13px}.rs-th span.up{color:#5fd39a}.rs-th span.dn{color:#f08a8a}
+.rs-tm .pq-p{margin-bottom:8px}
+.rs-th{justify-content:flex-start!important;text-align:left}.rs-th .badge{margin:0!important;flex:none}
+.rs-disc{font-size:11.5px;color:var(--mut,#9aa);text-align:center;margin:2px 6px 12px;font-style:italic}
+.rs-sec{background:var(--card);border:1px solid var(--line2);border-radius:14px;margin-bottom:10px;overflow:hidden}.rs-sec[open]{padding-bottom:8px}
+.rs-sum{list-style:none;display:flex;align-items:center;gap:8px;padding:12px 14px;cursor:pointer}.rs-sum::-webkit-details-marker{display:none}.rs-sum b{font-size:15px}
+.rs-tm>.rs-sum{border-bottom:0;border-left:4px solid var(--tc);margin:0}.rs-tm[open]>.rs-sum{border-bottom:1px solid var(--line2)}
+.rs-cs{margin-left:auto;font-weight:800;font-size:13px}.rs-cs.up{color:#5fd39a}.rs-cs.dn{color:#f08a8a}
+.rs-ch{width:9px;height:9px;border-right:2px solid var(--mut,#9aa);border-bottom:2px solid var(--mut,#9aa);transform:rotate(45deg);margin:0 2px 4px 6px;transition:transform .15s}.rs-sec[open] .rs-ch{transform:rotate(-135deg);margin-bottom:-2px}
+.rs-sec>.pq{padding:8px 8px 0}.rs-sec>.rs-l{padding:8px 8px 0;margin:0}
+.rs-i{font-style:normal;justify-self:center;width:22px;height:22px;border-radius:50%;display:grid;place-items:center;font-size:12px;font-weight:900;border:1.5px solid currentColor;line-height:1}.rs-iW{color:#5fd39a}.rs-iL{color:#f08a8a}.rs-iP,.rs-iV,.rs-ipd{color:var(--mut,#9aa)}
+.pq .rs-r{grid-template-columns:minmax(0,1fr) auto 26px 56px!important}
 </style>
 </head>
 <body>
@@ -921,7 +940,7 @@ body{padding-bottom:calc(96px + env(safe-area-inset-bottom))}
 const $=id=>document.getElementById(id);
 const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const STATS=[['RushYPG','Rushing yards/game'],['RushYPC','Yards per rush'],['PassYPG','Passing yards/game'],['PassYPA','Yards per pass attempt'],['RZTD','Red zone TD %'],['PPG','Points/game']];
-const TABS=[['pick','The pick'],['results','Results'],['lines','Game lines'],['props','Props'],['inactives','Injury report'],['breakdown','Breakdown']];
+const TABS=[['results','Results'],['pick','The pick'],['lines','Game lines'],['props','Props'],['inactives','Injury report'],['breakdown','Breakdown']];
 let WU_OPEN=false;
 const COL={season:2,home:3,away:4,l3:5};
 let LD=[],GAMES=[],META={},SET={},ST={},LOG=[],RES=[],BETLOG=[],BOX=[],CW=null,SELWK=null,SELDAY=null;
@@ -1033,6 +1052,7 @@ function route(){document.body.classList.remove('home');
   const h=location.hash.slice(1);let g=GAMES.find(x=>x.id===h),tab='pick';
   if(!g)for(const [t] of TABS){g=GAMES.find(x=>h===x.id+'-'+t);if(g){tab=t;break}}
   if(!g){const w=GAMES.find(x=>h===x.id+'-writeup');if(w){WU_OPEN=true;location.replace('#'+w.id);return}}
+  if(g&&h===g.id&&resOf(g.id))tab='results';
   if(g){slide('board');setAcc(tab);game(g,tab);return}
   if(h==='best'){slide('best');setAcc('best');best();return}
   if(h==='record'){slide('record');setAcc('record');soon();return}
@@ -1293,24 +1313,33 @@ function gradeBet(g,x){const r=resOf(g.id);if(!r)return {res:'pending'};const H=
     if(!b)return {res:'V',act:'Did not play: no action',u:0};const v=b[PSTAT[x.mk]]||0;d=(v-x.line)*(x.t==='over'?1:-1);act=`Actual ${v}${x.mk==='Receptions'?(v===1?' catch':' catches'):' yds'}`}
   const res=d>0?'W':d<0?'L':'P';return {res,act,u:res==='W'?(x.o>0?x.o/100:100/-x.o):res==='L'?-1:0}}
 function resultsPane(g){const r=resOf(g.id);if(!r)return '<div class="card"><div class="empty">Results show up here once the game is final.</div></div>';
-  const xs=BETLOG.filter(x=>x.gameId===g.id&&x.book===BOOK).map(x=>({x,gr:gradeBet(g,x)})).sort((a,b)=>(a.x.v==='Bet'?0:1)-(b.x.v==='Bet'?0:1)||b.x.ev-a.x.ev);
+  const xs=BETLOG.filter(x=>x.gameId===g.id&&x.book===BOOK).map(x=>({x,gr:gradeBet(g,x)}));
   const sum=f=>{const ys=xs.filter(y=>f(y.x)&&['W','L','P'].includes(y.gr.res)),W=ys.filter(y=>y.gr.res==='W').length,Lo=ys.filter(y=>y.gr.res==='L').length,P=ys.filter(y=>y.gr.res==='P').length,u=ys.reduce((a,y)=>a+y.gr.u,0),n=ys.length;return {W,Lo,P,u,n,roi:n?u/n:0,pend:xs.filter(y=>f(y.x)&&y.gr.res==='pending').length}};
   const B=sum(x=>x.v==='Bet'),Le=sum(x=>x.v==='Lean'),All=sum(()=>true);
-  const uf=u=>(u>=0?'+':'−')+Math.abs(u).toFixed(2)+'u',rf=v=>(v>=0?'+':'−')+Math.abs(v*100).toFixed(1)+'%';
-  const tile=(lab,S)=>`<div class="rs-t ${S.n?(S.u>0?'up':S.u<0?'dn':''):''}"><span>${lab}</span><b>${S.W}-${S.Lo}${S.P?'-'+S.P:''}</b><em>${S.n?`${uf(S.u)} · ${rf(S.roi)} ROI`:'No graded lines'}</em>${S.pend?`<small>${S.pend} pending</small>`:''}</div>`;
+  const uf=u=>(u>=0?'+':'−')+Math.abs(u).toFixed(2)+'u',rf=v=>(v>=0?'+':'−')+Math.abs(v*100).toFixed(1)+'%',rec=S=>`${S.W}-${S.Lo}${S.P?'-'+S.P:''}`,cl=S=>S.n?(S.u>0?'up':S.u<0?'dn':''):'';
   const W=r.homeScore>r.awayScore?g.home:r.awayScore>r.homeScore?g.away:null;
   const head=`<div class="card rs-h"><div class="rs-s${W===g.away?' w':''}" ${tc(g.away)}>${badge(g.away)}<b>${esc(g.away.name)}</b><em>${r.awayScore}</em></div><span class="rs-f">Final</span><div class="rs-s r${W===g.home?' w':''}" ${tc(g.home)}><em>${r.homeScore}</em><b>${esc(g.home.name)}</b>${badge(g.home)}</div></div>`;
   if(!xs.length)return head+`<div class="card"><div class="empty">No Bet or Lean lines were logged at ${esc(BOOK)} for this game.</div></div>`;
+  const hero=`<div class="rs-hero ${cl(All)}"><div class="rs-hl">${bkLogo(BOOK)}<span>All suggested lines · ${esc(bookName(g))}</span></div><div class="rs-hm"><div><b>${rec(All)}</b><small>Record</small></div><div><b class="rs-hu">${All.n?uf(All.u):'—'}</b><small>${All.n?rf(All.roi)+' return':'Units'}</small></div></div>${All.pend?`<div class="rs-pn">${All.pend} line${All.pend>1?'s':''} pending (box score not in yet)</div>`:''}</div>`;
+  const mini=(lab,S)=>`<div class="rs-t ${cl(S)}"><span>${lab}</span><b>${rec(S)}</b><em>${S.n?`${uf(S.u)} · ${rf(S.roi)}`:'None graded'}</em>${S.pend?`<small>${S.pend} pending</small>`:''}</div>`;
+  const pill=gr=>{const m={W:['✓','Win'],L:['✕','Loss'],P:['–','Push'],V:['–','No action'],pending:['…','Pending']}[gr.res];return `<em class="rs-i rs-i${gr.res==='pending'?'pd':gr.res}" title="${m[1]}" aria-label="${m[1]}">${m[0]}</em>`};
+  const units=gr=>`<span class="rs-u ${gr.u>0?'up':gr.u<0?'dn':''}">${gr.res==='pending'?'':uf(gr.u||0)}</span>`;
+  const ord=(a,b)=>(a.x.v==='Bet'?0:1)-(b.x.v==='Bet'?0:1)||b.x.ev-a.x.ev;
+  const GL=xs.filter(y=>y.x.kind!=='Prop').sort((a,b)=>['Spread','Moneyline','Total'].indexOf(a.x.kind)-['Spread','Moneyline','Total'].indexOf(b.x.kind));
+  const rowG=({x,gr})=>{const tm=x.kind==='Total'?null:(x.t==='home'?g.home:g.away);return `<div class="pq-c rs-r${tm?' gl-r':' gl-tot'}" ${tm?tc(tm):''}><span class="pq-mk">${x.kind==='Moneyline'?'Moneyline':x.kind}<small>${x.v}</small></span><span class="rs-pk"><b>${esc(x.n)} <small>${odds(x.o)}</small></b><small>${esc(gr.act||'')}</small></span>${pill(gr)}${units(gr)}</div>`};
   const SH={'Pass yds':'Pass yds','Rush yds':'Rush yds','Rec yds':'Rec yds','Receptions':'Catches'};
-  const row=({x,gr})=>{const tm=x.kind==='Prop'?(x.team===g.home.abbr?g.home:g.away):x.kind==='Total'?null:(x.t==='home'?g.home:g.away);
-    const lab=x.kind==='Prop'?`${esc(x.pl)}<small>${SH[x.mk]||esc(x.mk)} · ${x.v}</small>`:`${x.kind==='Moneyline'?'Moneyline':x.kind}<small>${x.v}</small>`;
-    const pick=x.kind==='Prop'?`${x.t==='over'?'Over':'Under'} ${x.line}`:esc(x.n);
-    const rp=gr.res==='pending'?'<em class="rs-p rs-pd">…</em>':`<em class="rs-p rs-${gr.res}">${gr.res==='V'?'Void':gr.res}</em>`;
-    return `<div class="pq-c rs-r${tm?' gl-r':' gl-tot'}" ${tm?tc(tm):''}><span class="pq-mk">${lab}</span><span class="rs-pk"><b>${pick} <small>${odds(x.o)}</small></b><small>${esc(gr.act||'')}</small></span>${rp}<span class="rs-u ${gr.u>0?'up':gr.u<0?'dn':''}">${gr.res==='pending'?'':uf(gr.u||0)}</span></div>`};
-  const lg=xs[0].x.loggedAt;
-  return head+`<div class="rs-ts">${tile('Bets',B)}${tile('Leans',Le)}${tile('All lines',All)}</div>
-  <div class="pq gl rs-l"><div class="pq-p"><div class="pq-rib gl-rib rs-rib">${bkLogo(BOOK)}<b>${esc(bookName(g))}</b><small>1 unit on every suggested line</small></div><div class="pq-cs">${xs.map(row).join('')}</div></div></div>
-  <p class="note" style="text-align:center;margin-top:10px">Graded against the ${esc(BOOK)} lines locked ${esc(lg||'before kickoff')}. ROI = units won ÷ units staked. Pushes return the stake; a player who didn't play is no action.</p>`}
+  const rowP=({x,gr})=>`<div class="pq-c rs-r"><span class="pq-mk">${SH[x.mk]||esc(x.mk)}<small>${x.v}</small></span><span class="rs-pk"><b>${x.t==='over'?'Over':'Under'} ${x.line} <small>${odds(x.o)}</small></b><small>${esc(gr.act||'')}</small></span>${pill(gr)}${units(gr)}</div>`;
+  const tot=ys=>{const g2=ys.filter(y=>['W','L','P'].includes(y.gr.res)),u=g2.reduce((a,y)=>a+y.gr.u,0);return {W:g2.filter(y=>y.gr.res==='W').length,Lo:g2.filter(y=>y.gr.res==='L').length,P:g2.filter(y=>y.gr.res==='P').length,u,n:g2.length}};
+  const sumTag=S=>`<span class="rs-cs ${S.n?(S.u>0?'up':S.u<0?'dn':''):''}">${S.W}-${S.Lo}${S.P?'-'+S.P:''} · ${S.n?uf(S.u):'pending'}</span>`;
+  const glS=GL.length?`<details class="rs-sec"><summary class="rs-sum"><b>Game lines</b>${sumTag(tot(GL))}<i class="rs-ch"></i></summary><div class="pq gl rs-l"><div class="pq-p"><div class="pq-cs">${GL.map(rowG).join('')}</div></div></div></details>`:'';
+  const team=t=>{const ps=xs.filter(y=>y.x.kind==='Prop'&&y.x.team===t.abbr);if(!ps.length)return '';const by={};ps.forEach(y=>(by[y.x.pl]=by[y.x.pl]||[]).push(y));
+    const S={u:ps.filter(y=>y.gr.res!=='pending').reduce((a,y)=>a+(y.gr.u||0),0),W:ps.filter(y=>y.gr.res==='W').length,Lo:ps.filter(y=>y.gr.res==='L').length};
+    const pls=Object.entries(by).sort((a,b)=>Math.max(...b[1].map(y=>y.x.ev))-Math.max(...a[1].map(y=>y.x.ev)));
+    return `<details class="rs-sec rs-tm" ${tc(t)}><summary class="rs-sum rs-th">${badge(t)}<b>${esc(t.name)} props</b>${sumTag(tot(ps))}<i class="rs-ch"></i></summary><div class="pq">${pls.map(([pl,ys])=>`<div class="pq-p" ${tc(t)}><div class="pq-rib"><b>${esc(pl)}</b></div><div class="pq-cs">${ys.sort(ord).map(rowP).join('')}</div></div>`).join('')}</div></details>`};
+  const pr=team(g.away)+team(g.home);
+  return head+hero+`<div class="rs-ts rs-2">${mini('Bets',B)}${mini('Leans',Le)}</div><p class="rs-disc">Assumes 1 unit on every suggested line.</p>`+glS+pr+
+  `<p class="note" style="text-align:center;margin-top:10px">1 unit on every Bet and Lean line, graded against the ${esc(BOOK)} lines locked ${esc(xs[0].x.loggedAt||'before kickoff')}. Return = units won ÷ units staked. Pushes return the stake; a player who didn't play is no action.</p>`}
+
 function render(g,tab){
   const c=calc(g);CW=g.week;const L=stateFor(g).lines;
   if(tab==='lines'){$('lgG').innerHTML=linesCard(g,c,L);
