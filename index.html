@@ -1175,6 +1175,27 @@ body{padding-bottom:calc(96px + env(safe-area-inset-bottom))}
 .cm2 td{border-bottom:0!important;background:none!important;width:auto!important}
 .cm2 tr.wa{background:linear-gradient(90deg,color-mix(in srgb,var(--wc) 28%,transparent),color-mix(in srgb,var(--wc) 8%,transparent) 55%,transparent 85%)}
 .cm2 tr.wb{background:linear-gradient(270deg,color-mix(in srgb,var(--wc) 28%,transparent),color-mix(in srgb,var(--wc) 8%,transparent) 55%,transparent 85%)}
+/* projected card = results scoreboard size */
+.pp-sc.pp-tap{background:none!important;box-shadow:none!important;padding:0!important}
+.sb2.pj{position:relative;padding:20px 10px!important;margin:4px 0 0!important;background:linear-gradient(90deg,color-mix(in srgb,var(--away) 26%,transparent),rgba(255,255,255,.02) 50%,color-mix(in srgb,var(--home) 26%,transparent))!important;border-radius:16px!important}
+.sb2.pj .badge{--s:34px!important}.sb2.pj .sb2-c em{font-size:30px!important}
+.sb2.pj .sb2-c span{display:flex;flex-direction:column;align-items:center;line-height:1.1}.sb2.pj .sb2-c span small{font:600 9.5px 'Source Sans 3',sans-serif;letter-spacing:0;text-transform:none;color:var(--dim);margin-top:2px}
+.pj-m{display:flex!important;align-items:center;gap:8px;left:14px!important;right:14px!important;bottom:6px!important;font-size:10px!important;color:var(--mute)!important}.pj-m .nbar{flex:1;margin:0!important;height:5px!important}
+.pj-tap{position:absolute;top:6px;right:12px;font-size:10px;font-weight:700;color:var(--dim);letter-spacing:.2px}
+.pp-tap .pp-hint,.pj-ft{display:none!important}
+/* results: collapsible ribbons like Lines */
+.rs-sec{background:none!important;border:0!important;border-radius:0!important;margin-bottom:10px!important;overflow:visible!important}.rs-sec[open]{padding-bottom:0!important}
+.rs-sec>.rs-sum{padding:8px 14px!important;border-left:3px solid var(--tc)!important;background:linear-gradient(90deg,color-mix(in srgb,var(--tc) 30%,transparent),color-mix(in srgb,var(--tc) 6%,transparent) 70%)!important}
+.rs-gls>.rs-sum{border-left-color:var(--ta)!important;background:linear-gradient(90deg,color-mix(in srgb,var(--ta) 28%,transparent),rgba(255,255,255,.03) 50%,color-mix(in srgb,var(--th) 22%,transparent))!important}.rs-gls:before{display:none!important}
+.rs-sec>.rs-sum b{font:800 12.5px 'Source Sans 3',sans-serif!important;letter-spacing:.06em;text-transform:uppercase}.rs-sec>.rs-sum .badge{--s:20px!important}.rs-gt small{display:none}
+.rs-duo .badge+.badge{margin-left:-8px!important}
+.rs-sec>.pq,.rs-sec>.rs-l,.rs-sec>.rs-pl{padding:0!important;margin:0!important}.rs-gls .rs-l .pq-p{border:1px solid var(--line2)!important;border-top:0!important}
+.rs-tm[open]>.rs-sum{border-bottom:0!important}
+.pp-sc .sb2.pj{display:grid!important;grid-template-columns:1fr auto 1fr!important;align-items:center;width:100%;padding:18px 12px 28px!important;gap:6px}
+.pp-sc .sb2.pj>.pj-m{position:absolute!important;width:auto!important;left:14px!important;right:14px!important;bottom:8px!important;display:flex!important;flex-direction:row!important;align-items:center!important;gap:8px!important;margin:0!important}
+.pp-sc .sb2.pj>.pj-m>span{font:700 10px 'Source Sans 3',sans-serif!important;color:var(--mute)!important;white-space:nowrap;display:inline!important}
+.pp-sc .sb2.pj>.pj-tap{position:absolute!important;top:6px!important;right:12px!important;font:700 10px 'Source Sans 3',sans-serif!important;color:var(--dim)!important;letter-spacing:.2px!important;text-transform:none!important;display:inline!important}
+.pp-sc .sb2.pj .sb2-c span{font:800 9.5px 'Source Sans 3',sans-serif!important;letter-spacing:.12em!important;color:var(--lime)!important}
 </style>
 </head>
 <body>
@@ -1308,7 +1329,7 @@ function route(){document.body.classList.remove('home');if(document.querySelecto
   const h=location.hash.slice(1);let g=GAMES.find(x=>x.id===h),tab='pick';
   if(!g)for(const [t] of TABS){g=GAMES.find(x=>h===x.id+'-'+t);if(g){tab=t;break}}
   if(!g){const w=GAMES.find(x=>h===x.id+'-writeup');if(w){WU_OPEN=true;location.replace('#'+w.id);return}}
-  if(g&&h===g.id&&resOf(g.id))tab='results';
+  if(g&&h===g.id)tab=resOf(g.id)?'results':'lines';
   if(g)tab=normTab(g,tab);
   if(g){slide('board');setAcc(tab);game(g,tab);return}
   if(h==='best'){slide('best');setAcc('best');best();return}
@@ -1605,8 +1626,8 @@ function resultsPane(g){const r=resOf(g.id);if(!r)return '<div class="card"><div
     const S={u:ps.filter(y=>y.gr.res!=='pending').reduce((a,y)=>a+(y.gr.u||0),0),W:ps.filter(y=>y.gr.res==='W').length,Lo:ps.filter(y=>y.gr.res==='L').length};
     const pls=Object.entries(by).sort((a,b)=>Math.max(...b[1].map(y=>y.x.ev))-Math.max(...a[1].map(y=>y.x.ev)));
     return `<details class="rs-sec rs-tm" ${tc(t)}><summary class="rs-sum rs-th">${badge(t)}<b>${esc(t.name)} props</b>${sumTag(tot(ps))}<i class="rs-ch"></i></summary><div class="rs-pl">${pls.map(([pl,ys])=>`<div class="rs-pr" ${tc(t)}>${esc(pl)}</div><div class="pq rs-prw"><div class="pq-p"><div class="pq-cs">${ys.sort(ord).map(rowP).join('')}</div></div></div>`).join('')}</div></details>`};
-  const pr=team(g.away)+team(g.home);
-  return head+hero+`<p class="rs-disc">Value = edge +${SET.betEV??6}% or more · Lean = smaller edge · 1 unit per pick</p>`+glS+pr+
+  const pr=(team(g.away)+team(g.home));const prH=pr?'<div class="ln-h">Player props</div>':'';
+  return head+hero+`<p class="rs-disc">Value = edge +${SET.betEV??6}% or more · Lean = smaller edge · 1 unit per pick</p>`+glS+prH+pr+
   `<p class="note" style="text-align:center;margin-top:10px">1 unit on every Value and Lean pick, graded against the ${esc(BOOK)} lines locked ${esc(xs[0].x.loggedAt||'before kickoff')}. Return = units won ÷ units staked. Pushes return the stake; a player who didn't play is no action.</p>`}
 
 function glTag(g){const c=calc(g),pr=[[c.bets[2],c.bets[3]],[c.bets[0],c.bets[1]]].concat(c.tb.length?[[c.tb[0],c.tb[1]]]:[]).map(([a,b])=>a.ev>=b.ev?a:b).filter(b=>b.ev>0),nb=pr.filter(b=>b.v==='Bet').length,nl=pr.filter(b=>b.v==='Lean').length;
@@ -1628,8 +1649,7 @@ function render(g,tab){
     tile('ptT','Over / Under',pk3[2],pk3[2]?`Hits ${pct(pk3[2].p,0)} · model ${c.tot.toFixed(1)}`:'');
     const as=Math.round(c.as),hs=Math.round(c.hs),fv=T(c.pw>=.5?'home':'away');
     {const ap=(1-c.pw)*100,ca=esc(g.away.night||g.away.color),ch=esc(g.home.night||g.home.color);$('ppS').style.cssText=`--away:${ca};--home:${ch}`;
-    $('ppS').innerHTML=`<div class="sb2 pj">${`<div class="sb2-t${as<hs?' sb2-lo':''}" title="${esc(g.away.name)}">${badge(g.away)}</div>`}<div class="sb2-c"><em class="${as<hs?'sb2-lo':''}">${as}</em><span>Projected</span><em class="${hs<as?'sb2-lo':''}">${hs}</em></div>${`<div class="sb2-t${hs<as?' sb2-lo':''}" title="${esc(g.home.name)}">${badge(g.home)}</div>`}</div>
-      <div class="wpb"><div class="wpb-l"><span>${esc(g.away.abbr)} ${pct(1-c.pw,0)}</span><span>${esc(g.home.abbr)} ${pct(c.pw,0)}</span></div><div class="nbar" style="background:linear-gradient(90deg,color-mix(in srgb,${ca} 75%,var(--card2)) 0%,color-mix(in srgb,${ca} 55%,var(--card2)) ${Math.max(0,ap-18)}%,var(--card2) ${ap}%,color-mix(in srgb,${ch} 55%,var(--card2)) ${Math.min(100,ap+18)}%,color-mix(in srgb,${ch} 75%,var(--card2)) 100%)"></div><small class="pj-ft">Projected total ${c.tot.toFixed(1)} · tap for the write-up</small></div>`}
+    $('ppS').innerHTML=`<div class="sb2 pj" style="--away:${ca};--home:${ch}"><span class="pj-tap">Write-up ›</span>${`<div class="sb2-t${as<hs?' sb2-lo':''}" title="${esc(g.away.name)}">${badge(g.away)}</div>`}<div class="sb2-c"><em class="${as<hs?'sb2-lo':''}">${as}</em><span>Proj<small>${c.tot.toFixed(1)} total</small></span><em class="${hs<as?'sb2-lo':''}">${hs}</em></div>${`<div class="sb2-t${hs<as?' sb2-lo':''}" title="${esc(g.home.name)}">${badge(g.home)}</div>`}<div class="sb2-cap pj-m"><span>${esc(g.away.abbr)} ${pct(1-c.pw,0)}</span><div class="nbar" style="background:linear-gradient(90deg,color-mix(in srgb,${ca} 75%,var(--card2)) 0%,color-mix(in srgb,${ca} 55%,var(--card2)) ${Math.max(0,ap-18)}%,var(--card2) ${ap}%,color-mix(in srgb,${ch} 55%,var(--card2)) ${Math.min(100,ap+18)}%,color-mix(in srgb,${ch} 75%,var(--card2)) 100%)"></div><span>${esc(g.home.abbr)} ${pct(c.pw,0)}</span></div></div>`}
     const ch=g.players.some((p,i)=>stateFor(g).plays[i]!==p.plays),moved=JSON.stringify(L)!==JSON.stringify(bookLines(g));
     $('ppN').innerHTML=moved||ch?`Using ${[moved?`<a href="#${esc(g.id)}-lines">your lines</a>`:'',ch?`<a href="#${esc(g.id)}-inactives">your inactives</a>`:''].filter(Boolean).join(' and ')}.${moved?' <button type="button" class="lnk" id="ppR">Reset lines</button>':''}`:`Lines: <b>${esc(bookName(g))}</b>${bookOf(g)?`, ${esc(g.booksAsOf||g.lines.asOf)}`:`, ${esc(g.lines.asOf)}`}. `;if($('ppR'))$('ppR').onclick=()=>resetLines(g,tab);}
   if(tab==='breakdown'){const T=v=>v>=0?g.home:g.away;
