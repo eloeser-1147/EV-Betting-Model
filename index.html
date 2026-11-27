@@ -1166,6 +1166,15 @@ body{padding-bottom:calc(96px + env(safe-area-inset-bottom))}
 .st2 td{padding:6px;text-align:center;border-bottom:1px solid rgba(255,255,255,.05);font-weight:700}.st2 td.l{text-align:left;font-size:10.5px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;color:var(--mute);width:26%}
 .st2 tr:last-child td{border-bottom:0}
 .cm2 .ca{text-align:left!important;padding-left:9px!important}.cm2 .cb{padding-right:9px!important}
+.st2-h{display:inline-flex;align-items:center;justify-content:center;gap:7px}.st2 th .st2-h .badge{--s:24px!important;display:grid!important;margin:0!important;vertical-align:middle}.st2 th{font:700 13px 'Source Sans 3',sans-serif!important;text-transform:none!important;letter-spacing:0!important;color:var(--ink)}
+.cm2 tr.wa td{background:linear-gradient(90deg,color-mix(in srgb,var(--wc) 26%,transparent),color-mix(in srgb,var(--wc) 6%,transparent) 70%,transparent)}
+.cm2 tr.wb td{background:linear-gradient(270deg,color-mix(in srgb,var(--wc) 26%,transparent),color-mix(in srgb,var(--wc) 6%,transparent) 70%,transparent)}
+.cm2 tr.wa td,.cm2 tr.wb td{background-attachment:scroll}.cm2 tr.wa td.cr,.cm2 tr.wb td.cr{color:var(--ink)}
+.cm2 tr.wa,.cm2 tr.wb{box-shadow:inset 0 0 14px color-mix(in srgb,var(--wc) 18%,transparent)}
+.cm2,.cm2 tbody{display:block}.cm2 tr{display:grid;grid-template-columns:42% 1fr 42%;align-items:center;border-bottom:1px solid rgba(255,255,255,.05)}.cm2 tr:last-child{border-bottom:0}
+.cm2 td{border-bottom:0!important;background:none!important;width:auto!important}
+.cm2 tr.wa{background:linear-gradient(90deg,color-mix(in srgb,var(--wc) 28%,transparent),color-mix(in srgb,var(--wc) 8%,transparent) 55%,transparent 85%)}
+.cm2 tr.wb{background:linear-gradient(270deg,color-mix(in srgb,var(--wc) 28%,transparent),color-mix(in srgb,var(--wc) 8%,transparent) 55%,transparent 85%)}
 </style>
 </head>
 <body>
@@ -1463,13 +1472,13 @@ function game(g,tab){
     const vs=t=>`<table class="cx-tb vs"><thead><tr><th></th><th>${nmo(t.rows[0][0].t,0,t)}</th><th>${nmo(t.rows[1][0].t,1,t)}</th></tr></thead><tbody>${t.cols.slice(1).map((c,j)=>`<tr><td class="l">${esc(c)}</td><td>${esc((t.rows[0][j+1]||{}).t||'–')}</td><td>${esc((t.rows[1][j+1]||{}).t||'–')}</td></tr>`).join('')}</tbody></table>`;
     const list=t=>`<div class="cx-l">${t.rows.map(r=>`<div class="cx-li"><div>${/notes/i.test(t.title)?`<b>${esc(r[0].t)}</b>`:nm(r[0].t)}${r[0].d?`<small>${esc(r[0].d)}</small>`:''}</div><em class="${r.slice(1).map(c=>c.t).join(' · ').length>14?'lw':''}">${r.slice(1).map(c=>esc(c.t)).join(' · ')}</em></div>`).join('')}</div>`;
     const h2h=t=>`<table class="cm2"><tbody>${t.rows.map(r=>{const A=TM(r[1].t)||g.away,B=TM(r[4].t)||g.home,a=+r[2].t||0,b=+r[5].t||0,n=a+b,role=x=>{const m=String(x).match(/\((.*)\)/);return m?m[1].replace(/^[A-Z]{2,3} /,''):'HC'},who=x=>String(x).replace(/\s*\(.*$/,'');
-      return `<tr class="${n?'':'cm-0'}"><td class="ca" ${tc(A)}>${esc(who(r[0].t))}<small>${esc(A.abbr)} ${esc(role(r[0].t))}</small></td><td class="cr">${n?`<span class="${a>b?'w':''}">${a}</span>–<span class="${b>a?'w':''}">${b}</span>`:'—'}</td><td class="cb" ${tc(B)}>${esc(who(r[3].t))}<small>${esc(B.abbr)} ${esc(role(r[3].t))}</small></td></tr>`}).join('')}</tbody></table>`;
+      return `<tr class="${n?'':'cm-0'}${a>b?' wa':b>a?' wb':''}" style="--wc:${esc(a>b?(A.night||A.color):(B.night||B.color))}"><td class="ca" ${tc(A)}>${esc(who(r[0].t))}<small>${esc(A.abbr)} ${esc(role(r[0].t))}</small></td><td class="cr">${n?`<span class="${a>b?'w':''}">${a}</span>–<span class="${b>a?'w':''}">${b}</span>`:'—'}</td><td class="cb" ${tc(B)}>${esc(who(r[3].t))}<small>${esc(B.abbr)} ${esc(role(r[3].t))}</small></td></tr>`}).join('')}</tbody></table>`;
     const body=t=>t===H2?h2h(t):t.rows.length===2&&t.cols.length>=3?vs(t):list(t);
     const SEC=(ttl,html)=>`<section class="bk-s" style="--ta:${esc(g.away.night||g.away.color)};--th:${esc(g.home.night||g.home.color)}"><button type="button" class="bk-b"><span class="bk-lg">${badge(g.away)}${badge(g.home)}</span><span>${ttl}</span></button><div class="body">${html}</div></section>`;
     const sub=t=>`<div class="bk-sub"><h4>${esc(t.title)}</h4>${body(t)}${t.note?`<div class="cx-n">${esc(t.note)}</div>`:''}</div>`;
     const staff=(hc,co)=>{const v=(t,i,j)=>t&&t.rows[i]&&t.rows[i][j]?esc(t.rows[i][j].t):'–';
       const R=[['Head coach',v(hc,0,0),v(hc,1,0)],['Since',v(hc,0,1),v(hc,1,1)],['Record',v(hc,0,2),v(hc,1,2)]].concat(co?[['Offense',v(co,0,1),v(co,1,1)],['Defense',v(co,0,2),v(co,1,2)]]:[]);
-      return `<div class="bk-sub"><h4>Staff</h4><table class="st2"><thead><tr><th></th><th ${tc(g.away)}>${badge(g.away)}${esc(g.away.name)}</th><th ${tc(g.home)}>${badge(g.home)}${esc(g.home.name)}</th></tr></thead><tbody>${R.map(([l,x,y])=>`<tr><td class="l">${l}</td><td>${x}</td><td>${y}</td></tr>`).join('')}</tbody></table><div class="cx-n">Records are regular season with the current team.</div></div>`};
+      return `<div class="bk-sub"><h4>Staff</h4><table class="st2"><thead><tr><th></th><th ${tc(g.away)}><span class="st2-h">${badge(g.away)}<span>${esc(g.away.name)}</span></span></th><th ${tc(g.home)}><span class="st2-h">${badge(g.home)}<span>${esc(g.home.name)}</span></span></th></tr></thead><tbody>${R.map(([l,x,y])=>`<tr><td class="l">${l}</td><td>${x}</td><td>${y}</td></tr>`).join('')}</tbody></table><div class="cx-n">Records are regular season with the current team.</div></div>`};
     const YR=C.filter(t=>/record|bye/i.test(t.title)),rk=t=>/head coaches/i.test(t.title)?0:/coordinator/i.test(t.title)?1:t===H2?2:3,CH=C.filter(t=>!YR.includes(t)).sort((a,b)=>rk(a)-rk(b));
     const HCt=CH.find(t=>/head coaches/i.test(t.title)),COt=CH.find(t=>/coordinator/i.test(t.title)),RST=CH.filter(t=>t!==HCt&&t!==COt);
     return (YR.length?SEC('2026',YR.map(sub).join('')):'')+(CH.length?SEC('Coaching History',(HCt?staff(HCt,COt):'')+RST.map(t=>t===H2?`<div class="bk-sub"><h4>Matchup history</h4>${h2h(t)}</div>`:sub(t)).join('')):'')})()}</div>`;
