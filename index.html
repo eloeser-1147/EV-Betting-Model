@@ -1521,6 +1521,20 @@ body{padding-bottom:calc(96px + env(safe-area-inset-bottom))}
 .trcal .cd.on{outline:0!important}.trcal .cd.on b{background:var(--lime);color:#0b0f1e!important;border-radius:50%;width:22px;height:22px;display:grid;place-items:center}
 .trcal .cd-e{aspect-ratio:auto;height:34px}
 .trcal .cal-n{font-size:10px;margin-top:2px}
+
+/* calendar: boxed, full width */
+.trcal{max-width:none!important;margin:6px 0 4px!important;padding:8px 8px 6px!important;border:1px solid var(--line2)!important;border-radius:4px;background:var(--card)!important}
+
+/* best bets: tighter cards */
+.bbx-h b small{font-size:14px!important;color:var(--sub)!important;margin-top:3px!important}
+.bbx-ct{font-style:normal;font-size:11px;font-weight:800;color:var(--lime);margin-left:8px;letter-spacing:.04em}
+.bbx-l2{gap:6px!important}
+.bbx-l2 .bbx-r{border-radius:10px!important}
+.bbx-l2 .bbx-r>summary{padding:8px 12px!important;gap:10px!important}
+.bbx-l2 .bbx-n{gap:1px!important}.bbx-l2 .bbx-who{font-size:13.5px!important}.bbx-l2 .bbx-ln{font-size:12.5px!important}
+.bbx-l2 .bbx-ic .badge{--s:28px!important;width:28px!important;height:28px!important}.bbx-l2 .bbx-ic{width:30px}
+.bbx-l2 .bbx-ic.duo .badge{--s:22px!important;width:22px!important;height:22px!important}.bbx-l2 .bbx-ic.duo{width:40px}
+.bbx-rt{gap:2px!important}.bbx-rt b{font-size:19px!important}.bbx-rt span{font-size:11px!important}
 </style>
 </head>
 <body>
@@ -1768,7 +1782,7 @@ function best(){
   const mini=x=>`<details class="bbx-m"><summary><span>${esc(pick(x.b))} <small>${odds(x.b.o)}</small></span><em>${Math.round(x.b.p*100)}%</em><em class="v">${evp(x.b.ev)}</em></summary><div class="bbx-w"><small class="bbx-ms">${sub(x.g,x.b)}</small>${why(x)}${link(x)}</div></details>`;
   const dayLab=d=>d===curDay()?'Today':dLabel(d,{weekday:'short',month:'short',day:'numeric'}).replace(',','');
   $('app').innerHTML=`
-  <div class="bbx-h"><b>${top.length?top.length+' Best Bet'+(top.length>1?'s':''):'No Best Bets'}<small>${BBD?esc(BBD===curDay()?'Today':dLabel(BBD,{weekday:'long',month:'short',day:'numeric'})):''}</small></b><span>${bkLogo(bk)} ${esc(bk)}</span></div>
+  <div class="bbx-h"><b>Best Bets<small>${BBD?esc(BBD===curDay()?'Today':dLabel(BBD,{weekday:'long',month:'short',day:'numeric'})):''}<em class="bbx-ct">${top.length?top.length+' line'+(top.length>1?'s':''):'none today'}</em></small></b><span>${bkLogo(bk)} ${esc(bk)}</span></div>
   ${top.length?`<div class="bbx-l2">${top.map(row).join('')}</div>`:`<div class="bbx-none">Nothing clears the bar ${BBD===curDay()?'today':'this day'}: no line has both a ${Math.round(minP*100)}%+ chance to hit and +${minEV}% value.</div>`}
 
   <p class="bbx-k">Best Bet = at least ${Math.round(minP*100)}% to hit <i>and</i> +${minEV}% value, one per player or game, next game day only, never more than ${maxN}. Only lines that clear both bars are shown. Tap any line for the reasoning.</p>`;
@@ -1810,15 +1824,18 @@ function trackRecord(){
     const shift=k=>{const d=new Date(Y,M-1+k,1);return isoD(d).slice(0,7)};let cells='';for(let i=0;i<lead;i++)cells+='<span class="cd-e"></span>';
     for(let n=1;n<=nd;n++){const d=`${TRF.cm}-${String(n).padStart(2,'0')}`,ys=base.filter(y=>y.d===d),st2=st(ys),has=ys.length>0;
       cells+=`<button type="button" class="cd ${has?(st2.u>0?'up':st2.u<0?'dn':'ev'):'no'}${d===TRF.day?' on':''}${d===curDay()?' td':''}" data-cd="${d}"><b>${n}</b><i></i></button>`}
-    return `<div class="cal trcal"><div class="cal-h"><button type="button" data-cm="${shift(-1)}" aria-label="Previous month">‹</button><b>${first.toLocaleDateString('en-US',{month:'long',year:'numeric'})}</b><button type="button" data-cm="${shift(1)}" aria-label="Next month">›</button></div><div class="cal-w">${['S','M','T','W','T','F','S'].map(x=>`<span>${x}</span>`).join('')}</div><div class="cal-g">${cells}</div><p class="cal-n">Tap a day to see just that day${TRF.day?' · tap it again to clear':''}</p></div>`})();
+    return `<div class="cal trcal"><div class="cal-h"><button type="button" data-cm="${shift(-1)}" aria-label="Previous month">‹</button><b>${first.toLocaleDateString('en-US',{month:'long',year:'numeric'})}</b><button type="button" data-cm="${shift(1)}" aria-label="Next month">›</button></div><div class="cal-w">${['S','M','T','W','T','F','S'].map(x=>`<span>${x}</span>`).join('')}</div><div class="cal-g">${cells}</div></div>`})();
   const sec=(t,h)=>`<details class="trl trsec"><summary>${t}<i class="rs-ch"></i></summary><div class="trsec-b">${h}</div></details>`;
   const lastRows=G.slice().sort((a,b)=>(b.d+b.x.n).localeCompare(a.d+a.x.n)).slice(0,25);
   const lab=(opts,cur)=>(opts.find(o=>o[0]===cur)||opts[0])[1];
-  const BT=[['all','All bets'],['game','Game lines'],['prop','All props'],['Spread','Spread'],['Moneyline','Moneyline'],['Total','Totals'],['Pass yds','Pass yds'],['Rush yds','Rush yds'],['Rec yds','Rec yds'],['Receptions','Catches']];
+  const BT=[['all','All bets'],['game','Game lines'],['Spread','Spreads'],['Moneyline','Moneylines'],['Total','Totals'],['prop','Player props'],['Pass yds','Passing yards'],['Rush yds','Rushing yards'],['Rec yds','Receiving yards'],['Receptions','Catches']];
+  const BTG=[[null,['all']],['Game lines',['game','Spread','Moneyline','Total']],['Player props',['prop','Pass yds','Rush yds','Rec yds','Receptions']]];
+  const btOpt=v=>{const o=BT.find(x=>x[0]===v);return `<option value="${v}"${v===TRF.t?' selected':''}>${v==='game'||v==='prop'?'All '+o[1].toLowerCase():o[1]}</option>`};
+  const btShown=(()=>{const o=BT.find(x=>x[0]===TRF.t)||BT[0];if(['Spread','Moneyline','Total'].includes(TRF.t))return o[1];if(['Pass yds','Rush yds','Rec yds','Receptions'].includes(TRF.t))return {'Pass yds':'Pass yds','Rush yds':'Rush yds','Rec yds':'Rec yds','Receptions':'Catches'}[TRF.t];return o[1]})();
   const PK=[['all','All picks'],['bb','Best Bets'],['Bet','Value'],['Lean','Lean']];
   const md=d=>{const [y,m,x]=d.split('-');return `${+m}/${+x}/${y.slice(2)}`};
   const sel=(k,name,opts,cur,shown)=>`<label class="trs2"><small>${name}</small><span class="trv">${esc(shown||lab(opts,cur))}</span><select data-k="${k}" aria-label="${name}">${opts.map(([v,l])=>`<option value="${v}"${v===cur&&!shown?' selected':''}>${l}</option>`).join('')}</select></label>`;
-  $('app').innerHTML=`<div class="trsel">${sel('r','Date',RG,TRF.r,TRF.day?md(TRF.day):'')}${sel('t','Bets',BT,TRF.t)}${sel('v','Picks',PK,TRF.v)}<button type="button" class="trcalb${TRF.calOpen?' on':''}" aria-label="Pick a date"><svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true"><rect x="3.5" y="5" width="17" height="15.5" rx="2.5" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M3.5 9.5h17M8 3v4M16 3v4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg></button></div>
+  $('app').innerHTML=`<div class="trsel">${sel('r','Date',RG,TRF.r,TRF.day?md(TRF.day):'')}<label class="trs2"><small>Bets</small><span class="trv">${esc(btShown)}</span><select data-k="t" aria-label="Bets">${BTG.map(([g,vs])=>g?`<optgroup label="${g}">${vs.map(btOpt).join('')}</optgroup>`:vs.map(btOpt).join('')).join('')}</select></label>${sel('v','Picks',PK,TRF.v)}<button type="button" class="trcalb${TRF.calOpen?' on':''}" aria-label="Pick a date"><svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true"><rect x="3.5" y="5" width="17" height="15.5" rx="2.5" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M3.5 9.5h17M8 3v4M16 3v4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg></button></div>
   ${TRF.calOpen?CAL:''}
   <div class="trhx ${S.n?cl(S.u):'nil'}"><b>${S.n?uf(S.u):'—'}</b><div class="trhx-s"><span><i>Record</i>${S.n?rec(S):'—'}</span><span><i>ROI</i>${S.n?rf(S.roi):'—'}</span><span><i>Win %</i>${S.wp==null?'—':Math.round(S.wp*100)+'%'}</span></div></div>
   <p class="trn">${TRF.day?esc(dLabel(TRF.day,{weekday:'long',month:'short',day:'numeric'}))+(S.n?'':' · no lines graded')+' · ':''}${esc(BOOK)} · 1 unit per pick${pend?` · ${pend} pending`:''}</p>
