@@ -1496,6 +1496,31 @@ body{padding-bottom:calc(96px + env(safe-area-inset-bottom))}
 .cal-n{text-align:center;font-size:10.5px;color:var(--dim);margin:6px 0 0}
 .trhx.nil>b,.trhx.nil .trhx-s span{color:var(--dim)!important;text-shadow:none!important}
 .trcal{margin:0 0 12px!important}.trcal .cal{border:0;background:none;margin:0;padding:2px 6px 8px}
+.bbx-h b small{display:block;font:700 11.5px 'Source Sans 3',sans-serif;letter-spacing:0;text-transform:none;color:var(--mute);margin-top:2px}
+.bbx-h{align-items:flex-end!important;margin-top:6px!important}
+
+/* track record filters v2 */
+.trsel{grid-template-columns:1fr 1fr 1fr 46px!important}
+.trs2{position:relative}.trs2 .trv{font:700 13.5px 'Source Sans 3',sans-serif;color:var(--ink);padding-right:16px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.trs2 select{position:absolute!important;inset:0;width:100%!important;height:100%;opacity:0;cursor:pointer;padding:0!important}
+.trcalb{border:0;border-left:1px solid var(--line2);background:none;color:var(--mute);display:grid;place-items:center;cursor:pointer}.trcalb:hover,.trcalb.on{color:var(--lime)}.trcalb.on{background:rgba(255,255,255,.04)}
+.trcal{margin:6px 0 4px!important;border:1px solid var(--line2)!important;background:var(--card)!important;padding:8px 8px 6px!important}
+
+/* compact dot calendar */
+.trcal{max-width:300px;margin:6px auto 4px!important;padding:6px 8px 4px!important}
+.trcal .cal-h b{font-size:12.5px}.trcal .cal-h button{font-size:18px}
+.trcal .cal-g{gap:0}.trcal .cal-w span{font-size:9px}
+.trcal .cd{aspect-ratio:auto;height:34px;background:none!important;box-shadow:none!important;color:var(--mute);gap:3px}
+.trcal .cd:before{display:none!important}
+.trcal .cd b{font-size:12px;font-weight:700}
+.trcal .cd i{width:5px;height:5px;min-height:0;border-radius:50%;background:rgba(255,255,255,.14)}
+.trcal .cd.up b,.trcal .cd.dn b,.trcal .cd.ev b{color:var(--ink)}
+.trcal .cd.up i{background:#3ee6a8;box-shadow:0 0 6px rgba(62,230,168,.7)}
+.trcal .cd.dn i{background:#f06e6e;box-shadow:0 0 6px rgba(240,110,110,.7)}
+.trcal .cd.ev i{background:#9aa3c7}
+.trcal .cd.on{outline:0!important}.trcal .cd.on b{background:var(--lime);color:#0b0f1e!important;border-radius:50%;width:22px;height:22px;display:grid;place-items:center}
+.trcal .cd-e{aspect-ratio:auto;height:34px}
+.trcal .cal-n{font-size:10px;margin-top:2px}
 </style>
 </head>
 <body>
@@ -1710,7 +1735,7 @@ function propWhy(g,x){const p=x.p,b=x.best,ov=b.side==='over',L=x.r.L,first=p.pl
       return `<p class="pq-e">${esc(S.join(' '))}</p>`}
 function glWhy(g,c,best,oth,tot){const edge=best.ev>0,txt=best.kind==='Spread'?`We make it ${(c.m>=0?g.home:g.away).name} by ${Math.abs(c.m).toFixed(1)} against a line of ${esc(best.n)}.`:best.kind==='Moneyline'?`We give the ${(c.pw>=.5?g.home:g.away).name} a ${pct(c.wp,0)} chance to win (fair price ${odds(fair(c.wp))}).`:`We project ${c.tot.toFixed(1)} total points against a line of ${tot}.`;
   return `<p class="pq-e">${txt} ${edge?`That gives ${esc(best.n)} a ${pct(best.p,0)} chance against the ${pct(be(best.o),0)} needed at ${odds(best.o)}, worth ${evp(best.ev)}.`:`Neither side clears the price.`}${oth?` Other side: ${esc(oth.n)} ${odds(oth.o)} (${evp(oth.ev)}).`:''}</p>`}
-function bbTop(day,bk,WG){const minP=SET.bbHit??0.58,minEV=SET.bbEV??SET.betEV??6,maxN=SET.bbMax??10;WG=WG||GAMES.filter(g=>!resOf(g.id));
+function bbTop(day,bk,WG){const minP=SET.bbHit??0.58,minEV=SET.bbEV??SET.betEV??6,maxN=SET.bbMax??25;WG=WG||GAMES.filter(g=>!resOf(g.id));
   const all=[];WG.filter(g=>dayOf(g)===day).forEach(g=>{if(bookOf(g,bk)){const L=bookLines(g,bk),c=calc(g,L);c.bets.concat(c.tb).forEach(b=>{if(b.ev>0)all.push({g,b,c,tot:L.total,key:g.id+'|'+b.kind})})}
     propBets(g,bk).forEach(b=>{if(b.ev>0)all.push({g,b,key:g.id+'|'+b.pl})})});
   all.sort((a,b)=>b.b.ev-a.b.ev);
@@ -1724,8 +1749,8 @@ function best(){
   document.title='Best Bets';anim();
   const W=weeks(),wk=(GAMES.find(g=>dayOf(g)===(SELDAY||pickDay()))||{}).week||W[W.length-1],WG=GAMES.filter(g=>g.week===wk&&!resOf(g.id)),bk=BOOK;
   const DAYS=[...new Set(WG.map(dayOf))].sort();
-  if(BBD==null||!DAYS.includes(BBD))BBD=DAYS.includes(curDay())?curDay():(DAYS.find(d=>d>=curDay())||DAYS[0]);
-  const minP=SET.bbHit??0.58,minEV=SET.bbEV??SET.betEV??6,maxN=SET.bbMax??10;
+  BBD=DAYS.find(d=>d>=curDay())||DAYS[DAYS.length-1];
+  const minP=SET.bbHit??0.58,minEV=SET.bbEV??SET.betEV??6,maxN=SET.bbMax??25;
   const top=bbTop(BBD,bk,WG);
   const MK={'Pass yds':'Pass yds','Rush yds':'Rush yds','Rec yds':'Rec yds','Receptions':'Catches'};
   const tm=(g,b)=>b.kind==='Prop'?(b.team===g.home.abbr?g.home:g.away):b.kind==='Total'?null:(b.t==='home'?g.home:g.away);
@@ -1742,11 +1767,11 @@ function best(){
   const row=x=>{const t=tm(x.g,x.b);return `<details class="bbx-r${t?'':' tot'}" ${t?tc(t):`style="--ta:${esc(x.g.away.night||x.g.away.color)};--th:${esc(x.g.home.night||x.g.home.color)}"`}><summary>${ico(x.g,x.b)}<span class="bbx-n">${head(x.g,x.b)}</span><span class="bbx-rt"><b>${Math.round(x.b.p*100)}%<small> to hit</small></b><span>${evp(x.b.ev)} value</span></span></summary><div class="bbx-w">${why(x)}${link(x)}</div></details>`};
   const mini=x=>`<details class="bbx-m"><summary><span>${esc(pick(x.b))} <small>${odds(x.b.o)}</small></span><em>${Math.round(x.b.p*100)}%</em><em class="v">${evp(x.b.ev)}</em></summary><div class="bbx-w"><small class="bbx-ms">${sub(x.g,x.b)}</small>${why(x)}${link(x)}</div></details>`;
   const dayLab=d=>d===curDay()?'Today':dLabel(d,{weekday:'short',month:'short',day:'numeric'}).replace(',','');
-  $('app').innerHTML=`<div class="bbx-days">${DAYS.map(d=>`<button type="button" class="${d===BBD?'on':''}" data-d="${d}">${esc(dayLab(d))}</button>`).join('')}</div>
-  <div class="bbx-h"><b>${top.length?top.length+' Best Bet'+(top.length>1?'s':''):'No Best Bets'}</b><span>${bkLogo(bk)} ${esc(bk)}</span></div>
+  $('app').innerHTML=`
+  <div class="bbx-h"><b>${top.length?top.length+' Best Bet'+(top.length>1?'s':''):'No Best Bets'}<small>${BBD?esc(BBD===curDay()?'Today':dLabel(BBD,{weekday:'long',month:'short',day:'numeric'})):''}</small></b><span>${bkLogo(bk)} ${esc(bk)}</span></div>
   ${top.length?`<div class="bbx-l2">${top.map(row).join('')}</div>`:`<div class="bbx-none">Nothing clears the bar ${BBD===curDay()?'today':'this day'}: no line has both a ${Math.round(minP*100)}%+ chance to hit and +${minEV}% value.</div>`}
 
-  <p class="bbx-k">Best Bet = at least ${Math.round(minP*100)}% to hit <i>and</i> +${minEV}% value, one per player or game, up to ${maxN} a day. Tap any line for the reasoning.</p>`;
+  <p class="bbx-k">Best Bet = at least ${Math.round(minP*100)}% to hit <i>and</i> +${minEV}% value, one per player or game, next game day only, never more than ${maxN}. Only lines that clear both bars are shown. Tap any line for the reasoning.</p>`;
   $('app').querySelectorAll('[data-d]').forEach(b=>b.onclick=()=>{BBD=b.dataset.d;best()});
 }
 let TRF={r:'7',t:'all',v:'all',day:null,cm:null,calOpen:0};
@@ -1760,7 +1785,7 @@ function trackRecord(){
   const from=r=>{if(r==='all')return '0000';if(r==='1')return last||'9999';const t=dObj(curDay());t.setDate(t.getDate()-(+r-1));return isoD(t)};
   const isBB=x=>x.p!=null&&x.p>=minP&&x.ev>=minEV;
   const inR=y=>TRF.day?y.d===TRF.day:(y.d>=from(TRF.r)&&y.d<=curDay());
-  const inT=y=>TRF.t==='all'||(TRF.t==='prop')===(y.x.kind==='Prop');
+  const mkOf=y=>y.x.kind==='Prop'?y.x.mk:y.x.kind;const inT=y=>TRF.t==='all'||(TRF.t==='game'?y.x.kind!=='Prop':TRF.t==='prop'?y.x.kind==='Prop':mkOf(y)===TRF.t);
   const inV=y=>TRF.v==='all'||(TRF.v==='bb'?isBB(y.x):(!isBB(y.x)&&y.x.v===TRF.v));
   const R=all.filter(y=>inR(y)&&inT(y)&&inV(y)),G=R.filter(isG),pend=R.filter(y=>y.gr.res==='pending').length;
   const st=ys=>{const W=ys.filter(y=>y.gr.res==='W').length,L=ys.filter(y=>y.gr.res==='L').length,P=ys.filter(y=>y.gr.res==='P').length,u=ys.reduce((a,y)=>a+(y.gr.u||0),0),n=W+L+P;return {W,L,P,u,n,roi:n?u/n:0,wp:W+L?W/(W+L):null}};
@@ -1784,23 +1809,25 @@ function trackRecord(){
     const [Y,M]=TRF.cm.split('-').map(Number),first=new Date(Y,M-1,1),nd=new Date(Y,M,0).getDate(),lead=first.getDay();
     const shift=k=>{const d=new Date(Y,M-1+k,1);return isoD(d).slice(0,7)};let cells='';for(let i=0;i<lead;i++)cells+='<span class="cd-e"></span>';
     for(let n=1;n<=nd;n++){const d=`${TRF.cm}-${String(n).padStart(2,'0')}`,ys=base.filter(y=>y.d===d),st2=st(ys),has=ys.length>0;
-      cells+=`<button type="button" class="cd ${has?(st2.u>0?'up':st2.u<0?'dn':'ev'):'no'}${d===TRF.day?' on':''}${d===curDay()?' td':''}" data-cd="${d}"><b>${n}</b><i>${has?(st2.u>=0?'+':'−')+Math.abs(st2.u).toFixed(1):''}</i></button>`}
-    return `<details class="trl trsec trcal"${TRF.day||TRF.calOpen?' open':''}><summary>Calendar${TRF.day?` <small>${esc(dLabel(TRF.day,{month:'short',day:'numeric'}))}</small>`:''}<i class="rs-ch"></i></summary><div class="cal"><div class="cal-h"><button type="button" data-cm="${shift(-1)}" aria-label="Previous month">‹</button><b>${first.toLocaleDateString('en-US',{month:'long',year:'numeric'})}</b><button type="button" data-cm="${shift(1)}" aria-label="Next month">›</button></div><div class="cal-w">${['S','M','T','W','T','F','S'].map(x=>`<span>${x}</span>`).join('')}</div><div class="cal-g">${cells}</div><p class="cal-n">Tap a day to see just that day${TRF.day?' · tap it again to clear':''}</p></div></details>`})();
+      cells+=`<button type="button" class="cd ${has?(st2.u>0?'up':st2.u<0?'dn':'ev'):'no'}${d===TRF.day?' on':''}${d===curDay()?' td':''}" data-cd="${d}"><b>${n}</b><i></i></button>`}
+    return `<div class="cal trcal"><div class="cal-h"><button type="button" data-cm="${shift(-1)}" aria-label="Previous month">‹</button><b>${first.toLocaleDateString('en-US',{month:'long',year:'numeric'})}</b><button type="button" data-cm="${shift(1)}" aria-label="Next month">›</button></div><div class="cal-w">${['S','M','T','W','T','F','S'].map(x=>`<span>${x}</span>`).join('')}</div><div class="cal-g">${cells}</div><p class="cal-n">Tap a day to see just that day${TRF.day?' · tap it again to clear':''}</p></div>`})();
   const sec=(t,h)=>`<details class="trl trsec"><summary>${t}<i class="rs-ch"></i></summary><div class="trsec-b">${h}</div></details>`;
   const lastRows=G.slice().sort((a,b)=>(b.d+b.x.n).localeCompare(a.d+a.x.n)).slice(0,25);
-  const sel=(k,lab,opts,cur)=>`<label class="trs2"><small>${lab}</small><select data-k="${k}">${opts.map(([v,l])=>`<option value="${v}"${v===cur?' selected':''}>${l}</option>`).join('')}</select></label>`;
-  $('app').innerHTML=`<div class="trsel">${sel('r','Period',TRF.day?[['day',dLabel(TRF.day,{month:'short',day:'numeric'})]].concat(RG):RG,TRF.day?'day':TRF.r)}${sel('t','Bets',[['all','All bets'],['game','Game lines'],['prop','Props']],TRF.t)}${sel('v','Picks',[['all','All picks'],['bb','Best Bets'],['Bet','Value'],['Lean','Lean']],TRF.v)}</div>
+  const lab=(opts,cur)=>(opts.find(o=>o[0]===cur)||opts[0])[1];
+  const BT=[['all','All bets'],['game','Game lines'],['prop','All props'],['Spread','Spread'],['Moneyline','Moneyline'],['Total','Totals'],['Pass yds','Pass yds'],['Rush yds','Rush yds'],['Rec yds','Rec yds'],['Receptions','Catches']];
+  const PK=[['all','All picks'],['bb','Best Bets'],['Bet','Value'],['Lean','Lean']];
+  const md=d=>{const [y,m,x]=d.split('-');return `${+m}/${+x}/${y.slice(2)}`};
+  const sel=(k,name,opts,cur,shown)=>`<label class="trs2"><small>${name}</small><span class="trv">${esc(shown||lab(opts,cur))}</span><select data-k="${k}" aria-label="${name}">${opts.map(([v,l])=>`<option value="${v}"${v===cur&&!shown?' selected':''}>${l}</option>`).join('')}</select></label>`;
+  $('app').innerHTML=`<div class="trsel">${sel('r','Date',RG,TRF.r,TRF.day?md(TRF.day):'')}${sel('t','Bets',BT,TRF.t)}${sel('v','Picks',PK,TRF.v)}<button type="button" class="trcalb${TRF.calOpen?' on':''}" aria-label="Pick a date"><svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true"><rect x="3.5" y="5" width="17" height="15.5" rx="2.5" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M3.5 9.5h17M8 3v4M16 3v4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg></button></div>
+  ${TRF.calOpen?CAL:''}
   <div class="trhx ${S.n?cl(S.u):'nil'}"><b>${S.n?uf(S.u):'—'}</b><div class="trhx-s"><span><i>Record</i>${S.n?rec(S):'—'}</span><span><i>ROI</i>${S.n?rf(S.roi):'—'}</span><span><i>Win %</i>${S.wp==null?'—':Math.round(S.wp*100)+'%'}</span></div></div>
-  <p class="trn">${TRF.day?esc(dLabel(TRF.day,{weekday:'long',month:'short',day:'numeric'}))+(S.n?'':' · no lines graded')+' · ':''}${esc(BOOK)} · 1 unit per pick${pend?` · ${pend} pending`:''}${!TRF.day&&TRF.r==='1'&&last?` · ${esc(dLabel(last,{weekday:'long',month:'short',day:'numeric'}))}`:''}</p>
-  ${CAL}<div class="trts">${tile('Best Bets',st(G.filter(y=>isBB(y.x))))}${tile('Value',st(G.filter(y=>!isBB(y.x)&&y.x.v==='Bet')))}${tile('Lean',st(G.filter(y=>!isBB(y.x)&&y.x.v==='Lean')))}</div>
+  <p class="trn">${TRF.day?esc(dLabel(TRF.day,{weekday:'long',month:'short',day:'numeric'}))+(S.n?'':' · no lines graded')+' · ':''}${esc(BOOK)} · 1 unit per pick${pend?` · ${pend} pending`:''}</p>
   ${S.n?chart():''}
-  ${S.n?sec('By bet type',tbl('Type',by)):''}
-  ${S.n?`<details class="trl trsec"><summary>Recent picks <small>${lastRows.length}</small><i class="rs-ch"></i></summary>${lastRows.map(y=>`<div class="trl-r"><span><b>${esc(y.x.n)}</b> <small>${odds(y.x.o)}</small><i>${esc(y.g.away.abbr)} @ ${esc(y.g.home.abbr)} · ${esc(y.gr.act||'')}</i></span><em class="rs-i rs-i${y.gr.res}">${{W:'✓',L:'✕',P:'–'}[y.gr.res]}</em><b class="${cl(y.gr.u)}">${uf(y.gr.u)}</b></div>`).join('')}</details>`:`<div class="bbx-none">No graded picks in this window.</div>`}
-  <p class="bbx-k">Every Value and Lean line is locked before kickoff and graded at 1 unit. Best Bets = ${Math.round(minP*100)}%+ to hit and +${minEV}% value (tracked from Nov 28 on). ROI = units won ÷ units staked.</p>`;
-  $('app').querySelectorAll('.trsel select').forEach(el=>el.onchange=()=>{if(el.dataset.k==='r'){if(el.value==='day')return;TRF.day=null}TRF[el.dataset.k]=el.value;trackRecord()});
-  $('app').querySelectorAll('[data-cd]').forEach(el=>el.onclick=()=>{TRF.day=TRF.day===el.dataset.cd?null:el.dataset.cd;trackRecord()});
+  <p class="bbx-k">Every Value and Lean line is locked before kickoff and graded at 1 unit. Best Bets = ${Math.round(minP*100)}%+ to hit and +${minEV}% value, counted on their own (tracked from Nov 28 on).</p>`;
+  $('app').querySelectorAll('.trsel select').forEach(el=>el.onchange=()=>{if(el.dataset.k==='r')TRF.day=null;TRF[el.dataset.k]=el.value;trackRecord()});
+  $('app').querySelectorAll('[data-cd]').forEach(el=>el.onclick=()=>{TRF.day=TRF.day===el.dataset.cd?null:el.dataset.cd;TRF.calOpen=0;trackRecord()});
+  {const cb=$('app').querySelector('.trcalb');if(cb)cb.onclick=()=>{TRF.calOpen=TRF.calOpen?0:1;trackRecord()}}
   $('app').querySelectorAll('[data-cm]').forEach(el=>el.onclick=()=>{TRF.cm=el.dataset.cm;TRF.calOpen=1;trackRecord()});
-  {const c=$('app').querySelector('.trcal');if(c&&c.addEventListener)c.addEventListener('toggle',()=>{TRF.calOpen=c.open})}
 }
 function soon(){document.title='Track Record';anim();
   $('app').innerHTML=`<div class="soon"><b>Coming soon</b><p>The track record will grade every locked pick once results start coming in.</p></div>`}
@@ -2088,7 +2115,7 @@ function fromWorkbook(wb){
   const T=n=>{const ws=wb.Sheets[n];if(!ws)throw new Error('Missing sheet: '+n);return XLSX.utils.sheet_to_json(ws,{defval:null,raw:true})};
   const st={};let curD=null;T('Settings').forEach(r=>{if(!r['Setting'])return;if(r['Setting']==='Current day (site opens here)')curD=isoOf(r['Value']);else st[r['Setting']]=num(r['Value'])});
   const settings={wSeason:st['Weight: full season'],wVenue:st['Weight: venue split'],wL3:st['Weight: last 3 games'],hfa:st['Home-field points'],sd:st['Std. dev. of NFL margin'],toPts:st['Points per turnover'],toReg:st['Turnover regression'],sosW:st['Schedule-strength weight'],byeW:st['Post-bye weight'],betEV:st['Bet threshold (EV per $100)'],currentDay:curD,
-    mktW:st['Market blend: model share']??1,propW:st['Props: model share']??st['Market blend: model share']??1,bbHit:st['Best bet: min chance to hit']??0.58,bbEV:st['Best bet: min value (EV %)']??6,bbMax:st['Best bets: max per day']??10,statWeights:{RushYPG:st['Weight: rushing yds/game'],RushYPC:st['Weight: yards per rush'],PassYPG:st['Weight: passing yds/game'],PassYPA:st['Weight: yards per pass att'],RZTD:st['Weight: red zone TD %']},wxW:st['Weather: pass-share weight']??6,wxTotal:st['Weather: total points lost per severity']??4,sdTotal:st['Std. dev. of NFL total']??13.5};
+    mktW:st['Market blend: model share']??1,propW:st['Props: model share']??st['Market blend: model share']??1,bbHit:st['Best bet: min chance to hit']??0.58,bbEV:st['Best bet: min value (EV %)']??6,bbMax:st['Best bets: max per day']??25,statWeights:{RushYPG:st['Weight: rushing yds/game'],RushYPC:st['Weight: yards per rush'],PassYPG:st['Weight: passing yds/game'],PassYPA:st['Weight: yards per pass att'],RZTD:st['Weight: red zone TD %']},wxW:st['Weather: pass-share weight']??6,wxTotal:st['Weather: total points lost per severity']??4,sdTotal:st['Std. dev. of NFL total']??13.5};
   const rows=T('League Data').filter(r=>r['Stat key']).map(r=>[r['Stat key'],r['Team'],num(r['Season']),num(r['Home']),num(r['Away']),num(r['Last 3']),num(r['Week'])]);
   const h1=wb.Sheets['League Data']['I1'];const note=h1?String(h1.v):'';
   const by=(n,id)=>T(n).filter(r=>r['Game ID']===id);
