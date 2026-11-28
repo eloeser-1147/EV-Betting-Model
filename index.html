@@ -1470,6 +1470,31 @@ body{padding-bottom:calc(96px + env(safe-area-inset-bottom))}
 .bbx-rt b{font:600 22px Oswald,sans-serif;color:var(--ink)}.bbx-rt b small{font:700 10px 'Source Sans 3',sans-serif;color:var(--dim);margin-left:2px}
 .bbx-rt span{font-size:11.5px;font-weight:700;color:#5fd39a}
 .bbx-l2 .bbx-w{padding:0 14px 12px 60px!important}
+
+/* Best Bet highlight inside game Lines (cyan, distinct from Value green and Lean gold) */
+.pq-c.isbb{position:relative;background:linear-gradient(90deg,rgba(64,214,255,.17),rgba(64,214,255,.04) 60%,transparent)!important;box-shadow:inset 3px 0 0 #40d6ff,0 0 20px rgba(64,214,255,.14)}
+.pq-c.isbb>summary{background:none!important}
+.pq-c.isbb .pq-pick,.pq-c.isbb .gl-p{color:#bff1ff!important}
+.pq-c.isbb .pq-ev{color:#40d6ff!important}.pq-c.isbb .pq-ev:after{content:'Best Bet'!important;color:#40d6ff}
+.bbtag{display:block;font-style:normal;font:800 9px 'Source Sans 3',sans-serif;letter-spacing:.1em;text-transform:uppercase;color:#40d6ff;text-shadow:0 0 8px rgba(64,214,255,.55);margin-bottom:1px}
+.pq.gl .gl-r.isbb:before{background:#40d6ff!important}
+.lt-b{color:#40d6ff;text-shadow:0 0 8px rgba(64,214,255,.5)}
+
+/* track record calendar */
+.cal{border:1px solid var(--line2);border-radius:4px;background:var(--card);padding:8px 8px 6px;margin-bottom:12px}
+.cal-h{display:flex;align-items:center;justify-content:space-between;padding:0 2px 6px}.cal-h b{font:600 14px Oswald,sans-serif;letter-spacing:.8px;text-transform:uppercase}
+.cal-h button{border:0;background:none;color:var(--mute);font-size:22px;line-height:1;padding:0 8px;cursor:pointer}.cal-h button:hover{color:var(--ink)}
+.cal-w,.cal-g{display:grid;grid-template-columns:repeat(7,1fr);gap:3px}.cal-w span{text-align:center;font-size:9.5px;font-weight:800;color:var(--dim);padding-bottom:2px}
+.cd{position:relative;isolation:isolate;border:0;border-radius:4px;aspect-ratio:1/1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1px;background:rgba(255,255,255,.025);color:var(--dim);cursor:pointer;padding:0}
+.cd b{font:700 12.5px 'Source Sans 3',sans-serif}.cd i{font-style:normal;font-size:9px;font-weight:800;min-height:10px}
+.cd.up{background:rgba(62,230,168,.13);color:var(--ink)}.cd.up i{color:#5fe3a8}.cd.up:before{content:'';position:absolute;inset:0;border-radius:4px;box-shadow:0 0 10px rgba(62,230,168,.18);z-index:-1}
+.cd.dn{background:rgba(240,110,110,.13);color:var(--ink)}.cd.dn i{color:#f58a8a}.cd.dn:before{content:'';position:absolute;inset:0;border-radius:4px;box-shadow:0 0 10px rgba(240,110,110,.18);z-index:-1}
+.cd.ev{background:rgba(255,255,255,.07);color:var(--ink)}
+.cd.td b{text-decoration:underline;text-underline-offset:2px}
+.cd.on{outline:2px solid var(--lime);outline-offset:1px}
+.cd-e{aspect-ratio:1/1}
+.cal-n{text-align:center;font-size:10.5px;color:var(--dim);margin:6px 0 0}
+.trhx.nil>b,.trhx.nil .trhx-s span{color:var(--dim)!important;text-shadow:none!important}
 </style>
 </head>
 <body>
@@ -1598,7 +1623,7 @@ const THEME={
 const DEFTH={bg:'#0b0f1e',card:'#141a30',card2:'#1b2240',line:'#2a3358',acc:'#7c8cff'};
 const setAcc=k=>{const t=THEME[BOOK]||DEFTH,r=document.documentElement.style;r.setProperty('--bg',t.bg);r.setProperty('--card',t.card);r.setProperty('--card2',t.card2);r.setProperty('--line',t.line);r.setProperty('--line2',t.line);r.setProperty('--lime',t.acc);
   const m=document.querySelector('meta[name=theme-color]');if(m)m.content=t.bg};
-function route(){document.body.classList.remove('home');if(document.querySelectorAll)document.querySelectorAll('body>.dock').forEach(x=>x.remove());
+function route(){BBC={};document.body.classList.remove('home');if(document.querySelectorAll)document.querySelectorAll('body>.dock').forEach(x=>x.remove());
   const h=location.hash.slice(1);let g=GAMES.find(x=>x.id===h),tab='pick';
   if(!g)for(const [t] of TABS){g=GAMES.find(x=>h===x.id+'-'+t);if(g){tab=t;break}}
   if(!g){const w=GAMES.find(x=>h===x.id+'-writeup');if(w){WU_OPEN=true;location.replace('#'+w.id);return}}
@@ -1684,6 +1709,15 @@ function propWhy(g,x){const p=x.p,b=x.best,ov=b.side==='over',L=x.r.L,first=p.pl
       return `<p class="pq-e">${esc(S.join(' '))}</p>`}
 function glWhy(g,c,best,oth,tot){const edge=best.ev>0,txt=best.kind==='Spread'?`We make it ${(c.m>=0?g.home:g.away).name} by ${Math.abs(c.m).toFixed(1)} against a line of ${esc(best.n)}.`:best.kind==='Moneyline'?`We give the ${(c.pw>=.5?g.home:g.away).name} a ${pct(c.wp,0)} chance to win (fair price ${odds(fair(c.wp))}).`:`We project ${c.tot.toFixed(1)} total points against a line of ${tot}.`;
   return `<p class="pq-e">${txt} ${edge?`That gives ${esc(best.n)} a ${pct(best.p,0)} chance against the ${pct(be(best.o),0)} needed at ${odds(best.o)}, worth ${evp(best.ev)}.`:`Neither side clears the price.`}${oth?` Other side: ${esc(oth.n)} ${odds(oth.o)} (${evp(oth.ev)}).`:''}</p>`}
+function bbTop(day,bk,WG){const minP=SET.bbHit??0.58,minEV=SET.bbEV??SET.betEV??6,maxN=SET.bbMax??10;WG=WG||GAMES.filter(g=>!resOf(g.id));
+  const all=[];WG.filter(g=>dayOf(g)===day).forEach(g=>{if(bookOf(g,bk)){const L=bookLines(g,bk),c=calc(g,L);c.bets.concat(c.tb).forEach(b=>{if(b.ev>0)all.push({g,b,c,tot:L.total,key:g.id+'|'+b.kind})})}
+    propBets(g,bk).forEach(b=>{if(b.ev>0)all.push({g,b,key:g.id+'|'+b.pl})})});
+  all.sort((a,b)=>b.b.ev-a.b.ev);
+  const far=x=>x.b.kind==='Prop'&&x.b.pr&&x.b.pr.line>=1.5&&x.b.pr.proj>0&&(x.b.pr.proj/x.b.pr.line>2||x.b.pr.proj/x.b.pr.line<0.5);
+  const seen=new Set(),top=[];all.slice().sort((a,b)=>(b.b.p>=minP&&b.b.ev>=minEV)-(a.b.p>=minP&&a.b.ev>=minEV)||b.b.p-a.b.p||b.b.ev-a.b.ev).forEach(x=>{if(top.length>=maxN||x.b.p<minP||x.b.ev<minEV||far(x))return;const k=x.b.kind==='Prop'?x.key:x.g.id+'|game';if(seen.has(k))return;seen.add(k);top.push(x)});
+  return top}
+const bbKey=(g,b)=>b.kind==='Prop'?`${g.id}|${b.pl}|${b.mk}|${b.t}`:`${g.id}|${b.kind}|${b.t}`;
+let BBC={};const bbSet=g=>{const k=BOOK+'|'+dayOf(g);if(!BBC[k])BBC[k]=new Set(bbTop(dayOf(g),BOOK).map(x=>bbKey(x.g,x.b)));return BBC[k]};
 let BBD=null;
 function best(){
   document.title='Best Bets';anim();
@@ -1691,11 +1725,7 @@ function best(){
   const DAYS=[...new Set(WG.map(dayOf))].sort();
   if(BBD==null||!DAYS.includes(BBD))BBD=DAYS.includes(curDay())?curDay():(DAYS.find(d=>d>=curDay())||DAYS[0]);
   const minP=SET.bbHit??0.58,minEV=SET.bbEV??SET.betEV??6,maxN=SET.bbMax??10;
-  const all=[];WG.filter(g=>dayOf(g)===BBD).forEach(g=>{if(bookOf(g,bk)){const L=bookLines(g,bk),c=calc(g,L);c.bets.concat(c.tb).forEach(b=>{if(b.ev>0)all.push({g,b,c,tot:L.total,key:g.id+'|'+b.kind})})}
-    propBets(g,bk).forEach(b=>{if(b.ev>0)all.push({g,b,key:g.id+'|'+b.pl})})});
-  all.sort((a,b)=>b.b.ev-a.b.ev);
-  const far=x=>x.b.kind==='Prop'&&x.b.pr&&x.b.pr.line>=1.5&&x.b.pr.proj>0&&(x.b.pr.proj/x.b.pr.line>2||x.b.pr.proj/x.b.pr.line<0.5);
-  const seen=new Set(),top=[];all.slice().sort((a,b)=>(b.b.p>=minP&&b.b.ev>=minEV)-(a.b.p>=minP&&a.b.ev>=minEV)||b.b.p-a.b.p||b.b.ev-a.b.ev).forEach(x=>{if(top.length>=maxN||x.b.p<minP||x.b.ev<minEV||far(x))return;const k=x.b.kind==='Prop'?x.key:x.g.id+'|game';if(seen.has(k))return;seen.add(k);top.push(x)});
+  const top=bbTop(BBD,bk,WG);
   const MK={'Pass yds':'Pass yds','Rush yds':'Rush yds','Rec yds':'Rec yds','Receptions':'Catches'};
   const tm=(g,b)=>b.kind==='Prop'?(b.team===g.home.abbr?g.home:g.away):b.kind==='Total'?null:(b.t==='home'?g.home:g.away);
   const ico=(g,b)=>{const t=tm(g,b);return t?`<span class="bbx-ic" ${tc(t)}>${badge(t)}</span>`:`<span class="bbx-ic duo" style="--ta:${esc(g.away.night||g.away.color)};--th:${esc(g.home.night||g.home.color)}">${badge(g.away)}${badge(g.home)}</span>`};
@@ -1718,7 +1748,7 @@ function best(){
   <p class="bbx-k">Best Bet = at least ${Math.round(minP*100)}% to hit <i>and</i> +${minEV}% value, one per player or game, up to ${maxN} a day. Tap any line for the reasoning.</p>`;
   $('app').querySelectorAll('[data-d]').forEach(b=>b.onclick=()=>{BBD=b.dataset.d;best()});
 }
-let TRF={r:'7',t:'all',v:'all'};
+let TRF={r:'7',t:'all',v:'all',day:null,cm:null};
 function trackRecord(){
   document.title='Track Record';anim();
   const minP=SET.bbHit??0.58,minEV=SET.bbEV??SET.betEV??6;
@@ -1728,7 +1758,7 @@ function trackRecord(){
   const RG=[['1','Last day'],['3','3 days'],['7','7 days'],['30','30 days'],['all','Season']];
   const from=r=>{if(r==='all')return '0000';if(r==='1')return last||'9999';const t=dObj(curDay());t.setDate(t.getDate()-(+r-1));return isoD(t)};
   const isBB=x=>x.p!=null&&x.p>=minP&&x.ev>=minEV;
-  const inR=y=>y.d>=from(TRF.r)&&y.d<=curDay();
+  const inR=y=>TRF.day?y.d===TRF.day:(y.d>=from(TRF.r)&&y.d<=curDay());
   const inT=y=>TRF.t==='all'||(TRF.t==='prop')===(y.x.kind==='Prop');
   const inV=y=>TRF.v==='all'||(TRF.v==='bb'?isBB(y.x):y.x.v===TRF.v);
   const R=all.filter(y=>inR(y)&&inT(y)&&inV(y)),G=R.filter(isG),pend=R.filter(y=>y.gr.res==='pending').length;
@@ -1746,21 +1776,29 @@ function trackRecord(){
   const tbl=(head,rows)=>`<table class="trtb"><thead><tr><th>${head}</th><th>Record</th><th>Win %</th><th>Units</th><th>ROI</th></tr></thead><tbody>${rows.map(([l,s])=>`<tr><td>${l}</td><td>${rec(s)}</td><td>${s.wp==null?'—':Math.round(s.wp*100)+'%'}</td><td class="${cl(s.u)}">${uf(s.u)}</td><td class="${cl(s.u)}">${rf(s.roi)}</td></tr>`).join('')}</tbody></table>`;
   const dayRows=ds.slice().reverse().map(d=>[esc(d===curDay()?'Today':dLabel(d,{weekday:'short',month:'short',day:'numeric'})),st(G.filter(y=>y.d===d))]);
   // game picks (one locked pick per game) from the Pick Log
-  const PL=LOG.map(l=>({l,g:GAMES.find(x=>x.id===l.gameId),gr:grade(l)})).filter(o=>o.g&&o.gr&&dayOf(o.g)>=from(TRF.r)&&dayOf(o.g)<=curDay());
+  const PL=LOG.map(l=>({l,g:GAMES.find(x=>x.id===l.gameId),gr:grade(l)})).filter(o=>o.g&&o.gr&&inR({d:dayOf(o.g)}));
   const pr=k=>{const a=PL.map(o=>o.gr[k]).filter(Boolean);return {W:a.filter(x=>x==='W').length,L:a.filter(x=>x==='L').length,P:a.filter(x=>x==='P').length}};
   const su=pr('su'),ats=pr('ats'),clv=PL.map(o=>o.gr.clv).filter(v=>v!=null),aclv=clv.length?clv.reduce((a,b)=>a+b,0)/clv.length:null;
+  const CAL=(()=>{const base=all.filter(y=>inT(y)&&inV(y)&&isG(y));const anchor=TRF.day||last||curDay();if(!TRF.cm)TRF.cm=anchor.slice(0,7);
+    const [Y,M]=TRF.cm.split('-').map(Number),first=new Date(Y,M-1,1),nd=new Date(Y,M,0).getDate(),lead=first.getDay();
+    const shift=k=>{const d=new Date(Y,M-1+k,1);return isoD(d).slice(0,7)};let cells='';for(let i=0;i<lead;i++)cells+='<span class="cd-e"></span>';
+    for(let n=1;n<=nd;n++){const d=`${TRF.cm}-${String(n).padStart(2,'0')}`,ys=base.filter(y=>y.d===d),st2=st(ys),has=ys.length>0;
+      cells+=`<button type="button" class="cd ${has?(st2.u>0?'up':st2.u<0?'dn':'ev'):'no'}${d===TRF.day?' on':''}${d===curDay()?' td':''}" data-cd="${d}"><b>${n}</b><i>${has?(st2.u>=0?'+':'−')+Math.abs(st2.u).toFixed(1):''}</i></button>`}
+    return `<div class="cal"><div class="cal-h"><button type="button" data-cm="${shift(-1)}" aria-label="Previous month">‹</button><b>${first.toLocaleDateString('en-US',{month:'long',year:'numeric'})}</b><button type="button" data-cm="${shift(1)}" aria-label="Next month">›</button></div><div class="cal-w">${['S','M','T','W','T','F','S'].map(x=>`<span>${x}</span>`).join('')}</div><div class="cal-g">${cells}</div><p class="cal-n">Tap a day to see just that day${TRF.day?' · tap it again to clear':''}</p></div>`})();
   const sec=(t,h)=>`<details class="trl trsec"><summary>${t}<i class="rs-ch"></i></summary><div class="trsec-b">${h}</div></details>`;
   const lastRows=G.slice().sort((a,b)=>(b.d+b.x.n).localeCompare(a.d+a.x.n)).slice(0,25);
   const sel=(k,lab,opts,cur)=>`<label class="trs2"><small>${lab}</small><select data-k="${k}">${opts.map(([v,l])=>`<option value="${v}"${v===cur?' selected':''}>${l}</option>`).join('')}</select></label>`;
-  $('app').innerHTML=`<div class="trsel">${sel('r','Period',RG,TRF.r)}${sel('t','Bets',[['all','All bets'],['game','Game lines'],['prop','Props']],TRF.t)}${sel('v','Picks',[['all','All picks'],['bb','Best Bets'],['Bet','Value'],['Lean','Lean']],TRF.v)}</div>
-  <div class="trhx ${cl(S.u)}"><b>${S.n?uf(S.u):'—'}</b><div class="trhx-s"><span><i>Record</i>${S.n?rec(S):'—'}</span><span><i>ROI</i>${S.n?rf(S.roi):'—'}</span><span><i>Win %</i>${S.wp==null?'—':Math.round(S.wp*100)+'%'}</span></div></div>
-  <p class="trn">${esc(BOOK)} · 1 unit per pick${pend?` · ${pend} pending`:''}${TRF.r==='1'&&last?` · ${esc(dLabel(last,{weekday:'long',month:'short',day:'numeric'}))}`:''}</p>
-  ${S.n?`<div class="trts">${tile('Best Bets',st(G.filter(y=>isBB(y.x))))}${tile('Value',st(G.filter(y=>y.x.v==='Bet')))}${tile('Lean',st(G.filter(y=>y.x.v==='Lean')))}</div>
-  ${chart()}
-  ${sec('By bet type',tbl('Type',by))}${sec('By day',tbl('Day',dayRows))}${sec('Game picks',`<div class="trts"><div class="trt"><span>Straight up</span><b>${su.W}-${su.L}${su.P?'-'+su.P:''}</b><em>${PL.length} games</em></div><div class="trt"><span>Against spread</span><b>${ats.W}-${ats.L}${ats.P?'-'+ats.P:''}</b><em>52.4% beats −110</em></div><div class="trt ${aclv>0?'up':aclv<0?'dn':''}"><span>Closing line</span><b>${aclv==null?'—':(aclv>=0?'+':'−')+Math.abs(aclv).toFixed(1)}</b><em>avg pts gained</em></div></div>`)}
-  <details class="trl trsec"><summary>Recent picks <small>${lastRows.length}</small><i class="rs-ch"></i></summary>${lastRows.map(y=>`<div class="trl-r"><span><b>${esc(y.x.n)}</b> <small>${odds(y.x.o)}</small><i>${esc(y.g.away.abbr)} @ ${esc(y.g.home.abbr)} · ${esc(y.gr.act||'')}</i></span><em class="rs-i rs-i${y.gr.res}">${{W:'✓',L:'✕',P:'–'}[y.gr.res]}</em><b class="${cl(y.gr.u)}">${uf(y.gr.u)}</b></div>`).join('')}</details>`:`<div class="bbx-none">No graded picks in this window.</div>`}
+  $('app').innerHTML=`<div class="trsel">${sel('r','Period',TRF.day?[['day',dLabel(TRF.day,{month:'short',day:'numeric'})]].concat(RG):RG,TRF.day?'day':TRF.r)}${sel('t','Bets',[['all','All bets'],['game','Game lines'],['prop','Props']],TRF.t)}${sel('v','Picks',[['all','All picks'],['bb','Best Bets'],['Bet','Value'],['Lean','Lean']],TRF.v)}</div>
+  <div class="trhx ${S.n?cl(S.u):'nil'}"><b>${S.n?uf(S.u):'—'}</b><div class="trhx-s"><span><i>Record</i>${S.n?rec(S):'—'}</span><span><i>ROI</i>${S.n?rf(S.roi):'—'}</span><span><i>Win %</i>${S.wp==null?'—':Math.round(S.wp*100)+'%'}</span></div></div>
+  <p class="trn">${TRF.day?esc(dLabel(TRF.day,{weekday:'long',month:'short',day:'numeric'}))+(S.n?'':' · no lines graded')+' · ':''}${esc(BOOK)} · 1 unit per pick${pend?` · ${pend} pending`:''}${!TRF.day&&TRF.r==='1'&&last?` · ${esc(dLabel(last,{weekday:'long',month:'short',day:'numeric'}))}`:''}</p>
+  ${CAL}<div class="trts">${tile('Best Bets',st(G.filter(y=>isBB(y.x))))}${tile('Value',st(G.filter(y=>y.x.v==='Bet')))}${tile('Lean',st(G.filter(y=>y.x.v==='Lean')))}</div>
+  ${S.n?chart():''}
+  ${S.n?sec('By bet type',tbl('Type',by)):''}${sec('Game picks',`<div class="trts"><div class="trt"><span>Straight up</span><b>${su.W}-${su.L}${su.P?'-'+su.P:''}</b><em>${PL.length} games</em></div><div class="trt"><span>Against spread</span><b>${ats.W}-${ats.L}${ats.P?'-'+ats.P:''}</b><em>52.4% beats −110</em></div><div class="trt ${aclv>0?'up':aclv<0?'dn':''}"><span>Closing line</span><b>${aclv==null?'—':(aclv>=0?'+':'−')+Math.abs(aclv).toFixed(1)}</b><em>avg pts gained</em></div></div>`)}
+  ${S.n?`<details class="trl trsec"><summary>Recent picks <small>${lastRows.length}</small><i class="rs-ch"></i></summary>${lastRows.map(y=>`<div class="trl-r"><span><b>${esc(y.x.n)}</b> <small>${odds(y.x.o)}</small><i>${esc(y.g.away.abbr)} @ ${esc(y.g.home.abbr)} · ${esc(y.gr.act||'')}</i></span><em class="rs-i rs-i${y.gr.res}">${{W:'✓',L:'✕',P:'–'}[y.gr.res]}</em><b class="${cl(y.gr.u)}">${uf(y.gr.u)}</b></div>`).join('')}</details>`:`<div class="bbx-none">No graded picks in this window.</div>`}
   <p class="bbx-k">Every Value and Lean line is locked before kickoff and graded at 1 unit. Best Bets = ${Math.round(minP*100)}%+ to hit and +${minEV}% value (tracked from Nov 28 on). ROI = units won ÷ units staked.</p>`;
-  $('app').querySelectorAll('.trsel select').forEach(el=>el.onchange=()=>{TRF[el.dataset.k]=el.value;trackRecord()});
+  $('app').querySelectorAll('.trsel select').forEach(el=>el.onchange=()=>{if(el.dataset.k==='r'){if(el.value==='day')return;TRF.day=null}TRF[el.dataset.k]=el.value;trackRecord()});
+  $('app').querySelectorAll('[data-cd]').forEach(el=>el.onclick=()=>{TRF.day=TRF.day===el.dataset.cd?null:el.dataset.cd;trackRecord()});
+  $('app').querySelectorAll('[data-cm]').forEach(el=>el.onclick=()=>{TRF.cm=el.dataset.cm;trackRecord()});
 }
 function soon(){document.title='Track Record';anim();
   $('app').innerHTML=`<div class="soon"><b>Coming soon</b><p>The track record will grade every locked pick once results start coming in.</p></div>`}
@@ -1838,11 +1876,12 @@ function game(g,tab){
     const SH={'Pass yds':'Pass yds','Rush yds':'Rush yds','Rec yds':'Rec yds','Receptions':'Catches'};
     const rows=PS.map(p=>{const bk=p.books[BOOK]?BOOK:Object.keys(p.books)[0],r=propGrade(p,bk);return {p,r,bk,best:r.o.ev>=r.u.ev?r.o:r.u}});
     const card=x=>{const b=x.best,edge=b.ev>0,ov=b.side==='over',v=edge?b.v:'Pass';
-      return `<details class="pq-c pq-${v}"><summary><span class="pq-mk">${SH[x.p.market]||esc(x.p.market)}<small>Proj ${x.r.proj.toFixed(1)}</small></span>${edge?`<span class="pq-pick">${ov?'Over':'Under'} ${x.r.L}</span><span class="pq-od">${odds(b.o)}</span><span class="pq-ev">${evp(b.ev)}</span>`:`<span class="pq-pick none">${x.r.L}</span><span class="pq-od pq-nw">O ${odds(x.r.o.o)} · U ${odds(x.r.u.o)}</span>`}<em class="pq-v">${v==='Pass'?'—':v}</em></summary>${propWhy(g,x)}<div class="pq-bt">Our chance <b>${Math.round(b.p*100)}%</b> · break-even ${Math.round(be(b.o)*100)}%${x.bk!==BOOK?` · ${esc(x.bk)} line`:''}</div></details>`};
+      const isBB=edge&&bbSet(g).has(`${g.id}|${x.p.player}|${x.p.market}|${b.side}`);
+      return `<details class="pq-c pq-${v}${isBB?' isbb':''}"><summary><span class="pq-mk">${isBB?'<em class="bbtag">★ Best Bet</em>':''}${SH[x.p.market]||esc(x.p.market)}<small>Proj ${x.r.proj.toFixed(1)}</small></span>${edge?`<span class="pq-pick">${ov?'Over':'Under'} ${x.r.L}</span><span class="pq-od">${odds(b.o)}</span><span class="pq-ev">${evp(b.ev)}</span>`:`<span class="pq-pick none">${x.r.L}</span><span class="pq-od pq-nw">O ${odds(x.r.o.o)} · U ${odds(x.r.u.o)}</span>`}<em class="pq-v">${v==='Pass'?'—':v}</em></summary>${propWhy(g,x)}<div class="pq-bt">Our chance <b>${Math.round(b.p*100)}%</b> · break-even ${Math.round(be(b.o)*100)}%${x.bk!==BOOK?` · ${esc(x.bk)} line`:''}</div></details>`};
     const team=t=>{const xs=rows.filter(x=>x.p.team===t.abbr);if(!xs.length)return '';const by={};xs.forEach(x=>(by[x.p.player]=by[x.p.player]||[]).push(x));
       const pls=Object.entries(by).map(([k,v])=>[k,v.sort((a,b)=>b.best.ev-a.best.ev)]).sort((a,b)=>b[1][0].best.ev-a[1][0].best.ev);
-      const nb=xs.filter(x=>x.best.ev>0&&x.best.v==='Bet').length,nl=xs.filter(x=>x.best.ev>0&&x.best.v==='Lean').length;
-      return `<section class="bk-s" style="--ta:${esc(t.night||t.color)};--th:${esc(t.night||t.color)};--tc:${esc(t.night||t.color)}"><button type="button" class="bk-b"><span class="bk-lg one">${badge(t)}</span><span>${esc(t.name)} props</span><small><span class="ln-tag">${nb?`<em class="lt-v">${nb} Value</em>`:''}${nl?`<em class="lt-l">${nl} Lean</em>`:''}${!nb&&!nl?'No edges':''}</span></small><i class="rs-ch"></i></button><div class="body"><div class="rs-pl">${pls.map(([pl,ys])=>`<div class="rs-pr" ${tc(t)}>${esc(pl)} <small>${esc(ys[0].p.pos)}</small></div><div class="pq rs-prw ln-prw"><div class="pq-p"><div class="pq-cs">${ys.map(card).join('')}</div></div></div>`).join('')}</div></div></section>`};
+      const nb=xs.filter(x=>x.best.ev>0&&x.best.v==='Bet').length,nl=xs.filter(x=>x.best.ev>0&&x.best.v==='Lean').length;const nbb=xs.filter(x=>x.best.ev>0&&bbSet(g).has(`${g.id}|${x.p.player}|${x.p.market}|${x.best.side}`)).length;
+      return `<section class="bk-s" style="--ta:${esc(t.night||t.color)};--th:${esc(t.night||t.color)};--tc:${esc(t.night||t.color)}"><button type="button" class="bk-b"><span class="bk-lg one">${badge(t)}</span><span>${esc(t.name)} props</span><small><span class="ln-tag">${nbb?`<em class="lt-b">★ ${nbb}</em>`:''}${nb?`<em class="lt-v">${nb} Value</em>`:''}${nl?`<em class="lt-l">${nl} Lean</em>`:''}${!nb&&!nl?'No edges':''}</span></small><i class="rs-ch"></i></button><div class="body"><div class="rs-pl">${pls.map(([pl,ys])=>`<div class="rs-pr" ${tc(t)}>${esc(pl)} <small>${esc(ys[0].p.pos)}</small></div><div class="pq rs-prw ln-prw"><div class="pq-p"><div class="pq-cs">${ys.map(card).join('')}</div></div></div>`).join('')}</div></div></section>`};
     P.innerHTML='<div class="bk-g bk-acc" id="bkG"><button type="button" class="bk-x" id="bkX">‹ Lines</button></div>'+(PS.length?`<p class="note" style="text-align:center">Props: ${esc(BOOK)} lines as of ${esc(g.propsAsOf||'')}. Tap a line for the reasoning. Players marked Out on the injury report are left off.</p>`:'');{const G=$('bkG'),ls=document.querySelector('.ln-sec');if(ls)G.appendChild(ls);G.insertAdjacentHTML('beforeend',(PS.length?'<div class="ln-h">Player props</div>':'')+team(g.away)+team(g.home))}}
   bind(g,tab);render(g,tab);
   if(SWDIR&&$('app').style){const A=$('app');A.style.transition='none';A.style.transform=`translateX(${SWDIR*28}%)`;A.style.opacity='.35';requestAnimationFrame(()=>requestAnimationFrame(()=>{A.style.transition='transform .22s cubic-bezier(.2,.8,.2,1),opacity .22s';A.style.transform='';A.style.opacity=''}));SWDIR=0}
@@ -1913,7 +1952,7 @@ function linesCard(g,c,L,draft){const B=c.bets,T=x=>x==='home'?g.home:x==='away'
     const nb=rows.filter(r=>Math.max(r[1].ev,r[2].ev)>=SET.betEV).length;
     const row=([lab,a,b,sub])=>{const best=a.ev>=b.ev?a:b,oth=best===a?b:a,edge=best.ev>0,v=edge?best.v:'Pass',ic=best.kind==='Total'?'':badge(T(best.t)),
       txt=null;
-      const tm=best.kind==='Total'?null:T(best.t);return `<details class="pq-c pq-${v} gl-r${tm?'':' gl-tot'}" ${tm?tc(tm):''}><summary><span class="pq-mk">${lab}<small>${sub}</small></span>${edge?`<span class="pq-pick gl-p">${esc(best.n)} <small class="gl-o">${odds(best.o)}</small></span><span class="pq-ev">${evp(best.ev)}</span>`:`<span class="pq-pick none gl-p">${esc(best.n)} <small class="gl-o">${odds(best.o)}</small></span><span class="pq-ev">${evp(best.ev)}</span>`}<em class="pq-v">${v==='Pass'?'—':v}</em></summary>${glWhy(g,c,best,oth,L.total)}</details>`};
+      const tm=best.kind==='Total'?null:T(best.t),isBB=edge&&!draft&&bbSet(g).has(bbKey(g,best));return `<details class="pq-c pq-${v} gl-r${tm?'':' gl-tot'}${isBB?' isbb':''}" ${tm?tc(tm):''}><summary><span class="pq-mk">${isBB?'<em class="bbtag">★ Best Bet</em>':''}${lab}<small>${sub}</small></span>${edge?`<span class="pq-pick gl-p">${esc(best.n)} <small class="gl-o">${odds(best.o)}</small></span><span class="pq-ev">${evp(best.ev)}</span>`:`<span class="pq-pick none gl-p">${esc(best.n)} <small class="gl-o">${odds(best.o)}</small></span><span class="pq-ev">${evp(best.ev)}</span>`}<em class="pq-v">${v==='Pass'?'—':v}</em></summary>${glWhy(g,c,best,oth,L.total)}</details>`};
     return `<div class="pq gl${draft?' gl-draft':''}"><div class="pq-p"><div class="pq-rib gl-rib">${bkLogo(BOOK)}<b>${esc(bookName(g))}</b>${nb?`<span class="pq-nb">${nb} Bet</span>`:''}</div><div class="pq-cs">${rows.map(row).join('')}</div></div></div>`}
 // Every Bet/Lean line the model suggested for a game at one book (game lines + props). Locked into betLog before kickoff.
 function suggestions(g,bk){const out=[],L=bookLines(g,bk);
